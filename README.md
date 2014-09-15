@@ -10,10 +10,10 @@ Requirements
 
 Installation
 ------------
-The easiest way to use the MessageBird API in your Python project is to install it using the setup.py file:
+The easiest way to use the MessageBird API is to install it using the setup.py file:
 
 ```
-$ sudo python setup.py install
+$ python setup.py install
 ```
 
 Examples
@@ -38,13 +38,13 @@ try:
   balance = client.balance()
 
   # Print the object information.
-  print('\nThe following information was returned as a Balance object:\n')
+  print('Your balance:\n')
   print('  amount  : %d' % balance.amount)
   print('  type    : %s' % balance.type)
   print('  payment : %s\n' % balance.payment)
 
 except messagebird.client.ErrorException as e:
-  print('\nAn error occured while requesting a Balance object:\n')
+  print('Error:\n')
 
   for error in e.errors:
     print('  code        : %d' % error.code)
@@ -56,6 +56,7 @@ except messagebird.client.ErrorException as e:
 This will give you something like:
 ```shell
 $ python example.py
+Your balance:
 
   amount  : 9 
   type    : credits
