@@ -10,7 +10,13 @@ Requirements
 
 Installation
 ------------
-The easiest way to use the MessageBird API is to install it using the setup.py file:
+The easiest way to install the messagebird package is either via pip:
+
+```
+$ pip install messagebird
+```
+
+or manually by downloading the source and run the setup.py script:
 
 ```
 $ python setup.py install
