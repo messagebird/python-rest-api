@@ -8,6 +8,8 @@ setup(
     author           = 'MessageBird',
     author_email     = 'support@messagebird.com',
     url              = 'https://github.com/messagebird/python-rest-api',
+    download_url     = 'https://github.com/messagebird/python-rest-api/tarball/1.0.1',
+    keywords         = ['messagebird', 'sms'],
     install_requires = ['requests>=2.4.1'],
     license          = 'BSD-2-Clause',
 )
