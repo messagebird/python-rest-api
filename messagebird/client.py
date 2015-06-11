@@ -1,4 +1,5 @@
 import sys
+import json
 import requests
 
 try:
@@ -14,7 +15,7 @@ from messagebird.message      import Message
 from messagebird.voicemessage import VoiceMessage
 
 ENDPOINT       = 'https://rest.messagebird.com'
-CLIENT_VERSION = '1.0.0'
+CLIENT_VERSION = '1.0.1'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 
 class ErrorException(BaseException):
@@ -32,13 +33,14 @@ class Client(object):
     headers = {
       'Accept'        : 'application/json',
       'Authorization' : 'AccessKey ' + self.access_key,
-      'User-Agent'    : 'MessageBird/ApiClient/%s Python/%s' % (CLIENT_VERSION, PYTHON_VERSION)
+      'User-Agent'    : 'MessageBird/ApiClient/%s Python/%s' % (CLIENT_VERSION, PYTHON_VERSION),
+      'Content-Type'  : 'application/json'
     }
 
     if len(params) == 0:
       response = requests.get(url, verify=True, headers=headers)
     else:
-      response = requests.post(url, verify=True, headers=headers, data=params)
+      response = requests.post(url, verify=True, headers=headers, data=json.dumps(params))
 
     if response.status_code in self._supported_status_codes:
       json_response = response.json()
