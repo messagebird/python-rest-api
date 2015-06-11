@@ -5,8 +5,6 @@ class Base(object):
     for name, value in data.items():
       if hasattr(self, name):
         setattr(self, name, value)
-      else:
-        raise AttributeError("'%s' object has no attribute '%s'" % (self.__class__.__name__, name))
 
     return self
 
