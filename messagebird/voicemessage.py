@@ -5,6 +5,7 @@ class VoiceMessage(Base):
   def __init__(self):
     self.id                 = None
     self.href               = None
+    self.originator         = None
     self.body               = None
     self.reference          = None
     self.language           = None
