@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name             = 'messagebird',
     packages         = ['messagebird'],
-    version          = '1.0.1',
+    version          = '1.0.2',
     description      = "MessageBird's REST API",
     author           = 'MessageBird',
     author_email     = 'support@messagebird.com',

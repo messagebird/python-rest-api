@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os 
+import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import messagebird
@@ -31,6 +31,7 @@ try:
   print('\nThe following information was returned as a VoiceMessage object:\n')
   print('  id                : %s' % vmsg.id)
   print('  href              : %s' % vmsg.href)
+  print('  originator        : %s' % vmsg.originator)
   print('  body              : %s' % vmsg.body)
   print('  reference         : %s' % vmsg.reference)
   print('  language          : %s' % vmsg.language)
