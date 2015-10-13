@@ -18,9 +18,13 @@ ENDPOINT       = 'https://rest.messagebird.com'
 CLIENT_VERSION = '1.0.2'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 
-class ErrorException(BaseException):
+
+class ErrorException(Exception):
   def __init__(self, errors):
     self.errors = errors
+    message = ' '.join([str(e) for e in self.errors])
+    super(ErrorException, self).__init__(message)
+
 
 class Client(object):
   def __init__(self, access_key):
