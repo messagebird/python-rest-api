@@ -39,6 +39,13 @@ try:
   print('  formats.national      : %s' % lookup.formats.national)
   print('  formats.rfc3966       : %s' % lookup.formats.rfc3966)
 
+  if lookup.hlr is not None:
+    print('  hlr.id                : %s' % lookup.hlr.id)
+    print('  hlr.reference         : %s' % lookup.hlr.reference)
+    print('  hlr.status            : %s' % lookup.hlr.status)
+    print('  hlr.createdDatetime   : %s' % lookup.hlr.createdDatetime)
+    print('  hlr.statusDatetime    : %s' % lookup.hlr.statusDatetime)
+
 except messagebird.client.ErrorException as e:
   print('\nAn error occured while requesting a Lookup object:\n')
 
