@@ -31,7 +31,7 @@ class Client(object):
     self.access_key = access_key
     self._supported_status_codes = [200, 201, 204, 401, 404, 405, 422]
 
-  def request(self, path, params={}):
+  def request(self, path, method='GET', params={}):
     url = urljoin(ENDPOINT, path)
 
     headers = {
@@ -41,8 +41,8 @@ class Client(object):
       'Content-Type'  : 'application/json'
     }
 
-    if len(params) == 0:
-      response = requests.get(url, verify=True, headers=headers)
+    if method == 'GET':
+      response = requests.get(url, verify=True, headers=headers, params=params)
     else:
       response = requests.post(url, verify=True, headers=headers, data=json.dumps(params))
 
@@ -66,7 +66,7 @@ class Client(object):
 
   def hlr_create(self, msisdn, reference):
     """Perform a new HLR lookup."""
-    return HLR().load(self.request('hlr', { 'msisdn' : msisdn, 'reference' : reference }))
+    return HLR().load(self.request('hlr', 'POST', { 'msisdn' : msisdn, 'reference' : reference }))
 
   def message(self, id):
     """Retrieve the information of a specific message."""
@@ -78,7 +78,7 @@ class Client(object):
       recipients = ','.join(recipients)
 
     params.update({ 'originator' : originator, 'body' : body, 'recipients' : recipients })
-    return Message().load(self.request('messages', params))
+    return Message().load(self.request('messages', 'POST', params))
 
   def voice_message(self, id):
     "Retrieve the information of a specific voice message."
@@ -90,4 +90,4 @@ class Client(object):
       recipients = ','.join(recipients)
 
     params.update({ 'recipients' : recipients, 'body' : body })
-    return VoiceMessage().load(self.request('voicemessages', params))
+    return VoiceMessage().load(self.request('voicemessages', 'POST', params))
