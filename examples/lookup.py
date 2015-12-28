@@ -30,9 +30,9 @@ try:
   # Print the object information.
   print('\nThe following information was returned as a Lookup object:\n')
   print('  href                  : %s' % lookup.href)
-  print('  phoneNumber           : %s' % lookup.phoneNumber)
+  print('  phoneNumber           : %d' % lookup.phoneNumber)
   print('  countryCode           : %s' % lookup.countryCode)
-  print('  countryPrefix         : %s' % lookup.countryPrefix)
+  print('  countryPrefix         : %d' % lookup.countryPrefix)
   print('  type                  : %s' % lookup.type)
   print('  formats.e164          : %s' % lookup.formats.e164)
   print('  formats.international : %s' % lookup.formats.international)
@@ -41,6 +41,7 @@ try:
 
   if lookup.hlr is not None:
     print('  hlr.id                : %s' % lookup.hlr.id)
+    print('  hlr.network           : %d' % lookup.hlr.network)
     print('  hlr.reference         : %s' % lookup.hlr.reference)
     print('  hlr.status            : %s' % lookup.hlr.status)
     print('  hlr.createdDatetime   : %s' % lookup.hlr.createdDatetime)
