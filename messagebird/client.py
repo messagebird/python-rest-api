@@ -13,9 +13,10 @@ from messagebird.error        import Error
 from messagebird.hlr          import HLR
 from messagebird.message      import Message
 from messagebird.voicemessage import VoiceMessage
+from messagebird.lookup       import Lookup
 
 ENDPOINT       = 'https://rest.messagebird.com'
-CLIENT_VERSION = '1.0.3'
+CLIENT_VERSION = '1.1.0'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 
 
@@ -91,3 +92,15 @@ class Client(object):
 
     params.update({ 'recipients' : recipients, 'body' : body })
     return VoiceMessage().load(self.request('voicemessages', 'POST', params))
+
+  def lookup(self, phonenumber, params={}):
+    """Do a new lookup."""
+    return Lookup().load(self.request('lookup/' + str(phonenumber), 'GET', params))
+
+  def lookup_hlr(self, phonenumber, params={}):
+    """Retrieve the information of a specific HLR lookup."""
+    return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'GET', params))
+
+  def lookup_hlr_create(self, phonenumber, params={}):
+    """Perform a new HLR lookup."""
+    return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'POST', params))
