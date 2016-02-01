@@ -35,6 +35,7 @@ try:
   print('  network         : %d' % lookup_hlr.network)
   print('  reference       : %s' % lookup_hlr.reference)
   print('  status          : %s' % lookup_hlr.status)
+  print('  details         : %s' % lookup_hlr.details)
   print('  createdDatetime : %s' % lookup_hlr.createdDatetime)
   print('  statusDatetime  : %s\n' % lookup_hlr.statusDatetime)
 

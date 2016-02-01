@@ -8,6 +8,7 @@ class HLR(Base):
     self.network          = None
     self.reference        = None
     self.status           = None
+    self.details          = None
     self._createdDatetime = None
     self._statusDatetime  = None
 
