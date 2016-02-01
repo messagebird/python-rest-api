@@ -16,7 +16,7 @@ from messagebird.voicemessage import VoiceMessage
 from messagebird.lookup       import Lookup
 
 ENDPOINT       = 'https://rest.messagebird.com'
-CLIENT_VERSION = '1.1.0'
+CLIENT_VERSION = '1.1.1'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 
 
