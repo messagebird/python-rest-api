@@ -15,9 +15,9 @@ class Verify(Base):
     self.voice              = None
     self.language           = None
     self.status             = None
+    self.recipient          = None    
     self._createdDatetime   = None
     self._validUntilDatetime= None
-    self._recipient         = None
     self._messages          = None
 
 
@@ -37,14 +37,6 @@ class Verify(Base):
   @validUntilDatetime.setter
   def validUntilDatetime(self, value):
     self._validUntilDatetime = self.value_to_time(value)    
-
-  @property
-  def recipient(self):
-    return self._recipient
-
-  @recipient.setter
-  def recipient(self, value):
-    self._recipient = Recipient().load(value)
 
   @property
   def messages(self):
