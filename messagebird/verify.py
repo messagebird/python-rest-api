@@ -34,7 +34,7 @@ class Verify(Base):
   def validUntilDatetime(self):
     return self._validUntilDatetime
 
-  @svalidUntilDatetime.setter
+  @validUntilDatetime.setter
   def validUntilDatetime(self, value):
     self._validUntilDatetime = self.value_to_time(value)    
 
