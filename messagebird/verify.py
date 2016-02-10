@@ -52,5 +52,5 @@ class Verify(Base):
 
   @messages.setter
   def messages(self, value):
-    value['items'] = [Message().load(r) for r in value['items']]
+    value = [Message().load(r) for r in value]
     self._messages = value 
