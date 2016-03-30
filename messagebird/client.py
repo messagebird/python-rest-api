@@ -14,6 +14,7 @@ from messagebird.hlr          import HLR
 from messagebird.message      import Message
 from messagebird.voicemessage import VoiceMessage
 from messagebird.lookup       import Lookup
+from messagebird.verify       import Verify
 
 ENDPOINT       = 'https://rest.messagebird.com'
 CLIENT_VERSION = '1.1.1'
@@ -104,3 +105,12 @@ class Client(object):
   def lookup_hlr_create(self, phonenumber, params={}):
     """Perform a new HLR lookup."""
     return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'POST', params))
+
+  def verify(self, id, token):
+    """Retrieve the information of a specific message."""
+    return Verify().load(self.request('verify/' + str(id), params={'token': token}))
+
+  def verify_create(self, originator, phonenumber, params={}):
+    """Create a new verification."""
+    params.update({ 'originator' : originator, 'recipient' : phonenumber })
+    return Verify().load(self.request('verify', 'POST', params))    
