@@ -106,11 +106,15 @@ class Client(object):
     """Perform a new HLR lookup."""
     return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'POST', params))
 
-  def verify(self, id, token):
-    """Retrieve the information of a specific message."""
-    return Verify().load(self.request('verify/' + str(id), params={'token': token}))
+  def verify(self, id):
+    """Retrieve the information of a specific verification."""
+    return Verify().load(self.request('verify/' + str(id)))
 
-  def verify_create(self, originator, phonenumber, params={}):
+  def verify_create(self, recipient, params={}):
     """Create a new verification."""
-    params.update({ 'originator' : originator, 'recipient' : phonenumber })
-    return Verify().load(self.request('verify', 'POST', params))    
+    params.update({ 'recipient' : recipient })
+    return Verify().load(self.request('verify', 'POST', params))
+
+  def verify_verify(self, id, token):
+    """Verify the token of a specific verification."""
+    return Verify().load(self.request('verify/' + str(id), params={'token': token}))
