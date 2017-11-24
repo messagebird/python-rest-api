@@ -17,7 +17,7 @@ from messagebird.lookup       import Lookup
 from messagebird.verify       import Verify
 
 ENDPOINT       = 'https://rest.messagebird.com'
-CLIENT_VERSION = '1.2.0'
+CLIENT_VERSION = '1.2.1'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 
 
