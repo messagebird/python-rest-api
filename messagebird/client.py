@@ -17,7 +17,7 @@ from messagebird.lookup       import Lookup
 from messagebird.verify       import Verify
 
 ENDPOINT       = 'https://rest.messagebird.com'
-CLIENT_VERSION = '1.2.0'
+CLIENT_VERSION = '1.2.1'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 
 
@@ -33,7 +33,8 @@ class Client(object):
     self.access_key = access_key
     self._supported_status_codes = [200, 201, 204, 401, 404, 405, 422]
 
-  def request(self, path, method='GET', params={}):
+  def request(self, path, method='GET', params=None):
+    if params is None: params = {}
     url = urljoin(ENDPOINT, path)
 
     headers = {
@@ -74,8 +75,9 @@ class Client(object):
     """Retrieve the information of a specific message."""
     return Message().load(self.request('messages/' + str(id)))
 
-  def message_create(self, originator, recipients, body, params={}):
+  def message_create(self, originator, recipients, body, params=None):
     """Create a new message."""
+    if params is None: params = {}
     if type(recipients) == list:
       recipients = ','.join(recipients)
 
@@ -86,32 +88,37 @@ class Client(object):
     "Retrieve the information of a specific voice message."
     return VoiceMessage().load(self.request('voicemessages/' + str(id)))
 
-  def voice_message_create(self, recipients, body, params={}):
+  def voice_message_create(self, recipients, body, params=None):
     """Create a new voice message."""
+    if params is None: params = {}
     if type(recipients) == list:
       recipients = ','.join(recipients)
 
     params.update({ 'recipients' : recipients, 'body' : body })
     return VoiceMessage().load(self.request('voicemessages', 'POST', params))
 
-  def lookup(self, phonenumber, params={}):
+  def lookup(self, phonenumber, params=None):
     """Do a new lookup."""
+    if params is None: params = {}
     return Lookup().load(self.request('lookup/' + str(phonenumber), 'GET', params))
 
-  def lookup_hlr(self, phonenumber, params={}):
+  def lookup_hlr(self, phonenumber, params=None):
     """Retrieve the information of a specific HLR lookup."""
+    if params is None: params = {}
     return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'GET', params))
 
-  def lookup_hlr_create(self, phonenumber, params={}):
+  def lookup_hlr_create(self, phonenumber, params=None):
     """Perform a new HLR lookup."""
+    if params is None: params = {}
     return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'POST', params))
 
   def verify(self, id):
     """Retrieve the information of a specific verification."""
     return Verify().load(self.request('verify/' + str(id)))
 
-  def verify_create(self, recipient, params={}):
+  def verify_create(self, recipient, params=None):
     """Create a new verification."""
+    if params is None: params = {}
     params.update({ 'recipient' : recipient })
     return Verify().load(self.request('verify', 'POST', params))
 
