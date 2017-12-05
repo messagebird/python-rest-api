@@ -33,7 +33,7 @@ class Client(object):
     self.access_key = access_key
     self._supported_status_codes = [200, 201, 204, 401, 404, 405, 422]
 
-  def request(self, path, method='GET', params=None):
+  def request(self, path, method='GET', params=None, timeout=None):
     if params is None: params = {}
     url = urljoin(ENDPOINT, path)
 
@@ -45,9 +45,9 @@ class Client(object):
     }
 
     if method == 'GET':
-      response = requests.get(url, verify=True, headers=headers, params=params)
+      response = requests.get(url, verify=True, headers=headers, params=params, timeout=timeout)
     else:
-      response = requests.post(url, verify=True, headers=headers, data=json.dumps(params))
+      response = requests.post(url, verify=True, headers=headers, data=json.dumps(params), timeout=timeout)
 
     if response.status_code in self._supported_status_codes:
       json_response = response.json()
@@ -59,69 +59,69 @@ class Client(object):
 
     return json_response
 
-  def balance(self):
+  def balance(self, timeout=None):
     """Retrieve your balance."""
-    return Balance().load(self.request('balance'))
+    return Balance().load(self.request('balance', timeout=timeout))
 
   def hlr(self, id):
     """Retrieve the information of a specific HLR lookup."""
-    return HLR().load(self.request('hlr/' + str(id)))
+    return HLR().load(self.request('hlr/' + str(id), timeout=timeout))
 
-  def hlr_create(self, msisdn, reference):
+  def hlr_create(self, msisdn, reference, timeout=None):
     """Perform a new HLR lookup."""
-    return HLR().load(self.request('hlr', 'POST', { 'msisdn' : msisdn, 'reference' : reference }))
+    return HLR().load(self.request('hlr', 'POST', { 'msisdn' : msisdn, 'reference' : reference }, timeout=timeout))
 
-  def message(self, id):
+  def message(self, id, timeout=None):
     """Retrieve the information of a specific message."""
-    return Message().load(self.request('messages/' + str(id)))
+    return Message().load(self.request('messages/' + str(id), timeout=timeout))
 
-  def message_create(self, originator, recipients, body, params=None):
+  def message_create(self, originator, recipients, body, params=None, timeout=None):
     """Create a new message."""
     if params is None: params = {}
     if type(recipients) == list:
       recipients = ','.join(recipients)
 
     params.update({ 'originator' : originator, 'body' : body, 'recipients' : recipients })
-    return Message().load(self.request('messages', 'POST', params))
+    return Message().load(self.request('messages', 'POST', params, timeout=timeout))
 
-  def voice_message(self, id):
+  def voice_message(self, id, timeout=None):
     "Retrieve the information of a specific voice message."
-    return VoiceMessage().load(self.request('voicemessages/' + str(id)))
+    return VoiceMessage().load(self.request('voicemessages/' + str(id), timeout=timeout))
 
-  def voice_message_create(self, recipients, body, params=None):
+  def voice_message_create(self, recipients, body, params=None, timeout=None):
     """Create a new voice message."""
     if params is None: params = {}
     if type(recipients) == list:
       recipients = ','.join(recipients)
 
     params.update({ 'recipients' : recipients, 'body' : body })
-    return VoiceMessage().load(self.request('voicemessages', 'POST', params))
+    return VoiceMessage().load(self.request('voicemessages', 'POST', params, timeout=timeout))
 
-  def lookup(self, phonenumber, params=None):
+  def lookup(self, phonenumber, params=None, timeout=None):
     """Do a new lookup."""
     if params is None: params = {}
-    return Lookup().load(self.request('lookup/' + str(phonenumber), 'GET', params))
+    return Lookup().load(self.request('lookup/' + str(phonenumber), 'GET', params, timeout=timeout))
 
-  def lookup_hlr(self, phonenumber, params=None):
+  def lookup_hlr(self, phonenumber, params=None, timeout=None):
     """Retrieve the information of a specific HLR lookup."""
     if params is None: params = {}
-    return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'GET', params))
+    return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'GET', params, timeout=timeout))
 
-  def lookup_hlr_create(self, phonenumber, params=None):
+  def lookup_hlr_create(self, phonenumber, params=None, timeout=None):
     """Perform a new HLR lookup."""
     if params is None: params = {}
-    return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'POST', params))
+    return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'POST', params, timeout=timeout))
 
-  def verify(self, id):
+  def verify(self, id, timeout=None):
     """Retrieve the information of a specific verification."""
-    return Verify().load(self.request('verify/' + str(id)))
+    return Verify().load(self.request('verify/' + str(id), timeout=timeout))
 
-  def verify_create(self, recipient, params=None):
+  def verify_create(self, recipient, params=None, timeout=None):
     """Create a new verification."""
     if params is None: params = {}
     params.update({ 'recipient' : recipient })
-    return Verify().load(self.request('verify', 'POST', params))
+    return Verify().load(self.request('verify', 'POST', params, timeout=timeout))
 
-  def verify_verify(self, id, token):
+  def verify_verify(self, id, token, timeout=None):
     """Verify the token of a specific verification."""
-    return Verify().load(self.request('verify/' + str(id), params={'token': token}))
+    return Verify().load(self.request('verify/' + str(id), params={'token': token}, timeout=timeout))
