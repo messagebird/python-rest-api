@@ -1,16 +1,11 @@
 import sys
 import json
-import requests
-
-try:
-  from urllib.parse import urljoin
-except ImportError:
-  from urlparse import urljoin
 
 from messagebird.base         import Base
 from messagebird.balance      import Balance
 from messagebird.error        import Error
 from messagebird.hlr          import HLR
+from messagebird.http_client  import HttpClient
 from messagebird.message      import Message
 from messagebird.voicemessage import VoiceMessage
 from messagebird.lookup       import Lookup
@@ -19,6 +14,7 @@ from messagebird.verify       import Verify
 ENDPOINT       = 'https://rest.messagebird.com'
 CLIENT_VERSION = '1.2.1'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
+USER_AGENT = 'MessageBird/ApiClient/%s Python/%s' % (CLIENT_VERSION, PYTHON_VERSION)
 
 
 class ErrorException(Exception):
@@ -29,35 +25,23 @@ class ErrorException(Exception):
 
 
 class Client(object):
-  def __init__(self, access_key):
+  def __init__(self, access_key, http_client=None):
     self.access_key = access_key
-    self._supported_status_codes = [200, 201, 204, 401, 404, 405, 422]
+
+    if http_client is None:
+      self.http_client = HttpClient(ENDPOINT, access_key, USER_AGENT)
+    else:
+      self.http_client = http_client
 
   def request(self, path, method='GET', params=None):
-    if params is None: params = {}
-    url = urljoin(ENDPOINT, path)
+    """Builds a request, gets a response and decodes it."""
+    response_text = self.http_client.request(path, method, params)
+    response_json = json.loads(response_text)
 
-    headers = {
-      'Accept'        : 'application/json',
-      'Authorization' : 'AccessKey ' + self.access_key,
-      'User-Agent'    : 'MessageBird/ApiClient/%s Python/%s' % (CLIENT_VERSION, PYTHON_VERSION),
-      'Content-Type'  : 'application/json'
-    }
+    if 'errors' in response_json:
+      raise(ErrorException([Error().load(e) for e in response_json['errors']]))
 
-    if method == 'GET':
-      response = requests.get(url, verify=True, headers=headers, params=params)
-    else:
-      response = requests.post(url, verify=True, headers=headers, data=json.dumps(params))
-
-    if response.status_code in self._supported_status_codes:
-      json_response = response.json()
-    else:
-      response.raise_for_status()
-
-    if 'errors' in json_response:
-      raise(ErrorException([Error().load(e) for e in json_response['errors']]))
-
-    return json_response
+    return response_json
 
   def balance(self):
     """Retrieve your balance."""
