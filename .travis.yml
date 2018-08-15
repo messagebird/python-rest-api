@@ -8,6 +8,7 @@ python:
   - 'nightly'
 install:
   - pip install mock==2.0
+  - pip install requests
 script:
   - python -m unittest discover -s tests/ -p test_*.py -v
 matrix:
