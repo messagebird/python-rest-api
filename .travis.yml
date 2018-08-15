@@ -1,0 +1,13 @@
+language: python
+python:
+  - 'pypy2.7'
+  - 'pypy3.5'
+  - '2.7'
+  - '3.3'
+  - '3.7'
+  - 'nightly'
+install:
+  - pip install mock==2.0
+matrix:
+  allow_failures:
+  - python: 'nightly'
