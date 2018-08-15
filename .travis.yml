@@ -14,3 +14,4 @@ script:
 matrix:
   allow_failures:
   - python: 'nightly'
+  - python: 'pypy2.7'
