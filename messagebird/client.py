@@ -142,7 +142,7 @@ class Client(object):
     self.request_plain_text('contacts/' + str(id), 'DELETE')
 
   def contact_update(self, id, params=None):
-    self.request('contacts/' + str(id), 'PATCH', params)
+    self.request_plain_text('contacts/' + str(id), 'PATCH', params)
 
   def contact_list(self, limit=0, offset=0):
     query = 'limit='+str(limit)+'&offset='+str(offset)

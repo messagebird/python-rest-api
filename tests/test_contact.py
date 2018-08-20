@@ -51,7 +51,7 @@ class TestContact(unittest.TestCase):
 
     def test_contact_update(self):
         http_client = Mock()
-        http_client.request.return_value = '{}'
+        http_client.request.return_value = ''
 
         Client('', http_client).contact_update('contact-id', {'msisdn': 31687654321, 'custom4': 'fourth'})
 
