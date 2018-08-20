@@ -1,1 +1,1 @@
-from messagebird.client import Client
+from messagebird.client import Client, ErrorException
