@@ -12,4 +12,9 @@ setup(
     keywords         = ['messagebird', 'sms'],
     install_requires = ['requests>=2.4.1'],
     license          = 'BSD-2-Clause',
+    classifiers      = [
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
+    ],
 )
