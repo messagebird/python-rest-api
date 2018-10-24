@@ -2,7 +2,7 @@ from datetime import datetime
 
 class Base(object):
   def load(self, data):
-    for name, value in data.items():
+    for name, value in list(data.items()):
       if hasattr(self, name):
         setattr(self, name, value)
 
