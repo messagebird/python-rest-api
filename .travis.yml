@@ -1,0 +1,17 @@
+language: python
+python:
+  - 'pypy2.7'
+  - 'pypy3.5'
+  - '2.7'
+  - '3.3'
+  - '3.6'
+  - 'nightly'
+install:
+  - pip install mock==2.0
+  - pip install requests
+script:
+  - python -m unittest discover -s tests/ -p test_*.py -v
+matrix:
+  allow_failures:
+  - python: 'nightly'
+  - python: 'pypy2.7'
