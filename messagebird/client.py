@@ -3,6 +3,7 @@ import json
 
 from messagebird.base         import Base
 from messagebird.balance      import Balance
+from messagebird.contact      import Contact, ContactList
 from messagebird.error        import Error
 from messagebird.hlr          import HLR
 from messagebird.http_client  import HttpClient
@@ -42,6 +43,24 @@ class Client(object):
       raise(ErrorException([Error().load(e) for e in response_json['errors']]))
 
     return response_json
+
+  def request_plain_text(self, path, method='GET', params=None):
+    """Builds a request, gets a response and returns the body."""
+    response_text = self.http_client.request(path, method, params)
+
+    try:
+      # Try to decode the response to JSON to see if the API returned any
+      # errors.
+      response_json = json.loads(response_text)
+
+      if 'errors' in response_json:
+        raise (ErrorException([Error().load(e) for e in response_json['errors']]))
+    except ValueError:
+      # Do nothing: json.loads throws if the input string is not valid JSON,
+      # which is expected. We'll just return the response body below.
+      pass
+
+    return response_text
 
   def balance(self):
     """Retrieve your balance."""
@@ -109,3 +128,22 @@ class Client(object):
   def verify_verify(self, id, token):
     """Verify the token of a specific verification."""
     return Verify().load(self.request('verify/' + str(id), params={'token': token}))
+
+  def contact(self, id):
+    """Retrieve the information of a specific contact."""
+    return Contact().load(self.request('contacts/' + str(id)))
+
+  def contact_create(self, phonenumber, params=None):
+    if params is None: params = {}
+    params.update({'msisdn': phonenumber})
+    return Contact().load(self.request('contacts', 'POST', params))
+
+  def contact_delete(self, id):
+    self.request_plain_text('contacts/' + str(id), 'DELETE')
+
+  def contact_update(self, id, params=None):
+    self.request_plain_text('contacts/' + str(id), 'PATCH', params)
+
+  def contact_list(self, limit=0, offset=0):
+    query = 'limit='+str(limit)+'&offset='+str(offset)
+    return ContactList().load(self.request('contacts?'+query, 'GET', None))
