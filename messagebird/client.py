@@ -5,6 +5,7 @@ from messagebird.base         import Base
 from messagebird.balance      import Balance
 from messagebird.contact      import Contact, ContactList
 from messagebird.error        import Error
+from messagebird.group        import ContactReference, Group, GroupList
 from messagebird.hlr          import HLR
 from messagebird.http_client  import HttpClient
 from messagebird.message      import Message
@@ -147,3 +148,36 @@ class Client(object):
   def contact_list(self, limit=0, offset=0):
     query = 'limit='+str(limit)+'&offset='+str(offset)
     return ContactList().load(self.request('contacts?'+query, 'GET', None))
+
+  def group(self, id):
+    return Group().load(self.request('groups/' + str(id), 'GET', None))
+
+  def group_create(self, name, params=None):
+    if params is None: params = {}
+    params.update({'name': name})
+    return Group().load(self.request('groups', 'POST', params))
+
+  def group_delete(self, id):
+    self.request_plain_text('groups/' + str(id), 'DELETE', None)
+
+  def group_list(self, limit=0, offset=0):
+    query = 'limit=' + str(limit) + '&offset=' + str(offset)
+    return GroupList().load(self.request('groups?'+query, 'GET', None))
+
+  def group_update(self, id, name, params=None):
+    if params is None: params = {}
+    params.update({'name': name})
+    self.request_plain_text('groups/' + str(id), 'PATCH', params)
+
+  def group_add_contacts(self, groupId, contactIds):
+    query = self.__group_add_contacts_query(contactIds)
+    self.request_plain_text('groups/' + str(groupId) + '?' + query, 'PUT', None)
+
+  def __group_add_contacts_query(self, contactIds):
+    # __group_add_contacts_query gets a query string to add contacts to a
+    # group. The expected format is ids[]=first-contact&ids[]=second-contact.
+    # See: https://developers.messagebird.com/docs/groups#add-contact-to-group.
+    return '&'.join('ids[]=' + str(id) for id in contactIds)
+
+  def group_remove_contact(self, groupId, contactId):
+    self.request_plain_text('groups/' + str(groupId) + '/contacts/' + str(contactId), 'DELETE', None)
