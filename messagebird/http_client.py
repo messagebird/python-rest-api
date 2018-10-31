@@ -1,3 +1,4 @@
+import json
 import requests
 
 try:
@@ -28,10 +29,18 @@ class HttpClient(object):
             'Content-Type': 'application/json'
         }
 
-        if method == 'GET':
+        if method == 'DELETE':
+            response = requests.delete(url, verify=True, headers=headers, data=json.dumps(params))
+        elif method == 'GET':
             response = requests.get(url, verify=True, headers=headers, params=params)
-        else:
+        elif method == 'PATCH':
+            response = requests.patch(url, verify=True, headers=headers, data=json.dumps(params))
+        elif method == 'POST':
             response = requests.post(url, verify=True, headers=headers, data=json.dumps(params))
+        elif method == 'PUT':
+            response = requests.put(url, verify=True, headers=headers, data=json.dumps(params))
+        else:
+            raise ValueError(str(method) + ' is not a supported HTTP method')
 
         if response.status_code in self.__supported_status_codes:
             response_text = response.text
