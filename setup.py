@@ -1,6 +1,12 @@
 from os import path
 from setuptools import setup
 
+def get_description():
+    working_directory = path.abspath(path.dirname(__file__))
+    readme_path = path.join(working_directory, 'README.md')
+    with open(readme_path, encoding='utf-8') as f:
+        return (f.read(), 'text/markdown')
+
 description, description_content_type = get_description()
 
 setup(
@@ -11,7 +17,7 @@ setup(
     author                        = 'MessageBird',
     author_email                  = 'support@messagebird.com',
     long_description              = description,
-    long_description_content_type = description_content_type
+    long_description_content_type = description_content_type,
     url                           = 'https://github.com/messagebird/python-rest-api',
     download_url                  = 'https://github.com/messagebird/python-rest-api/tarball/1.3.1',
     keywords                      = ['messagebird', 'sms'],
@@ -23,9 +29,3 @@ setup(
         'Programming Language :: Python :: 3',
     ],
 )
-
-def get_description():
-    working_directory = path.abspath(path.dirname(__file__))
-    readme_path = path.join(working_directory, 'README.md')
-    with open(readme_path, encoding='utf-8') as f:
-        return (f.read(), 'text/markdown')
