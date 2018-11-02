@@ -145,7 +145,7 @@ class Client(object):
   def contact_update(self, id, params=None):
     self.request_plain_text('contacts/' + str(id), 'PATCH', params)
 
-  def contact_list(self, limit=0, offset=0):
+  def contact_list(self, limit=10, offset=0):
     query = 'limit='+str(limit)+'&offset='+str(offset)
     return ContactList().load(self.request('contacts?'+query, 'GET', None))
 
@@ -160,7 +160,7 @@ class Client(object):
   def group_delete(self, id):
     self.request_plain_text('groups/' + str(id), 'DELETE', None)
 
-  def group_list(self, limit=0, offset=0):
+  def group_list(self, limit=10, offset=0):
     query = 'limit=' + str(limit) + '&offset=' + str(offset)
     return GroupList().load(self.request('groups?'+query, 'GET', None))
 
