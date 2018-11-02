@@ -31,7 +31,7 @@ try:
   print('  scheduledDatetime : %s' % msg.scheduledDatetime)
   print('  createdDatetime   : %s' % msg.createdDatetime)
   print('  recipients        : %s\n' % msg.recipients)
-  print
+  print()
 
 except messagebird.client.ErrorException as e:
   print('\nAn error occured while requesting a Message object:\n')
