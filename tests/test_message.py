@@ -28,3 +28,11 @@ class TestMessage(unittest.TestCase):
         Client('', http_client).message_create('MessageBird', ['31612345678', '31687654321'], 'Hello World', {'datacoding': 'unicode'})
 
         http_client.request.assert_called_once_with('messages', 'POST', {'datacoding': 'unicode', 'originator': 'MessageBird', 'body': 'Hello World', 'recipients': '31612345678,31687654321' })
+
+    def test_message_delete(self):
+        http_client = Mock()
+        http_client.request.return_value = '{}'
+
+        Client('', http_client).message_delete('message-id')
+
+        http_client.request.assert_called_once_with('messages/message-id', 'DELETE', None)

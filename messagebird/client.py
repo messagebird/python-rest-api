@@ -88,6 +88,10 @@ class Client(object):
     params.update({ 'originator' : originator, 'body' : body, 'recipients' : recipients })
     return Message().load(self.request('messages', 'POST', params))
 
+  def message_delete(self, id):
+    """Delete a message from the dashboard."""
+    return Message().load(self.request('messages/' + str(id), 'DELETE'))
+
   def voice_message(self, id):
     "Retrieve the information of a specific voice message."
     return VoiceMessage().load(self.request('voicemessages/' + str(id)))
