@@ -90,7 +90,7 @@ class Client(object):
 
   def message_delete(self, id):
     """Delete a message from the dashboard."""
-    return Message().load(self.request('messages/' + str(id), 'DELETE'))
+    self.request_plain_text('messages/' + str(id), 'DELETE')
 
   def voice_message(self, id):
     "Retrieve the information of a specific voice message."
