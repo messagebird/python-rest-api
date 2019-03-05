@@ -1,5 +1,5 @@
 import unittest
-from messagebird import Client
+from messagebird import Client, ErrorException
 
 try:
     from unittest.mock import Mock
@@ -28,3 +28,20 @@ class TestMessage(unittest.TestCase):
         Client('', http_client).message_create('MessageBird', ['31612345678', '31687654321'], 'Hello World', {'datacoding': 'unicode'})
 
         http_client.request.assert_called_once_with('messages', 'POST', {'datacoding': 'unicode', 'originator': 'MessageBird', 'body': 'Hello World', 'recipients': '31612345678,31687654321' })
+
+    def test_message_delete(self):
+        http_client = Mock()
+        http_client.request.return_value = '{}'
+
+        Client('', http_client).message_delete('message-id')
+
+        http_client.request.assert_called_once_with('messages/message-id', 'DELETE', None)
+
+    def test_message_delete_invalid(self):
+        http_client = Mock()
+        http_client.request.return_value = '{"errors": [{"code": 20, "description": "message not found", "parameter": null}]}'
+
+        with self.assertRaises(ErrorException):
+            Client('', http_client).message_delete('non-existent-message-id')
+
+        http_client.request.assert_called_once_with('messages/non-existent-message-id', 'DELETE', None)
