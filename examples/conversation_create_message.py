@@ -49,8 +49,8 @@ try:
   print('  content      : %s' % msg.content)
   print('  status       : %s' % msg.status)
   print('  type         : %s' % msg.type)
-  print('  created date : %s' % msg.createdDateTime)
-  print('  updated date : %s' % msg.updatedDateTime)
+  print('  created date : %s' % msg.createdDatetime)
+  print('  updated date : %s' % msg.updatedDatetime)
 
 except messagebird.client.ErrorException as e:
   print('\nAn error occured while requesting a Message object:\n')

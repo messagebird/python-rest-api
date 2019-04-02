@@ -23,6 +23,14 @@ class TestConversationMessage(unittest.TestCase):
 
         http_client.request.assert_called_once_with('conversations/54567/messages', 'GET', None)
 
+    def test_conversation_read_message(self):
+        http_client = Mock()
+        http_client.request.return_value = '{}'
+
+        ConversationClient('', http_client).read_message('message-id')
+
+        http_client.request.assert_called_once_with('messages/message-id', 'GET', None)
+
     def test_create_message(self):
         http_client = Mock()
         http_client.request.return_value = '{"id":"id","conversationId":"conversation-id","channelId":"channel-id","type":"text","content":{"text":"Example Text Message"},"direction":"sent","status":"pending","createdDatetime":"2019-04-02T11:57:52.142641447Z","updatedDatetime":"2019-04-02T11:57:53.142641447Z"}'
