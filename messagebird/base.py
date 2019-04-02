@@ -8,6 +8,6 @@ class Base(object):
 
     return self
 
-  def value_to_time(self, value):
+  def value_to_time(self, value, format='%Y-%m-%dT%H:%M:%S+00:00'):
     if value != None:
-      return datetime.strptime(value, '%Y-%m-%dT%H:%M:%S+00:00')
+      return datetime.strptime(value, format)
