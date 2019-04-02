@@ -2,7 +2,7 @@ from messagebird.base import Base
 from messagebird.client import USER_AGENT, Client
 from messagebird.http_client import HttpClient
 from messagebird.conversation_message import ConversationMessage, ConversationMessageList
-from messagebird.conversation import Conversation
+from messagebird.conversation import Conversation, ConversationList
 
 try:
     from urllib.parse import urlencode
@@ -25,8 +25,12 @@ class ConversationClient(Base):
 
         self.client = Client(access_key, http_client)
 
-    def list(self):
-        return self.access_key
+    def list(self, options=None):
+        uri = CONVERSATION_PATH
+        if options is not None:
+            uri += '?' + urlencode(options)
+
+        return ConversationList().load(self.client.request(uri))
 
     def start(self, start_request):
         uri = CONVERSATION_PATH + '/start'

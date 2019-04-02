@@ -30,14 +30,14 @@ try:
     itemIds.append(msgItem.id)
 
   # Print the object information.
-  print('\nThe following information was returned as a Conversation List object:\n')
+  print('\nThe following information was returned as a Conversation Message List object:\n')
   print('  message ids  : %s' % itemIds)
   print('  offset       : %s' % msg.offset)
-  print('  limit        : %s', msg.limit)
-  print('  totalCount   : %s', msg.totalCount)
+  print('  limit        : %s' % msg.limit)
+  print('  totalCount   : %s' % msg.totalCount)
 
 except messagebird.client.ErrorException as e:
-  print('\nAn error occured while requesting a Message object:\n')
+  print('\nAn error occured while requesting a Conversation Message List object:\n')
 
   for error in e.errors:
     print('  code        : %d' % error.code)

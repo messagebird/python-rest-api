@@ -34,3 +34,11 @@ class TestConversation(unittest.TestCase):
         self.assertEqual(datetime(2019, 4, 2, 8, 19, 37), msg.contact.createdDatetime)
         self.assertEqual(datetime(2019, 4, 2, 8, 19, 38), msg.contact.updatedDatetime)
         self.assertEqual('channel-name', msg.channels[0].name)
+
+    def test_conversation_list(self):
+        http_client = Mock()
+        http_client.request.return_value = '{}'
+
+        ConversationClient('', http_client).list()
+
+        http_client.request.assert_called_once_with('conversations', 'GET', None)

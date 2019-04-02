@@ -64,3 +64,23 @@ class Conversation(Base):
     @lastReceivedDateTime.setter
     def lastReceivedDateTime(self, value):
         self._lastReceivedDateTime = self.value_to_time(value)
+
+
+class ConversationList(Base):
+    def __init__(self):
+        self.offset = None
+        self.limit = None
+        self.count = None
+        self.totalCount = None
+        self._items = None
+
+    @property
+    def items(self):
+        return self._items
+
+    @items.setter
+    def items(self, value):
+        if isinstance(value, list):
+            self._items = []
+            for item in value:
+                self._items.append(Conversation().load(item))
