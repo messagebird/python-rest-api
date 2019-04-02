@@ -47,7 +47,7 @@ class ConversationClient(Base):
         return ConversationMessageList().load(self.client.request(uri))
 
     def create_message(self, conversation_id, message_create_request):
-        uri = str(conversation_id) + '/' + CONVERSATION_MESSAGES_PATH
+        uri = CONVERSATION_PATH + '/' + str(conversation_id) + '/' + CONVERSATION_MESSAGES_PATH
         return ConversationMessage().load(self.client.request(uri, 'POST', message_create_request))
 
     def read_message(self, message_id):

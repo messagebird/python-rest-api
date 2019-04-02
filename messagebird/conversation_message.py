@@ -19,8 +19,31 @@ class ConversationMessage(Base):
         self.status = None
         self.type = None
         self.content = None
-        self.createdDateTime = None
-        self.updatedDateTime = None
+        self._createdDatetime = None
+        self._updatedDatetime = None
+
+    @property
+    def createdDatetime(self):
+        return self._createdDatetime
+
+    @createdDatetime.setter
+    def createdDatetime(self, value):
+        if value is not None:
+            value = self.strip_nanoseconds_from_date(value)
+            self._createdDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
+
+    @property
+    def updatedDatetime(self):
+        return self._updatedDatetime
+
+    @updatedDatetime.setter
+    def updatedDatetime(self, value):
+        if value is not None:
+            value = self.strip_nanoseconds_from_date(value)
+            self._updatedDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
+
+    def strip_nanoseconds_from_date(self, value):
+         return value[:-11] + value[-1:]
 
 
 class ConversationMessageList(Base):

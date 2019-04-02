@@ -22,3 +22,22 @@ class TestConversationMessage(unittest.TestCase):
         self.assertEqual('54445534', msg.items[0].id)
 
         http_client.request.assert_called_once_with('conversations/54567/messages', 'GET', None)
+
+    def test_create_message(self):
+        http_client = Mock()
+        http_client.request.return_value = '{"id":"id","conversationId":"conversation-id","channelId":"channel-id","type":"text","content":{"text":"Example Text Message"},"direction":"sent","status":"pending","createdDatetime":"2019-04-02T11:57:52.142641447Z","updatedDatetime":"2019-04-02T11:57:53.142641447Z"}'
+
+        data = {
+            'channelId':  1234,
+            'type': 'text',
+            'content': {
+                'text': 'this is a message'
+            },
+        }
+
+        msg = ConversationClient('', http_client).create_message('conversation-id', data)
+
+        self.assertEqual(datetime(2019, 4, 2, 11, 57, 53), msg.updatedDatetime)
+        self.assertEqual(datetime(2019, 4, 2, 11, 57, 52), msg.createdDatetime)
+
+        http_client.request.assert_called_once_with('conversations/conversation-id/messages', 'POST', data)
