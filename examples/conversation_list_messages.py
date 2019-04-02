@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import messagebird
 
 # ACCESS_KEY = ''
-# MESSAGE_ID = ''
+# CONVERSATION_ID = ''
 
 try:
   ACCESS_KEY
@@ -25,8 +25,16 @@ try:
 
   msg = client.list_messages(CONVERSATION_ID)
 
+  itemIds = []
+  for msgItem in msg.items:
+    itemIds.append(msgItem.id)
+
   # Print the object information.
-  print(msg)
+  print('\nThe following information was returned as a Conversation List object:\n')
+  print('  message ids  : %s' % itemIds)
+  print('  offset       : %s' % msg.offset)
+  print('  limit        : %s', msg.limit)
+  print('  totalCount   : %s', msg.totalCount)
 
 except messagebird.client.ErrorException as e:
   print('\nAn error occured while requesting a Message object:\n')

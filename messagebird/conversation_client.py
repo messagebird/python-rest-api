@@ -41,7 +41,7 @@ class ConversationClient(Base):
     def list_messages(self, conversation_id, options=None):
         uri = CONVERSATION_PATH + '/' + str(conversation_id) + '/' + CONVERSATION_MESSAGES_PATH
 
-        if options is None:
+        if options is not None:
             uri += '?' + urlencode(options)
 
         return ConversationMessageList().load(self.client.request(uri))

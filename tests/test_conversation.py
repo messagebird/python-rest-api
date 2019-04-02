@@ -9,6 +9,7 @@ except ImportError:
     # before.
     from mock import Mock
 
+
 class TestConversation(unittest.TestCase):
 
     def test_conversation_start(self):

@@ -30,12 +30,17 @@ class ConversationMessageList(Base):
         self.limit = None
         self.count = None
         self.totalCount = None
-        self.items = None
+        self._items = None
 
+    @property
+    def items(self):
+        return self._items
 
-class ConversationMessageCreateRequest(Base):
+    @items.setter
+    def items(self, value):
+        items = []
+        if isinstance(value, list):
+            for item in value:
+                items.append(ConversationMessage().load(item))
 
-    def __init__(self):
-        self.channelId = None
-        self.content = None
-        self.type = None
+        self._items = items
