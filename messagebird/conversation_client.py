@@ -40,7 +40,8 @@ class ConversationClient(Base):
         return self.access_key
 
     def read(self, id):
-        return self.access_key
+        uri = CONVERSATION_PATH + '/' + str(id)
+        return Conversation().load(self.client.request(uri))
 
     def list_messages(self, conversation_id, options=None):
         uri = CONVERSATION_PATH + '/' + str(conversation_id) + '/' + CONVERSATION_MESSAGES_PATH

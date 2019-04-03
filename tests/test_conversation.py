@@ -42,3 +42,19 @@ class TestConversation(unittest.TestCase):
         ConversationClient('', http_client).list()
 
         http_client.request.assert_called_once_with('conversations', 'GET', None)
+
+    def test_conversation_read(self):
+        http_client = Mock()
+        http_client.request.return_value = '{"id":"57b96dbe0fda40f0a814f5e3268c30a9","contactId":"8846d44229094c20813cf9eea596e680","contact":{"id":"8846d44229094c20813cf9eea596e680","href":"https://contacts.messagebird.com/v2/contacts/8846d44229094c20813cf9eea596e680","msisdn":31617110163,"displayName":"31617110163","firstName":"","lastName":"","customDetails":{},"attributes":{},"createdDatetime":"2019-04-02T08:54:39Z","updatedDatetime":"2019-04-02T08:54:40Z"},"channels":[{"id":"c0dae31e440145e094c4708b7d908842","name":"test","platformId":"sms","status":"active","createdDatetime":"2019-04-01T15:25:12Z","updatedDatetime":"0001-01-01T00:00:00Z"}],"status":"active","createdDatetime":"2019-04-02T08:54:38Z","updatedDatetime":"2019-04-02T14:24:09.192202886Z","lastReceivedDatetime":"2019-04-02T14:24:09.14826339Z","lastUsedChannelId":"c0dae31e440145e094c4708b7d908842","messages":{"totalCount":2,"href":"https://conversations.messagebird.com/v1/conversations/57b96dbe0fda40f0a814f5e3268c30a9/messages"}}'
+
+        conversation = ConversationClient('', http_client).read('conversation-id')
+
+        http_client.request.assert_called_once_with('conversations/conversation-id', 'GET', None)
+
+        self.assertEqual('57b96dbe0fda40f0a814f5e3268c30a9', conversation.id)
+        self.assertEqual(datetime(2019, 4, 2, 8, 54, 38), conversation.createdDatetime)
+        self.assertEqual(datetime(2019, 4, 2, 14, 24, 9), conversation.updatedDatetime)
+        self.assertEqual(datetime(2019, 4, 2, 14, 24), conversation.lastReceivedDatetime)
+        self.assertEqual('8846d44229094c20813cf9eea596e680', conversation.contact.id)
+        self.assertEqual('c0dae31e440145e094c4708b7d908842', conversation.channels[0].id)
+        self.assertEqual(2, conversation.messages.totalCount)

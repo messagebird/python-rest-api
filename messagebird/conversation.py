@@ -1,6 +1,7 @@
 from messagebird.base import Base
 from messagebird.conversation_contact import ConversationContact
 from messagebird.conversation_channel import Channel
+from messagebird.conversation_message import ConversationMessageReference
 
 CONVERSATION_STATUS_ACTIVE = "active"
 CONVERSATION_STATUS_ARCHIVED = "archived"
@@ -13,12 +14,12 @@ class Conversation(Base):
         self.contactId = None
         self._contact = None
         self.lastUsedChannelId = None
-        self.channels = None
-        self.messages = None
+        self._channels = None
+        self._messages = None
         self.status = None
-        self._createdDateTime = None
-        self._updatedDateTime = None
-        self._lastReceivedDateTime = None
+        self._createdDatetime = None
+        self._updatedDatetime = None
+        self._lastReceivedDatetime = None
 
     @property
     def contact(self):
@@ -27,6 +28,14 @@ class Conversation(Base):
     @contact.setter
     def contact(self, value):
         self._contact = ConversationContact().load(value)
+
+    @property
+    def messages(self):
+        return self._messages
+
+    @messages.setter
+    def messages(self, value):
+        self._messages = ConversationMessageReference().load(value)
 
     @property
     def channels(self):
@@ -42,28 +51,28 @@ class Conversation(Base):
             self._channels = value
 
     @property
-    def createdDateTime(self):
-        return self._createdDateTime
+    def createdDatetime(self):
+        return self._createdDatetime
 
-    @createdDateTime.setter
-    def createdDateTime(self, value):
-        self._createdDateTime = self.value_to_time(value)
-
-    @property
-    def updatedDateTime(self):
-        return self._updatedDateTime
-
-    @updatedDateTime.setter
-    def updatedDateTime(self, value):
-        self._updatedDateTime = self.value_to_time(value)
+    @createdDatetime.setter
+    def createdDatetime(self, value):
+        self._createdDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
 
     @property
-    def lastReceivedDateTime(self):
-        return self._lastReceivedDateTime
+    def updatedDatetime(self):
+        return self._updatedDatetime
 
-    @lastReceivedDateTime.setter
-    def lastReceivedDateTime(self, value):
-        self._lastReceivedDateTime = self.value_to_time(value)
+    @updatedDatetime.setter
+    def updatedDatetime(self, value):
+        self._updatedDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
+
+    @property
+    def lastReceivedDatetime(self):
+        return self._lastReceivedDatetime
+
+    @lastReceivedDatetime.setter
+    def lastReceivedDatetime(self, value):
+        self._lastReceivedDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
 
 
 class ConversationList(Base):
