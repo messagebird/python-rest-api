@@ -58,3 +58,14 @@ class TestConversation(unittest.TestCase):
         self.assertEqual('8846d44229094c20813cf9eea596e680', conversation.contact.id)
         self.assertEqual('c0dae31e440145e094c4708b7d908842', conversation.channels[0].id)
         self.assertEqual(2, conversation.messages.totalCount)
+
+    def test_conversation_update(self):
+        http_client = Mock()
+        http_client.request.return_value = '{"id":"07e823fdb36a462fb5e187d6d7b96493","contactId":"459a35432b0c4195abbdae353eb19359","status":"archived","createdDatetime":"2019-04-02T08:19:37Z","updatedDatetime":"2019-04-03T07:22:58.965421128Z","lastReceivedDatetime":"2019-04-02T12:02:22.707634424Z","lastUsedChannelId":"c0dae31e440145e094c4708b7d908842","messages":{"totalCount":16,"href":"https://conversations.messagebird.com/v1/conversations/07e823fdb36a462fb5e187d6d7b96493/messages"}}'
+
+        updatedRequestData = {'status': 'archived'}
+
+        conversation = ConversationClient('', http_client).update('conversation-id', updatedRequestData)
+
+        http_client.request.assert_called_once_with('conversations/conversation-id', 'PATCH', updatedRequestData)
+        self.assertEqual('archived', conversation.status)

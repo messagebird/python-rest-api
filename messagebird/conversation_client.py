@@ -36,8 +36,9 @@ class ConversationClient(Base):
         uri = CONVERSATION_PATH + '/start'
         return Conversation().load(self.client.request(uri, 'POST', start_request))
 
-    def update(self, id):
-        return self.access_key
+    def update(self, id, update_request):
+        uri = CONVERSATION_PATH + '/' + str(id)
+        return Conversation().load(self.client.request(uri, 'PATCH', update_request))
 
     def read(self, id):
         uri = CONVERSATION_PATH + '/' + str(id)
