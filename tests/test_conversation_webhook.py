@@ -52,3 +52,14 @@ class TestConversationWebhook(unittest.TestCase):
         params = {'offset': 1, 'limit': 2}
         ConversationClient('', http_client).list_webhooks(params)
         http_client.request.assert_called_once_with('webhooks?offset=1&limit=2', 'GET', None)
+
+    def test_conversation_webhook_read(self):
+        http_client = Mock()
+        http_client.request.return_value = '{"id":"5031e2da142d401c93fbc38518ebb604","url":"https://example.com","channelId":"c0dae31e440145e094c4708b7d908842","events":["conversation.created","conversation.updated"],"status":"enabled","createdDatetime":"2019-04-03T08:41:37Z","updatedDatetime":null}'
+
+        webhook = ConversationClient('', http_client).read_webhook('webhook-id')
+
+        http_client.request.assert_called_once_with('webhooks/webhook-id', 'GET', None)
+        self.assertEqual(datetime(2019, 4, 3, 8, 41, 37), webhook.createdDatetime)
+        self.assertEqual(None, webhook.updatedDatetime)
+        self.assertEqual(['conversation.created', 'conversation.updated'], webhook.events)

@@ -75,5 +75,6 @@ class ConversationClient(Base):
 
         return ConversationWebhookList().load(self.client.request(uri))
 
-    def read_webhook(self):
-        return self.access_key
+    def read_webhook(self, id):
+        uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
+        return ConversationWebhook().load(self.client.request(uri))
