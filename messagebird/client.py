@@ -15,11 +15,6 @@ from messagebird.conversation_message import ConversationMessage, ConversationMe
 from messagebird.conversation         import Conversation, ConversationList
 from messagebird.conversation_webhook import ConversationWebhook, ConversationWebhookList
 
-try:
-    from urllib.parse import urlencode
-except ImportError:
-    from urllib import urlencode
-
 ENDPOINT       = 'https://rest.messagebird.com'
 CLIENT_VERSION = '1.3.1'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
@@ -45,7 +40,7 @@ class Client(object):
     self.access_key = access_key
     self.http_client = http_client
 
-  def getHttpClient(self, type=REST_TYPE):
+  def _get_http_client(self, type=REST_TYPE):
     if self.http_client:
       return self.http_client
 
@@ -56,7 +51,7 @@ class Client(object):
 
   def request(self, path, method='GET', params=None, type=REST_TYPE):
     """Builds a request, gets a response and decodes it."""
-    response_text = self.getHttpClient(type).request(path, method, params)
+    response_text = self._get_http_client(type).request(path, method, params)
 
     if not response_text:
         return response_text
@@ -70,7 +65,7 @@ class Client(object):
 
   def request_plain_text(self, path, method='GET', params=None, type=REST_TYPE):
     """Builds a request, gets a response and returns the body."""
-    response_text = self.getHttpClient(type).request(path, method, params)
+    response_text = self._get_http_client(type).request(path, method, params)
 
     try:
       # Try to decode the response to JSON to see if the API returned any
@@ -173,7 +168,7 @@ class Client(object):
     self.request_plain_text('contacts/' + str(id), 'PATCH', params)
 
   def contact_list(self, limit=10, offset=0):
-    query = 'limit='+str(limit)+'&offset='+str(offset)
+    query = self._format_query(limit, offset)
     return ContactList().load(self.request('contacts?'+query, 'GET', None))
 
   def group(self, id):
@@ -188,7 +183,7 @@ class Client(object):
     self.request_plain_text('groups/' + str(id), 'DELETE', None)
 
   def group_list(self, limit=10, offset=0):
-    query = 'limit=' + str(limit) + '&offset=' + str(offset)
+    query = self._format_query(limit, offset)
     return GroupList().load(self.request('groups?'+query, 'GET', None))
 
   def group_update(self, id, name, params=None):
@@ -209,11 +204,8 @@ class Client(object):
   def group_remove_contact(self, groupId, contactId):
     self.request_plain_text('groups/' + str(groupId) + '/contacts/' + str(contactId), 'DELETE', None)
 
-  def conversation_list(self, options=None):
-    uri = CONVERSATION_PATH
-    if options is not None:
-      uri += '?' + urlencode(options)
-
+  def conversation_list(self, limit=10, offset=0):
+    uri = CONVERSATION_PATH + '?' + self._format_query(limit, offset)
     return ConversationList().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
 
   def conversation_start(self, start_request):
@@ -228,11 +220,9 @@ class Client(object):
     uri = CONVERSATION_PATH + '/' + str(id)
     return Conversation().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
 
-  def conversation_list_messages(self, conversation_id, options=None):
+  def conversation_list_messages(self, conversation_id, limit=10, offset=0):
     uri = CONVERSATION_PATH + '/' + str(conversation_id) + '/' + CONVERSATION_MESSAGES_PATH
-
-    if options is not None:
-      uri += '?' + urlencode(options)
+    uri += '?' + self._format_query(limit, offset)
 
     return ConversationMessageList().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
 
@@ -251,13 +241,14 @@ class Client(object):
     uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
     self.request(uri, 'DELETE', None, CONVERSATION_TYPE)
 
-  def conversation_list_webhooks(self, options=None):
-    uri = CONVERSATION_WEB_HOOKS_PATH
-    if options is not None:
-      uri += '?' + urlencode(options)
+  def conversation_list_webhooks(self, limit=10, offset=0):
+    uri = CONVERSATION_WEB_HOOKS_PATH + '?' + self._format_query(limit, offset)
 
     return ConversationWebhookList().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
 
   def conversation_read_webhook(self, id):
     uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
     return ConversationWebhook().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
+
+  def _format_query(self, limit, offset):
+    return 'limit='+str(limit)+'&offset='+str(offset)

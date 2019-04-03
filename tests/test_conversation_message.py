@@ -21,7 +21,7 @@ class TestConversationMessage(unittest.TestCase):
         self.assertEqual(1, msg.count)
         self.assertEqual('54445534', msg.items[0].id)
 
-        http_client.request.assert_called_once_with('conversations/54567/messages', 'GET', None)
+        http_client.request.assert_called_once_with('conversations/54567/messages?limit=10&offset=0', 'GET', None)
 
     def test_conversation_read_message(self):
         http_client = Mock()

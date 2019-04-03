@@ -41,7 +41,7 @@ class TestConversation(unittest.TestCase):
 
         Client('', http_client).conversation_list()
 
-        http_client.request.assert_called_once_with('conversations', 'GET', None)
+        http_client.request.assert_called_once_with('conversations?limit=10&offset=0', 'GET', None)
 
     def test_conversation_read(self):
         http_client = Mock()
