@@ -22,9 +22,9 @@ except NameError:
 
 
 try:
-  client = messagebird.ConversationClient(ACCESS_KEY)
+  client = messagebird.Client(ACCESS_KEY)
 
-  msg = client.read_message(MESSAGE_ID)
+  msg = client.conversation_read_message(MESSAGE_ID)
 
   # Print the object information.
   print('\nThe following information was returned as a Conversation List object:\n')

@@ -21,9 +21,9 @@ except NameError:
   sys.exit(1)
 
 try:
-  client = messagebird.ConversationClient(ACCESS_KEY)
+  client = messagebird.Client(ACCESS_KEY)
 
-  webhook = client.read_webhook(WEBHOOK_ID)
+  webhook = client.conversation_read_webhook(WEBHOOK_ID)
 
   # Print the object information.
   print('\nThe following information was returned as a Webhook object:\n')

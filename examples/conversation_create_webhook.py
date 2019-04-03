@@ -24,9 +24,9 @@ except NameError:
   sys.exit(1)
 
 try:
-  client = messagebird.ConversationClient(ACCESS_KEY)
+  client = messagebird.Client(ACCESS_KEY)
 
-  webhook = client.create_webhook({
+  webhook = client.conversation_create_webhook({
       'channelId': CHANNEL_ID,
       'events': [CONVERSATION_WEBHOOK_EVENT_CONVERSATION_CREATED, CONVERSATION_WEBHOOK_EVENT_CONVERSATION_UPDATED],
       'url': 'https://example.com'

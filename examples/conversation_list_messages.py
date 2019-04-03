@@ -21,9 +21,9 @@ except NameError:
   sys.exit(1)
 
 try:
-  client = messagebird.ConversationClient(ACCESS_KEY)
+  client = messagebird.Client(ACCESS_KEY)
 
-  msg = client.list_messages(CONVERSATION_ID)
+  msg = client.conversation_list_messages(CONVERSATION_ID)
 
   itemIds = []
   for msgItem in msg.items:

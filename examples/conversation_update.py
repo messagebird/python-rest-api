@@ -21,9 +21,9 @@ except NameError:
   sys.exit(1)
 
 try:
-  client = messagebird.ConversationClient(ACCESS_KEY)
+  client = messagebird.Client(ACCESS_KEY)
 
-  conversation = client.update(CONVERSATION_ID, {'status': 'active'})
+  conversation = client.conversation_update(CONVERSATION_ID, {'status': 'active'})
 
   # Print the object information.
   print('\nThe following information was returned as a Conversation object:\n')

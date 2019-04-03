@@ -1,22 +1,36 @@
 import sys
 import json
 
-from messagebird.base         import Base
-from messagebird.balance      import Balance
-from messagebird.contact      import Contact, ContactList
-from messagebird.error        import Error
-from messagebird.group        import ContactReference, Group, GroupList
-from messagebird.hlr          import HLR
-from messagebird.http_client  import HttpClient
-from messagebird.message      import Message
-from messagebird.voicemessage import VoiceMessage
-from messagebird.lookup       import Lookup
-from messagebird.verify       import Verify
+from messagebird.balance              import Balance
+from messagebird.contact              import Contact, ContactList
+from messagebird.error                import Error
+from messagebird.group                import Group, GroupList
+from messagebird.hlr                  import HLR
+from messagebird.message              import Message
+from messagebird.voicemessage         import VoiceMessage
+from messagebird.lookup               import Lookup
+from messagebird.verify               import Verify
+from messagebird.http_client          import HttpClient
+from messagebird.conversation_message import ConversationMessage, ConversationMessageList
+from messagebird.conversation         import Conversation, ConversationList
+from messagebird.conversation_webhook import ConversationWebhook, ConversationWebhookList
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 ENDPOINT       = 'https://rest.messagebird.com'
 CLIENT_VERSION = '1.3.1'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 USER_AGENT = 'MessageBird/ApiClient/%s Python/%s' % (CLIENT_VERSION, PYTHON_VERSION)
+REST_TYPE = 'rest'
+
+CONVERSATION_API_ROOT = 'https://conversations.messagebird.com/v1/'
+CONVERSATION_PATH = 'conversations'
+CONVERSATION_MESSAGES_PATH = 'messages'
+CONVERSATION_WEB_HOOKS_PATH = 'webhooks'
+CONVERSATION_TYPE = 'conversation'
 
 
 class ErrorException(Exception):
@@ -29,15 +43,20 @@ class ErrorException(Exception):
 class Client(object):
   def __init__(self, access_key, http_client=None):
     self.access_key = access_key
+    self.http_client = http_client
 
-    if http_client is None:
-      self.http_client = HttpClient(ENDPOINT, access_key, USER_AGENT)
-    else:
-      self.http_client = http_client
+  def getHttpClient(self, type=REST_TYPE):
+    if self.http_client:
+      return self.http_client
 
-  def request(self, path, method='GET', params=None):
+    if type == REST_TYPE:
+      return HttpClient(ENDPOINT, self.access_key, USER_AGENT)
+
+    return HttpClient(CONVERSATION_API_ROOT, self.access_key, USER_AGENT)
+
+  def request(self, path, method='GET', params=None, type=REST_TYPE):
     """Builds a request, gets a response and decodes it."""
-    response_text = self.http_client.request(path, method, params)
+    response_text = self.getHttpClient(type).request(path, method, params)
 
     if not response_text:
         return response_text
@@ -49,9 +68,9 @@ class Client(object):
 
     return response_json
 
-  def request_plain_text(self, path, method='GET', params=None):
+  def request_plain_text(self, path, method='GET', params=None, type=REST_TYPE):
     """Builds a request, gets a response and returns the body."""
-    response_text = self.http_client.request(path, method, params)
+    response_text = self.getHttpClient(type).request(path, method, params)
 
     try:
       # Try to decode the response to JSON to see if the API returned any
@@ -189,3 +208,56 @@ class Client(object):
 
   def group_remove_contact(self, groupId, contactId):
     self.request_plain_text('groups/' + str(groupId) + '/contacts/' + str(contactId), 'DELETE', None)
+
+  def conversation_list(self, options=None):
+    uri = CONVERSATION_PATH
+    if options is not None:
+      uri += '?' + urlencode(options)
+
+    return ConversationList().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
+
+  def conversation_start(self, start_request):
+    uri = CONVERSATION_PATH + '/start'
+    return Conversation().load(self.request(uri, 'POST', start_request, CONVERSATION_TYPE))
+
+  def conversation_update(self, id, update_request):
+    uri = CONVERSATION_PATH + '/' + str(id)
+    return Conversation().load(self.request(uri, 'PATCH', update_request, CONVERSATION_TYPE))
+
+  def conversation_read(self, id):
+    uri = CONVERSATION_PATH + '/' + str(id)
+    return Conversation().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
+
+  def conversation_list_messages(self, conversation_id, options=None):
+    uri = CONVERSATION_PATH + '/' + str(conversation_id) + '/' + CONVERSATION_MESSAGES_PATH
+
+    if options is not None:
+      uri += '?' + urlencode(options)
+
+    return ConversationMessageList().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
+
+  def conversation_create_message(self, conversation_id, message_create_request):
+    uri = CONVERSATION_PATH + '/' + str(conversation_id) + '/' + CONVERSATION_MESSAGES_PATH
+    return ConversationMessage().load(self.request(uri, 'POST', message_create_request, CONVERSATION_TYPE))
+
+  def conversation_read_message(self, message_id):
+    uri = CONVERSATION_MESSAGES_PATH + '/' + str(message_id)
+    return ConversationMessage().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
+
+  def conversation_create_webhook(self, webhook_create_request):
+    return ConversationWebhook().load(self.request(CONVERSATION_WEB_HOOKS_PATH, 'POST', webhook_create_request, CONVERSATION_TYPE))
+
+  def conversation_delete_webhook(self, id):
+    uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
+    self.request(uri, 'DELETE', None, CONVERSATION_TYPE)
+
+  def conversation_list_webhooks(self, options=None):
+    uri = CONVERSATION_WEB_HOOKS_PATH
+    if options is not None:
+      uri += '?' + urlencode(options)
+
+    return ConversationWebhookList().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
+
+  def conversation_read_webhook(self, id):
+    uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
+    return ConversationWebhook().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))

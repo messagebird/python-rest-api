@@ -21,9 +21,9 @@ except NameError:
   sys.exit(1)
 
 try:
-  client = messagebird.ConversationClient(ACCESS_KEY)
+  client = messagebird.Client(ACCESS_KEY)
 
-  client.delete_webhook(WEBHOOK_ID)
+  client.conversation_delete_webhook(WEBHOOK_ID)
 
   # Print the object information.
   print('\nWebhook has been deleted:\n')

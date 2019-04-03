@@ -36,9 +36,9 @@ except NameError:
   sys.exit(1)
 
 try:
-  client = messagebird.ConversationClient(ACCESS_KEY)
+  client = messagebird.Client(ACCESS_KEY)
 
-  msg = client.create_message(CONVERSATION_ID, { 'channelId':  CHANNEL_ID, 'type': MESSAGE_TYPE_TEXT, 'content': { 'text': TEXT_MESSAGE } })
+  msg = client.conversation_create_message(CONVERSATION_ID, { 'channelId':  CHANNEL_ID, 'type': MESSAGE_TYPE_TEXT, 'content': { 'text': TEXT_MESSAGE } })
 
   # Print the object information.
   print('\nThe following information was returned as a Conversation List object:\n')

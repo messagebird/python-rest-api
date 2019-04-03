@@ -14,9 +14,9 @@ except NameError:
   sys.exit(1)
 
 try:
-  client = messagebird.ConversationClient(ACCESS_KEY)
+  client = messagebird.Client(ACCESS_KEY)
 
-  webhookList = client.list()
+  webhookList = client.conversation_list_webhooks()
 
   itemIds = []
   for msgItem in webhookList.items:
