@@ -38,6 +38,10 @@ class Client(object):
   def request(self, path, method='GET', params=None):
     """Builds a request, gets a response and decodes it."""
     response_text = self.http_client.request(path, method, params)
+
+    if not response_text:
+        return response_text
+
     response_json = json.loads(response_text)
 
     if 'errors' in response_json:

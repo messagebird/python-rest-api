@@ -30,4 +30,26 @@ class ConversationWebhook(Base):
 
     @updatedDatetime.setter
     def updatedDatetime(self, value):
-        self._updatedDatetime = self.value_to_time(value)
+        self._updatedDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
+
+
+class ConversationWebhookList(Base):
+    def __init__(self):
+        self.offset = None
+        self.limit = None
+        self.count = None
+        self.totalCount = None
+        self._items = None
+
+    @property
+    def items(self):
+        return self._items
+
+    @items.setter
+    def items(self, value):
+        items = []
+        if isinstance(value, list):
+            for item in value:
+                items.append(ConversationWebhook().load(item))
+
+        self._items = items

@@ -33,7 +33,7 @@ try:
    })
 
   # Print the object information.
-  print('\nThe following information was returned as a Conversation List object:\n')
+  print('\nThe following information was returned as a Webhook object:\n')
   print('  id            : %s' % webhook.id)
   print('  events        : %s' % webhook.events)
   print('  channel id    : %s' % webhook.channelId)
@@ -41,7 +41,7 @@ try:
   print('  updated date  : %s' % webhook.updatedDatetime)
 
 except messagebird.client.ErrorException as e:
-  print('\nAn error occured while requesting a Message object:\n')
+  print('\nAn error occured while requesting a Webhook object:\n')
 
   for error in e.errors:
     print('  code        : %d' % error.code)

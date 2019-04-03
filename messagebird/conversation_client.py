@@ -3,7 +3,7 @@ from messagebird.client import USER_AGENT, Client
 from messagebird.http_client import HttpClient
 from messagebird.conversation_message import ConversationMessage, ConversationMessageList
 from messagebird.conversation import Conversation, ConversationList
-from messagebird.conversation_webhook import ConversationWebhook
+from messagebird.conversation_webhook import ConversationWebhook, ConversationWebhookList
 
 try:
     from urllib.parse import urlencode
@@ -64,11 +64,16 @@ class ConversationClient(Base):
     def create_webhook(self, webhook_create_request):
         return ConversationWebhook().load(self.client.request(CONVERSATION_WEB_HOOKS_PATH, 'POST', webhook_create_request))
 
-    def delete_webhook(self):
-        return self.access_key
+    def delete_webhook(self, id):
+        uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
+        self.client.request(uri, 'DELETE')
 
-    def list_webhooks(self):
-        return self.access_key
+    def list_webhooks(self, options=None):
+        uri = CONVERSATION_WEB_HOOKS_PATH
+        if options is not None:
+            uri += '?' + urlencode(options)
+
+        return ConversationWebhookList().load(self.client.request(uri))
 
     def read_webhook(self):
         return self.access_key
