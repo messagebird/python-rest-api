@@ -1,29 +1,17 @@
 #!/usr/bin/env python
-
-import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
+import sys
+import argparse
 import messagebird
 
-# ACCESS_KEY = ''
-# WEBHOOK_ID = ''
+parser = argparse.ArgumentParser()
+parser.add_argument('--accessKey', help='access key for MessageBird API', type=str, required=True)
+parser.add_argument('--webhookId', help='webhook that you want to delete', type=str, required=True)
+args = vars(parser.parse_args())
 
 try:
-  ACCESS_KEY
-except NameError:
-  print('You need to set an ACCESS_KEY constant in this file')
-  sys.exit(1)
+  client = messagebird.Client(args['accessKey'])
 
-try:
-  WEBHOOK_ID
-except NameError:
-  print('You need to set an WEBHOOK_ID constant in this file')
-  sys.exit(1)
-
-try:
-  client = messagebird.Client(ACCESS_KEY)
-
-  client.conversation_delete_webhook(WEBHOOK_ID)
+  client.conversation_delete_webhook(args['webhookId'])
 
   # Print the object information.
   print('\nWebhook has been deleted:\n')

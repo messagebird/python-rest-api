@@ -1,29 +1,17 @@
 #!/usr/bin/env python
-
-import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 import messagebird
+import argparse
+import sys
 
-# ACCESS_KEY = ''
-# CONVERSATION_ID = ''
-
-try:
-  ACCESS_KEY
-except NameError:
-  print('You need to set an ACCESS_KEY constant in this file')
-  sys.exit(1)
+parser = argparse.ArgumentParser()
+parser.add_argument('--accessKey', help='access key for MessageBird API', type=str, required=True)
+parser.add_argument('--conversationId', help='conversation that you want the message list', type=str, required=True)
+args = vars(parser.parse_args())
 
 try:
-  CONVERSATION_ID
-except NameError:
-  print('You need to set an CONVERSATION_ID constant in this file')
-  sys.exit(1)
+  client = messagebird.Client(args['accessKey'])
 
-try:
-  client = messagebird.Client(ACCESS_KEY)
-
-  conversation = client.conversation_read(CONVERSATION_ID)
+  conversation = client.conversation_read(args['conversationId'])
 
   # Print the object information.
   print('\nThe following information was returned as a Conversation object:\n')

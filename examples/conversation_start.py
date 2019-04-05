@@ -1,44 +1,20 @@
 #!/usr/bin/env python
-
-import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
+import sys
+import argparse
 import messagebird
 from messagebird.conversation_message import MESSAGE_TYPE_TEXT
 
-# ACCESS_KEY = ''
-# CHANNEL_ID = ''
-# PHONE_NUMBER = ''
-# TEXT_MESSAGE = ''
+parser = argparse.ArgumentParser()
+parser.add_argument('--accessKey', help='access key for MessageBird API', type=str, required=True)
+parser.add_argument('--channelId', help='channel that you want to start a conversation', type=str, required=True)
+parser.add_argument('--phoneNumber', help='phone number that you want to send a message', type=str, required=True)
+parser.add_argument('--textMessage', help='text that you want to send', type=str, required=True)
+args = vars(parser.parse_args())
 
 try:
-  ACCESS_KEY
-except NameError:
-  print('You need to set an ACCESS_KEY constant in this file')
-  sys.exit(1)
+  client = messagebird.Client(args['accessKey'])
 
-try:
-  CHANNEL_ID
-except NameError:
-  print('You need to set a CHANNEL_ID constant in this file')
-  sys.exit(1)
-
-try:
-  PHONE_NUMBER
-except NameError:
-  print('You need to set a PHONE_NUMBEr constant in this file')
-  sys.exit(1)
-
-try:
-  TEXT_NUMBER
-except NameError:
-  print('You need to set a TEXT_NUMBER constant in this file')
-  sys.exit(1)
-
-try:
-  client = messagebird.Client(ACCESS_KEY)
-
-  msg = client.conversation_start({ 'channelId':  CHANNEL_ID, 'to': PHONE_NUMBER, 'type': MESSAGE_TYPE_TEXT, 'content': { 'text': TEXT_MESSAGE } })
+  msg = client.conversation_start({ 'channelId':  args['channelId'], 'to': args['phoneNumber'], 'type': MESSAGE_TYPE_TEXT, 'content': { 'text': args['textMessage'] } })
 
   # Print the object information.
   print('\nThe following information was returned as a Conversation object:\n')

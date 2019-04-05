@@ -1,20 +1,14 @@
 #!/usr/bin/env python
-
-import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 import messagebird
+import argparse
+import sys
 
-# ACCESS_KEY = ''
-
-try:
-  ACCESS_KEY
-except NameError:
-  print('You need to set an ACCESS_KEY constant in this file')
-  sys.exit(1)
+parser = argparse.ArgumentParser()
+parser.add_argument('--accessKey', help='access key for MessageBird API', type=str, required=True)
+args = vars(parser.parse_args())
 
 try:
-  client = messagebird.Client(ACCESS_KEY)
+  client = messagebird.Client(args['accessKey'])
 
   conversationList = client.conversation_list()
 

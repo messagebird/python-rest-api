@@ -1,35 +1,24 @@
 #!/usr/bin/env python
-
-import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
+import sys
+import argparse
 import messagebird
 from messagebird.conversation_webhook import \
     CONVERSATION_WEBHOOK_EVENT_CONVERSATION_CREATED,\
     CONVERSATION_WEBHOOK_EVENT_CONVERSATION_UPDATED
 
-# ACCESS_KEY = ''
-# CHANNEL_ID = ''
+parser = argparse.ArgumentParser()
+parser.add_argument('--accessKey', help='access key for MessageBird API', type=str, required=True)
+parser.add_argument('--channelId', help='channel that you want create the webhook', type=str, required=True)
+parser.add_argument('--url', help='url for the webhook', type=str)
+args = vars(parser.parse_args())
 
 try:
-  ACCESS_KEY
-except NameError:
-  print('You need to set an ACCESS_KEY constant in this file')
-  sys.exit(1)
-
-try:
-  CHANNEL_ID
-except NameError:
-  print('You need to set an CHANNEL_ID constant in this file')
-  sys.exit(1)
-
-try:
-  client = messagebird.Client(ACCESS_KEY)
+  client = messagebird.Client(args['accessKey'])
 
   webhook = client.conversation_create_webhook({
-      'channelId': CHANNEL_ID,
+      'channelId': args['channelId'],
       'events': [CONVERSATION_WEBHOOK_EVENT_CONVERSATION_CREATED, CONVERSATION_WEBHOOK_EVENT_CONVERSATION_UPDATED],
-      'url': 'https://example.com'
+      'url': args['url']
    })
 
   # Print the object information.
