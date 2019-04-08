@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime
 from messagebird import Client
 from messagebird.conversation_webhook import \
-    CONVERSATION_WEBHOOK_EVENT_CONVERSATION_CREATED,\
+    CONVERSATION_WEBHOOK_EVENT_CONVERSATION_CREATED, \
     CONVERSATION_WEBHOOK_EVENT_CONVERSATION_UPDATED
 
 try:
@@ -20,9 +20,10 @@ class TestConversationWebhook(unittest.TestCase):
         http_client.request.return_value = '{"id":"20c308852190485bbb658e43baffc5fa","url":"https://example.com","channelId":"c0dae31e440145e094c4708b7d908842","events":["conversation.created","conversation.updated"],"status":"enabled","createdDatetime":"2019-04-03T07:46:37.984026573Z","updatedDatetime":null}'
 
         webhookRequestData = {
-          'channelId': '20c308852190485bbb658e43baffc5fa',
-          'events': [CONVERSATION_WEBHOOK_EVENT_CONVERSATION_CREATED, CONVERSATION_WEBHOOK_EVENT_CONVERSATION_UPDATED],
-          'url': 'https://example.com'
+            'channelId': '20c308852190485bbb658e43baffc5fa',
+            'events': [CONVERSATION_WEBHOOK_EVENT_CONVERSATION_CREATED,
+                       CONVERSATION_WEBHOOK_EVENT_CONVERSATION_UPDATED],
+            'url': 'https://example.com'
         }
 
         Client('', http_client).conversation_create_webhook(webhookRequestData)
@@ -55,9 +56,9 @@ class TestConversationWebhook(unittest.TestCase):
         http_client = Mock()
         http_client.request.return_value = '{"id":"5031e2da142d401c93fbc38518ebb604","url":"https://example.com","channelId":"c0dae31e440145e094c4708b7d908842","events":["conversation.created","conversation.updated"],"status":"enabled","createdDatetime":"2019-04-03T08:41:37Z","updatedDatetime":null}'
 
-        webhook = Client('', http_client).conversation_read_webhook('webhook-id')
+        web_hook = Client('', http_client).conversation_read_webhook('webhook-id')
 
         http_client.request.assert_called_once_with('webhooks/webhook-id', 'GET', None)
-        self.assertEqual(datetime(2019, 4, 3, 8, 41, 37), webhook.createdDatetime)
-        self.assertEqual(None, webhook.updatedDatetime)
-        self.assertEqual(['conversation.created', 'conversation.updated'], webhook.events)
+        self.assertEqual(datetime(2019, 4, 3, 8, 41, 37), web_hook.createdDatetime)
+        self.assertEqual(None, web_hook.updatedDatetime)
+        self.assertEqual(['conversation.created', 'conversation.updated'], web_hook.events)

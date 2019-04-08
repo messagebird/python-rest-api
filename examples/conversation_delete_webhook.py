@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import sys
 import argparse
 import messagebird
 
@@ -9,17 +8,17 @@ parser.add_argument('--webhookId', help='webhook that you want to delete', type=
 args = vars(parser.parse_args())
 
 try:
-  client = messagebird.Client(args['accessKey'])
+    client = messagebird.Client(args['accessKey'])
 
-  client.conversation_delete_webhook(args['webhookId'])
+    client.conversation_delete_webhook(args['webhookId'])
 
-  # Print the object information.
-  print('\nWebhook has been deleted:\n')
+    # Print the object information.
+    print('\nWebhook has been deleted:\n')
 
 except messagebird.client.ErrorException as e:
-  print('\nAn error occured while requesting a Webhook object:\n')
+    print('\nAn error occured while requesting a Webhook object:\n')
 
-  for error in e.errors:
-    print('  code        : %d' % error.code)
-    print('  description : %s' % error.description)
-    print('  parameter   : %s\n' % error.parameter)
+    for error in e.errors:
+        print('  code        : %d' % error.code)
+        print('  description : %s' % error.description)
+        print('  parameter   : %s\n' % error.parameter)

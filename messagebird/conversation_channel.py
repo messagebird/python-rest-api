@@ -1,5 +1,6 @@
 from messagebird.base import Base
 
+
 class Channel(Base):
     def __init__(self):
         self.id = None

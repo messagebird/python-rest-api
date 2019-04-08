@@ -36,7 +36,7 @@ class TestConversationMessage(unittest.TestCase):
         http_client.request.return_value = '{"id":"id","conversationId":"conversation-id","channelId":"channel-id","type":"text","content":{"text":"Example Text Message"},"direction":"sent","status":"pending","createdDatetime":"2019-04-02T11:57:52.142641447Z","updatedDatetime":"2019-04-02T11:57:53.142641447Z"}'
 
         data = {
-            'channelId':  1234,
+            'channelId': 1234,
             'type': 'text',
             'content': {
                 'text': 'this is a message'
