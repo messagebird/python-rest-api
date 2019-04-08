@@ -28,13 +28,9 @@ class SignedRequest:
         return int(time.time()) - int(self._requestTimestamp) < offset
 
     def _build_payload(self,):
-        parts = []
-        parts.append(self._requestTimestamp)
-        parts.append(urlencode(self._sort_dict(self._requestParameters), True))
         checksum_body = hashlib.sha256(self._requestBody.encode('latin-1')).digest()
         str_checksum_body = checksum_body.decode('latin-1')
-        parts.append(str_checksum_body)
-
+        parts = [self._requestTimestamp, urlencode(self._sort_dict(self._requestParameters), True), str_checksum_body]
         return "\n".join(parts)
 
     def _sort_dict(self, dict):
