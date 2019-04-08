@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import sys
 import argparse
 import messagebird
 
@@ -17,7 +16,7 @@ if signed_request.verify(args['signingKey']):
 else:
     print("The signed request cannot be verified.")
 
-if signed_request.isRecent():
+if signed_request.is_recent():
     print("The signed request is recent.")
 else:
     print("The signed request is not recent.")

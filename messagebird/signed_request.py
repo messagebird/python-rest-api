@@ -20,14 +20,15 @@ class SignedRequest:
 
     def verify(self, signing_key):
         payload = self._build_payload()
-        expectedSignature = base64.b64decode(self._requestSignature)
-        calculatedSignature = hmac.new(signing_key.encode('latin-1'), payload.encode('latin-1'), hashlib.sha256).digest()
-        return expectedSignature == calculatedSignature
+        expected_signature = base64.b64decode(self._requestSignature)
+        calculated_signature = hmac.new(signing_key.encode('latin-1'), payload.encode('latin-1'),
+                                        hashlib.sha256).digest()
+        return expected_signature == calculated_signature
 
-    def isRecent(self, offset = 10):
+    def is_recent(self, offset=10):
         return int(time.time()) - int(self._requestTimestamp) < offset
 
-    def _build_payload(self,):
+    def _build_payload(self):
         checksum_body = hashlib.sha256(self._requestBody.encode('latin-1')).digest()
         str_checksum_body = checksum_body.decode('latin-1')
         parts = [self._requestTimestamp, urlencode(self._sort_dict(self._requestParameters), True), str_checksum_body]

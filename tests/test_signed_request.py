@@ -9,7 +9,6 @@ except ImportError:
     # before.
     from mock import Mock
 
-
 SIGNING_KEY = 'PlLrKaqvZNRR5zAjm42ZT6q1SQxgbbGd'
 
 
@@ -76,7 +75,7 @@ class TestMessage(unittest.TestCase):
         body = ''
 
         signed_request = SignedRequest(signature, timestamp, body, query)
-        self.assertTrue(signed_request.isRecent())
+        self.assertTrue(signed_request.is_recent())
 
     def test_not_recent_signed_request(self):
         query = {}
@@ -85,4 +84,4 @@ class TestMessage(unittest.TestCase):
         body = ''
 
         signed_request = SignedRequest(signature, timestamp, body, query)
-        self.assertFalse(signed_request.isRecent())
+        self.assertFalse(signed_request.is_recent())
