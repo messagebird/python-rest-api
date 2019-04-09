@@ -13,14 +13,8 @@ try:
     conversation = client.conversation_read(args['conversationId'])
 
     # Print the object information.
-    print('\nThe following information was returned as a Conversation object:\n')
-    print('  conversation id           : %s' % conversation.id)
-    print('  contact id                : %s' % conversation.contactId)
-    print('  messages total count      : %s' % conversation.messages.totalCount)
-    print('  status                    : %s' % conversation.status)
-    print('  created date time         : %s' % conversation.createdDatetime)
-    print('  updated date time         : %s' % conversation.updatedDatetime)
-    print('  last received date time   : %s' % conversation.lastReceivedDatetime)
+    print('The following information was returned as a Conversation object:')
+    print(conversation)
 
 except messagebird.client.ErrorException as e:
     print('\nAn error occured while requesting a Conversation object:\n')

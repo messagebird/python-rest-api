@@ -40,6 +40,18 @@ class ConversationMessage(Base):
         if value is not None:
             self._updatedDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
 
+    def __str__(self):
+        return "\n".join([
+            'message id        : %s' % self.id,
+            'channel id        : %s' % self.channelId,
+            'direction         : %s' % self.direction,
+            'status            : %s' % self.status,
+            'type              : %s' % self.type,
+            'content           : %s' % self.content,
+            'created date time : %s' % self._createdDatetime,
+            'updated date time : %s' % self._updatedDatetime
+        ])
+
 
 class ConversationMessageReference(Base):
     def __init__(self):
@@ -68,3 +80,16 @@ class ConversationMessageList(Base):
                 items.append(ConversationMessage().load(item))
 
         self._items = items
+
+    def __str__(self):
+        item_ids = []
+        for msg_item in self._items:
+            item_ids.append(msg_item.id)
+
+        return "\n".join([
+            'items IDs  : %s' % item_ids,
+            'offset     : %s' % self.offset,
+            'limit      : %s' % self.limit,
+            'count      : %s' % self.count,
+            'totalCount : %s' % self.totalCount,
+        ])

@@ -32,6 +32,15 @@ class ConversationWebhook(Base):
     def updatedDatetime(self, value):
         self._updatedDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
 
+    def __str__(self):
+        return "\n".join([
+            'id                : %s' % self.id,
+            'events            : %s' % self.events,
+            'channel id        : %s' % self.channelId,
+            'created date time : %s' % self.createdDatetime,
+            'updated date time : %s' % self.updatedDatetime
+        ])
+
 
 class ConversationWebhookList(Base):
     def __init__(self):
@@ -53,3 +62,16 @@ class ConversationWebhookList(Base):
                 items.append(ConversationWebhook().load(item))
 
         self._items = items
+
+    def __str__(self):
+        item_ids = []
+        for item in self._items:
+            item_ids.append(item.id)
+
+        return "\n".join([
+            'items IDs  : %s' % item_ids,
+            'offset     : %s' % self.offset,
+            'limit      : %s' % self.limit,
+            'count      : %s' % self.count,
+            'totalCount : %s' % self.totalCount,
+        ])

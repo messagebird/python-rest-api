@@ -19,16 +19,8 @@ try:
                                               'content': {'text': args['message']}})
 
     # Print the object information.
-    print('\nThe following information was returned as a Conversation List object:\n')
-    print('  message id   : %s' % msg.id)
-    print('  channel id   : %s' % msg.channelId)
-    print('  direction    : %s' % msg.direction)
-    print('  content      : %s' % msg.content)
-    print('  content      : %s' % msg.content)
-    print('  status       : %s' % msg.status)
-    print('  type         : %s' % msg.type)
-    print('  created date : %s' % msg.createdDatetime)
-    print('  updated date : %s' % msg.updatedDatetime)
+    print('The following information was returned as a Conversation List object:\n')
+    print(msg)
 
 except messagebird.client.ErrorException as e:
     print('\nAn error occured while requesting a Message object:\n')

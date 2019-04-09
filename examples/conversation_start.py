@@ -18,17 +18,8 @@ try:
          'content': {'text': args['textMessage']}})
 
     # Print the object information.
-    print('\nThe following information was returned as a Conversation object:\n')
-    print('  id                    : %s' % msg.id)
-    print('  contact id            : %s' % msg.contactId)
-    print('  contact               : %s' % msg.contact)
-    print('  last used channel id  : %s' % msg.lastUsedChannelId)
-    print('  channels              : %s' % msg.channels)
-    print('  messages              : %s' % msg.messages)
-    print('  status                : %s' % msg.status)
-    print('  createdDateTime       : %s' % msg.createdDateTime)
-    print('  updatedDateTime       : %s' % msg.updatedDateTime)
-    print('  lastReceivedDateTime  : %s' % msg.lastReceivedDateTime)
+    print('The following information was returned as a Conversation object:')
+    print(msg)
 
 except messagebird.client.ErrorException as e:
     print('\nAn error occured while requesting a Message object:\n')

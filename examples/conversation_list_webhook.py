@@ -9,18 +9,11 @@ args = vars(parser.parse_args())
 try:
     client = messagebird.Client(args['accessKey'])
 
-    webhookList = client.conversation_list_webhooks()
-
-    itemIds = []
-    for msgItem in webhookList.items:
-        itemIds.append(msgItem.id)
+    webhook_list = client.conversation_list_webhooks()
 
     # Print the object information.
-    print('\nThe following information was returned as a Conversation Webhook List object:\n')
-    print('  conversation ids  : %s' % itemIds)
-    print('  offset       : %s' % webhookList.offset)
-    print('  limit        : %s' % webhookList.limit)
-    print('  totalCount   : %s' % webhookList.totalCount)
+    print('The following information was returned as a Conversation Webhook List object:')
+    print(webhook_list)
 
 except messagebird.client.ErrorException as e:
     print('\nAn error occured while requesting a Conversation Webhook List object:\n')

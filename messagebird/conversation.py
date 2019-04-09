@@ -74,6 +74,18 @@ class Conversation(Base):
     def lastReceivedDatetime(self, value):
         self._lastReceivedDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
 
+    def __str__(self):
+        return "\n".join([
+            'id                   : %s' % self.id,
+            'contact id           : %s' % self.contactId,
+            'last used channel id : %s' % self.lastUsedChannelId,
+            'message total count  : %s' % self.messages.totalCount,
+            'status               : %s' % self.status,
+            'created date time    : %s' % self.createdDatetime,
+            'updated date time    : %s' % self.updatedDatetime,
+            'last received date   : %s' % self.lastReceivedDatetime,
+        ])
+
 
 class ConversationList(Base):
     def __init__(self):
@@ -93,3 +105,16 @@ class ConversationList(Base):
             self._items = []
             for item in value:
                 self._items.append(Conversation().load(item))
+
+    def __str__(self):
+        item_ids = []
+        for msg_item in self._items:
+            item_ids.append(msg_item.id)
+
+        return "\n".join([
+            'items IDs  : %s' % item_ids,
+            'offset     : %s' % self.offset,
+            'limit      : %s' % self.limit,
+            'count      : %s' % self.count,
+            'totalCount : %s' % self.totalCount,
+        ])
