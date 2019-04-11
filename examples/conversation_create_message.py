@@ -19,11 +19,11 @@ try:
                                               'content': {'text': args['message']}})
 
     # Print the object information.
-    print('The following information was returned as a Conversation List object:\n')
+    print('The following information was returned as a Conversation List object:')
     print(msg)
 
 except messagebird.client.ErrorException as e:
-    print('\nAn error occured while requesting a Message object:\n')
+    print('An error occured while requesting a Message object:')
 
     for error in e.errors:
         print('  code        : %d' % error.code)

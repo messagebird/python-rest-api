@@ -17,7 +17,7 @@ try:
     print(msg)
 
 except messagebird.client.ErrorException as e:
-    print('\nAn error occured while requesting a Conversation Message List object:\n')
+    print('An error occured while requesting a Conversation Message List object:')
 
     for error in e.errors:
         print('  code        : %d' % error.code)
