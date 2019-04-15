@@ -8,6 +8,13 @@ class Base(object):
 
     return self
 
-  def value_to_time(self, value):
+  def strip_nanoseconds_from_date(self, value):
+    if str(value).find(".") != -1:
+      return value[:-11] + value[-1:]
+
+    return value
+
+  def value_to_time(self, value, format='%Y-%m-%dT%H:%M:%S+00:00'):
     if value != None:
-      return datetime.strptime(value, '%Y-%m-%dT%H:%M:%S+00:00')
+      value = self.strip_nanoseconds_from_date(value)
+      return datetime.strptime(value, format)
