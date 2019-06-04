@@ -1,5 +1,6 @@
 from os import path
 from setuptools import setup
+from io import open
 
 def get_description():
     working_directory = path.abspath(path.dirname(__file__))
