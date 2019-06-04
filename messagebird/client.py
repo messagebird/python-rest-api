@@ -7,6 +7,7 @@ from messagebird.error import Error
 from messagebird.group import Group, GroupList
 from messagebird.hlr import HLR
 from messagebird.message import Message
+from messagebird.mms import MMS
 from messagebird.voicemessage import VoiceMessage
 from messagebird.lookup import Lookup
 from messagebird.verify import Verify
@@ -109,6 +110,16 @@ class Client(object):
     def message_delete(self, id):
         """Delete a message from the dashboard."""
         self.request_plain_text('messages/' + str(id), 'DELETE')
+
+    def mms_create(self, originator, recipients, body, mediaUrls, subject = None, reference = None, scheduledDatetime = None):
+        """ Send bulk mms. """
+        if isinstance(recipients,list):
+            recipients = ','.join(recipients)
+        if isinstance(mediaUrls,str):
+            mediaUrls = [mediaUrls]
+        params = locals()
+        del(params['self'])
+        return  MMS().load(self.request('mms', 'POST', params))
 
     def voice_message(self, id):
         "Retrieve the information of a specific voice message."
@@ -250,6 +261,6 @@ class Client(object):
     def conversation_read_webhook(self, id):
         uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
         return ConversationWebhook().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
-
+    
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)
