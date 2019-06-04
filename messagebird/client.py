@@ -112,7 +112,22 @@ class Client(object):
         self.request_plain_text('messages/' + str(id), 'DELETE')
 
     def mms_create(self, originator, recipients, body, mediaUrls, subject = None, reference = None, scheduledDatetime = None):
-        """ Send bulk mms. """
+        ''' Send bulk mms.
+
+        Args:
+            originator(str): name of the originator
+            recipients(str/list(str)): comma seperated numbers or list of numbers in E164 format
+            body(str)       : text message body
+            mediaUrl(str)   : list of URL's of attachments of the MMS message.
+            subject(str)    : utf-encoded subject
+            reference(str)  : client reference text
+            scheduledDatetime(str) : scheduled date time in RFC3339 format
+        Raises:
+            ErrorException:  On api returning errors
+
+        Returns:
+            MMS: On success an MMS instance instantiated with succcess response
+        '''
         if isinstance(recipients,list):
             recipients = ','.join(recipients)
         if isinstance(mediaUrls,str):
