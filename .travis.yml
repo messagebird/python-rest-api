@@ -9,6 +9,7 @@ python:
 install:
   - pip install mock==2.0
   - pip install requests
+  - pip install .
 script:
   - python -m unittest discover -s tests/ -p test_*.py -v
 matrix:
