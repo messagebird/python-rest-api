@@ -3,7 +3,7 @@ python:
   - 'pypy2.7'
   - 'pypy3.5'
   - '2.7'
-  - '3.3'
+  - '3.4'
   - '3.6'
   - 'nightly'
 install:
