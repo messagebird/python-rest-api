@@ -17,7 +17,7 @@ from messagebird.conversation import Conversation, ConversationList
 from messagebird.conversation_webhook import ConversationWebhook, ConversationWebhookList
 
 ENDPOINT = 'https://rest.messagebird.com'
-CLIENT_VERSION = '1.3.1'
+CLIENT_VERSION = '1.4.1'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 USER_AGENT = 'MessageBird/ApiClient/%s Python/%s' % (CLIENT_VERSION, PYTHON_VERSION)
 REST_TYPE = 'rest'
