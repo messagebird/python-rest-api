@@ -1,5 +1,13 @@
 from messagebird.base      import Base
+from messagebird.base_list import BaseList
 from messagebird.recipient import Recipient
+
+
+class MessageList(BaseList):
+    def __init__(self):
+        # We're expecting items of type Message
+        super(MessageList, self).__init__(Message)
+
 
 class Message(Base):
   def __init__(self):

@@ -45,3 +45,15 @@ class TestMessage(unittest.TestCase):
             Client('', http_client).message_delete('non-existent-message-id')
 
         http_client.request.assert_called_once_with('messages/non-existent-message-id', 'DELETE', None)
+
+    def test_message_list(self):
+        http_client = Mock()
+        http_client.request.return_value = '{"offset": 0,"limit": 20,"count": 2,"totalCount": 2,"links": {"first": "https://rest.messagebird.com/messages/?offset=0","previous": null,"next": null,"last": "https://rest.messagebird.com/messages/?offset=0"},"items": [{"originator": "TEST","body": "This is a test message, sent through the MessageBird API, using the official Python SDK.","direction": "mt","mclass": 1,"reference": null,"createdDatetime": "2018-07-13T10:34:08+00:00","recipients": {"totalCount": 1,"totalSentCount": 1,"totalDeliveredCount": 1,"totalDeliveryFailedCount": 0,"items": [{"originator": null,"status": "delivered","statusDatetime": "2018-07-13T10:34:13+00:00","recipient": 123456789011}]},"validity": null,"gateway": 1,"typeDetails": {},"href": "https://rest.messagebird.com/messages/first-message-id","datacoding": "plain","scheduledDatetime": null,"type": "sms","id": "first-message-id"},{"originator": "TEST","body": "This is a test message, sent through the MessageBird API, using the official Python SDK.","direction": "mt","mclass": 1,"reference": null,"createdDatetime": "2018-07-13T10:33:52+00:00","recipients": {"totalCount": 1,"totalSentCount": 1,"totalDeliveredCount": 1,"totalDeliveryFailedCount": 0,"items": [{"originator": null,"status": "delivered","statusDatetime": "2018-07-13T10:33:56+00:00","recipient": 123456789012}]},"validity": null,"gateway": 1,"typeDetails": {},"href": "https://rest.messagebird.com/messages/second-message-id","datacoding": "plain","scheduledDatetime": null,"type": "sms","id": "second-message-id"}]}'
+
+        message_list = Client('', http_client).message_list(20, 0)
+
+        http_client.request.assert_called_once_with('messages?limit=20&offset=0', 'GET', None)
+
+        self.assertEqual(2, message_list.totalCount)
+        self.assertEqual('https://rest.messagebird.com/messages/?offset=0', message_list.links.first)
+        self.assertEqual('https://rest.messagebird.com/messages/first-message-id', message_list.items[0].href)

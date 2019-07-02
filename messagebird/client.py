@@ -6,7 +6,7 @@ from messagebird.contact import Contact, ContactList
 from messagebird.error import Error
 from messagebird.group import Group, GroupList
 from messagebird.hlr import HLR
-from messagebird.message import Message
+from messagebird.message import Message, MessageList
 from messagebird.mms import MMS
 from messagebird.voicemessage import VoiceMessage
 from messagebird.lookup import Lookup
@@ -97,6 +97,11 @@ class Client(object):
     def message(self, id):
         """Retrieve the information of a specific message."""
         return Message().load(self.request('messages/' + str(id)))
+
+    def message_list(self, limit=20, offset=0):
+        """Retrieve a list of the most recent messages."""
+        query = 'limit=' + str(limit) + '&offset=' + str(offset)
+        return MessageList().load(self.request('messages?' + query))
 
     def message_create(self, originator, recipients, body, params=None):
         """Create a new message."""
@@ -276,6 +281,6 @@ class Client(object):
     def conversation_read_webhook(self, id):
         uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
         return ConversationWebhook().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
-    
+
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)
