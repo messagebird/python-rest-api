@@ -13,6 +13,7 @@ class ConversationWebhook(Base):
         self.channelId = None
         self.url = None
         self.events = None
+        self.status = None
         self._createdDatetime = None
         self._updatedDatetime = None
 
@@ -37,10 +38,11 @@ class ConversationWebhook(Base):
             'id                : %s' % self.id,
             'events            : %s' % self.events,
             'channel id        : %s' % self.channelId,
+            'status            : %s' % self.status,
+            'url               : %s' % self.url,
             'created date time : %s' % self.createdDatetime,
             'updated date time : %s' % self.updatedDatetime
         ])
-
 
 class ConversationWebhookList(Base):
     def __init__(self):
