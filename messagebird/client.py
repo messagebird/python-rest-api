@@ -269,6 +269,11 @@ class Client(object):
         return ConversationWebhook().load(
             self.request(CONVERSATION_WEB_HOOKS_PATH, 'POST', webhook_create_request, CONVERSATION_TYPE))
 
+    def conversation_update_webhook(self, id, update_request):
+        uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
+        web_hook = self.request(uri, 'PATCH', update_request, CONVERSATION_TYPE)
+        return ConversationWebhook().load(web_hook)
+
     def conversation_delete_webhook(self, id):
         uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
         self.request(uri, 'DELETE', None, CONVERSATION_TYPE)
