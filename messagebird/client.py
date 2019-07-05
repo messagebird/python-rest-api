@@ -270,6 +270,11 @@ class Client(object):
             self.request(CONVERSATION_WEB_HOOKS_PATH, 'POST', webhook_create_request, CONVERSATION_TYPE))
 
     def conversation_update_webhook(self, id, update_request):
+        """
+        Updates a webhook with the supplied parameters.
+
+        API Reference: https://developers.messagebird.com/api/conversations/#webhooks
+        """
         uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
         web_hook = self.request(uri, 'PATCH', update_request, CONVERSATION_TYPE)
         return ConversationWebhook().load(web_hook)
