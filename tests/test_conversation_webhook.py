@@ -1,4 +1,5 @@
 import unittest
+import json
 from datetime import datetime
 from messagebird import Client
 from messagebird.conversation_webhook import \
@@ -62,3 +63,26 @@ class TestConversationWebhook(unittest.TestCase):
         self.assertEqual(datetime(2019, 4, 3, 8, 41, 37), web_hook.createdDatetime)
         self.assertEqual(None, web_hook.updatedDatetime)
         self.assertEqual(['conversation.created', 'conversation.updated'], web_hook.events)
+
+    def test_conversation_webhook_update(self):
+        http_client = Mock()
+        http_client.request.return_value = json.dumps({"id": "985ae50937a94c64b392531ea87a0263",
+            "url": "https://example.com/webhook",
+            "channelId": "853eeb5348e541a595da93b48c61a1ae",
+            "events": [
+                "message.created",
+                "message.updated",
+            ],
+            "status": "enabled",
+            "createdDatetime": "2018-08-29T10:04:23Z",
+            "updatedDatetime": "2018-08-29T10:10:23Z"
+        })
+
+        webhookRequestData = {
+            'events': [CONVERSATION_WEBHOOK_EVENT_CONVERSATION_CREATED,
+                       CONVERSATION_WEBHOOK_EVENT_CONVERSATION_UPDATED],
+            'url': 'https://example.com/webhook',
+            'status': 'enabled'
+        }
+        web_hook = Client('', http_client).conversation_update_webhook('webhook-id', webhookRequestData)
+        http_client.request.assert_called_once_with('webhooks/webhook-id', 'PATCH', webhookRequestData)
