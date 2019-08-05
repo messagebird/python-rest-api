@@ -183,6 +183,10 @@ class Client(object):
         """Verify the token of a specific verification."""
         return Verify().load(self.request('verify/' + str(id), params={'token': token}))
 
+    def verify_delete(self, id):
+        """Delete an existing verification object."""
+        self.request_plain_text('verify/' + str(id), 'DELETE')
+
     def contact(self, id):
         """Retrieve the information of a specific contact."""
         return Contact().load(self.request('contacts/' + str(id)))
