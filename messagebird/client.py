@@ -15,6 +15,7 @@ from messagebird.http_client import HttpClient
 from messagebird.conversation_message import ConversationMessage, ConversationMessageList
 from messagebird.conversation import Conversation, ConversationList
 from messagebird.conversation_webhook import ConversationWebhook, ConversationWebhookList
+from messagebird.voice_recording import VoiceRecordingsList, VoiceRecording
 
 ENDPOINT = 'https://rest.messagebird.com'
 CLIENT_VERSION = '1.4.1'
@@ -27,6 +28,11 @@ CONVERSATION_PATH = 'conversations'
 CONVERSATION_MESSAGES_PATH = 'messages'
 CONVERSATION_WEB_HOOKS_PATH = 'webhooks'
 CONVERSATION_TYPE = 'conversation'
+
+VOICE_API_ROOT = 'https://voice.messagebird.com'
+VOICE_PATH = 'calls'
+VOICE_LEGS_PATH = 'legs'
+VOICE_RECORDINGS_PATH = 'recordings'
 
 
 class ErrorException(Exception):
@@ -81,6 +87,17 @@ class Client(object):
             pass
 
         return response_text
+
+    def request_store_as_file(self, path, filepath, method='GET', params=None, type=REST_TYPE):
+        """Builds a request, gets a response and decodes it."""
+        response_binary = self._get_http_client(type).request_binary(path, method, params)
+
+        if not response_binary:
+            return response_binary
+        else:
+            open(filepath, 'wb').write(response_binary)
+
+        return filepath
 
     def balance(self):
         """Retrieve your balance."""
@@ -291,6 +308,23 @@ class Client(object):
     def conversation_read_webhook(self, id):
         uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
         return ConversationWebhook().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
+
+    def voice_recording_list_recordings(self, call_id, leg_id):
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH
+        return VoiceRecordingsList().load(self.request(uri, 'GET'))
+
+    def voice_recording_view(self, call_id, leg_id, recording_id):
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id)
+        recording_response = self.request(uri, 'GET')
+        recording_response['data'][0]['_links'] = recording_response['_links']
+        return VoiceRecording().load(recording_response['data'][0])
+
+    def voice_recording_download(self, call_id, leg_id, recording_id):
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id)
+        recording_response = self.request(uri, 'GET')
+        if recording_response['_links'] is not None:
+            recording_file = self.request_store_as_file(VOICE_API_ROOT + recording_response['_links']['file'], recording_response['data'][0]['id'] + '.wav')
+        return VOICE_API_ROOT + recording_response['_links']['file']
 
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)
