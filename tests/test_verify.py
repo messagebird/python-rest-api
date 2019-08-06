@@ -1,5 +1,5 @@
 import unittest
-from messagebird import Client
+from messagebird import Client, ErrorException
 
 try:
     from unittest.mock import Mock
@@ -38,3 +38,21 @@ class TestVerify(unittest.TestCase):
         http_client.request.assert_called_once_with('verify/verify-id', 'GET', {'token': 'secret'})
 
         self.assertEqual('verified', verify.status)
+
+    def test_verify_delete(self):
+        http_client = Mock()
+        http_client.request.return_value = ''
+
+        Client('', http_client).verify_delete('31612345678')
+
+        http_client.request.assert_called_once_with('verify/31612345678', 'DELETE', None)
+
+    def test_verify_delete_invalid(self):
+        http_client = Mock()
+        http_client.request.return_value = '{"errors": [{"code": 20,"description": "verification id not found","parameter": null}]}'
+
+        with self.assertRaises(ErrorException):
+            Client('', http_client).verify_delete('non-existent-verify-id')
+
+        http_client.request.assert_called_once_with('verify/non-existent-verify-id', 'DELETE', None)
+
