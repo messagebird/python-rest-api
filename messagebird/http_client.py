@@ -21,7 +21,7 @@ class HttpClient(object):
         """Builds a request and gets a response."""
         if params is None: params = {}
         url = urljoin(self.endpoint, path)
-
+        print url
         headers = {
             'Accept': 'application/json',
             'Authorization': 'AccessKey ' + self.access_key,
@@ -46,5 +46,5 @@ class HttpClient(object):
             response_text = response.text
         else:
             response.raise_for_status()
-
+        
         return response_text
