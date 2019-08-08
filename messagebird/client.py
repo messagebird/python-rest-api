@@ -11,7 +11,7 @@ from messagebird.mms import MMS
 from messagebird.voicemessage import VoiceMessage
 from messagebird.lookup import Lookup
 from messagebird.verify import Verify
-from messagebird.http_client import HttpClient
+from messagebird.http_client import HttpClient, ResponseFormat
 from messagebird.conversation_message import ConversationMessage, ConversationMessageList
 from messagebird.conversation import Conversation, ConversationList
 from messagebird.conversation_webhook import ConversationWebhook, ConversationWebhookList
@@ -59,7 +59,6 @@ class Client(object):
     def request(self, path, method='GET', params=None, type=REST_TYPE):
         """Builds a request, gets a response and decodes it."""
         response_text = self._get_http_client(type).request(path, method, params)
-
         if not response_text:
             return response_text
 
@@ -90,12 +89,13 @@ class Client(object):
 
     def request_store_as_file(self, path, filepath, method='GET', params=None, type=REST_TYPE):
         """Builds a request, gets a response and decodes it."""
-        response_binary = self._get_http_client(type).request_binary(path, method, params)
+        response_binary = self._get_http_client(type).request(path, method, params, ResponseFormat.binary)
 
         if not response_binary:
             return response_binary
-        else:
-            open(filepath, 'wb').write(response_binary)
+
+        with open(filepath, 'wb') as f:
+            f.write(response_binary)
 
         return filepath
 
@@ -320,14 +320,16 @@ class Client(object):
     def voice_recording_view(self, call_id, leg_id, recording_id):
         uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id)
         recording_response = self.request(uri, 'GET')
-        recording_response['data'][0]['_links'] = recording_response['_links']
+        if recording_response['_links'] is not None:
+            recording_response['data'][0]['_links'] = recording_response['_links']
         return VoiceRecording().load(recording_response['data'][0])
 
     def voice_recording_download(self, call_id, leg_id, recording_id):
         uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id)
         recording_response = self.request(uri, 'GET')
-        if recording_response['_links'] is not None:
-            recording_file = self.request_store_as_file(VOICE_API_ROOT + recording_response['_links']['file'], recording_response['data'][0]['id'] + '.wav')
+        if recording_response['_links'] is None or recording_response['_links']['file'] is None:
+            raise (ErrorException('There is no recording available'))
+        recording_file = self.request_store_as_file(VOICE_API_ROOT + recording_response['_links']['file'], recording_response['data'][0]['id'] + '.wav')
         return VOICE_API_ROOT + recording_response['_links']['file']
 
     def _format_query(self, limit, offset):
