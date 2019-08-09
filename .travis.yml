@@ -10,8 +10,8 @@ install:
   - pip install mock==2.0
   - pip install requests
   - pip install codecov
-  - pip install pytest==.3.6
-  - pip install pytest-cov
+  - pip install pytest
+  - pip install pytest-cov<2.6.0
   - pip install .
 script:
   - pytest --cov=messagebird tests/
