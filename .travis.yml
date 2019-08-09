@@ -20,3 +20,5 @@ matrix:
   - python: 'nightly'
   - python: 'pypy2.7'
   - python: 'pypy3.5'
+after_success:
+  — coveralls
