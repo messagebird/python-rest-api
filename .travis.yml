@@ -15,10 +15,10 @@ install:
   - pip install .
 script:
   - pytest --cov=messagebird tests/
+after_success:
+  — coveralls
 matrix:
   allow_failures:
   - python: 'nightly'
   - python: 'pypy2.7'
   - python: 'pypy3.5'
-after_success:
-  — coveralls
