@@ -11,7 +11,7 @@ install:
   - pip install requests
   - pip install codecov
   - pip install pytest
-  - pip install pytest-cov<2.6.0
+  - pip install pytest-cov
   - pip install .
 script:
   - pytest --cov=messagebird tests/
@@ -19,3 +19,4 @@ matrix:
   allow_failures:
   - python: 'nightly'
   - python: 'pypy2.7'
+  - python: 'pypy3.5'
