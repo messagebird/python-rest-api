@@ -13,9 +13,8 @@ install:
   - pip install pytest pytest-cov
   - pip install .
 script:
-  - pytest --cov=messagebird tests/
-after_success:
-  — coveralls
+  - coverage run --source=messagebird -m unittest discover -s tests/
+  - coverage report --fail-under=80
 matrix:
   allow_failures:
   - python: 'nightly'
