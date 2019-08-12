@@ -320,17 +320,20 @@ class Client(object):
     def voice_recording_view(self, call_id, leg_id, recording_id):
         uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id)
         recording_response = self.request(uri, 'GET')
-        if recording_response['_links'] is not None:
-            recording_response['data'][0]['_links'] = recording_response['_links']
+        recording_links = recording_response.get('_links')
+        if recording_links is not None:
+            recording_response['data'][0]['_links'] = recording_links
         return VoiceRecording().load(recording_response['data'][0])
 
     def voice_recording_download(self, call_id, leg_id, recording_id):
         uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id)
         recording_response = self.request(uri, 'GET')
-        if recording_response['_links'] is None or recording_response['_links']['file'] is None:
+        recording_links = recording_response.get('_links')
+        if recording_links is None or recording_links.get('file') is None:
             raise (ErrorException('There is no recording available'))
-        recording_file = self.request_store_as_file(VOICE_API_ROOT + recording_response['_links']['file'], recording_response['data'][0]['id'] + '.wav')
-        return VOICE_API_ROOT + recording_response['_links']['file']
+        recording_file = recording_links.get('file')
+        recording_file = self.request_store_as_file(VOICE_API_ROOT + recording_file, recording_id + '.wav')
+        return VOICE_API_ROOT + recording_file
 
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)
