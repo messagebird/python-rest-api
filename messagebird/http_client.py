@@ -45,12 +45,11 @@ class HttpClient(object):
         if isinstance(response, str):
             raise ValueError(response)
 
-        if response.status_code in self.__supported_status_codes:
-            if format == ResponseFormat.text:
-                response_text = response.text
-            else:
-                response_text = response.content
-        else:
+        if response.status_code not in self.__supported_status_codes:
             response.raise_for_status()
 
-        return response_text
+        response_switcher = {
+            ResponseFormat.text: response.text,
+            ResponseFormat.binary: response.content
+        }
+        return response_switcher.get(format)
