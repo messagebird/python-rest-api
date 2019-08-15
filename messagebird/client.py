@@ -1,5 +1,6 @@
 import sys
 import json
+import io
 
 from messagebird.balance import Balance
 from messagebird.contact import Contact, ContactList
@@ -94,7 +95,7 @@ class Client(object):
         if not response_binary:
             return response_binary
 
-        with open(filepath, 'wb') as f:
+        with io.open(filepath, 'wb') as f:
             f.write(response_binary)
 
         return filepath
