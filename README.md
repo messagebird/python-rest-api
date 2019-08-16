@@ -73,6 +73,14 @@ Your balance:
 
 Please see the other examples for a complete overview of all the available API calls.
 
+Conversations WhatsApp Sandbox
+-------------
+To use the whatsapp sandbox you need to add `messagebird.Feature.ENABLE_CONVERSATIONSAPI_WHATSAPP_SANDBOX` to the list of features you want enabled. Don't forget to replace `YOUR_ACCESS_KEY` with your actual access key.
+
+```python
+  client = messagebird.Client('1ekjMs368KTRlP0z6zfG9P70z', features=[messagebird.Feature.ENABLE_CONVERSATIONSAPI_WHATSAPP_SANDBOX])
+```
+
 Documentation
 -------------
 Complete documentation, instructions, and examples are available at:
