@@ -1,5 +1,6 @@
 import sys
 import json
+import io
 
 from messagebird.balance import Balance
 from messagebird.call import Call
@@ -12,10 +13,11 @@ from messagebird.mms import MMS
 from messagebird.voicemessage import VoiceMessage
 from messagebird.lookup import Lookup
 from messagebird.verify import Verify
-from messagebird.http_client import HttpClient
+from messagebird.http_client import HttpClient, ResponseFormat
 from messagebird.conversation_message import ConversationMessage, ConversationMessageList
 from messagebird.conversation import Conversation, ConversationList
 from messagebird.conversation_webhook import ConversationWebhook, ConversationWebhookList
+from messagebird.voice_recording import VoiceRecordingsList, VoiceRecording
 
 ENDPOINT = 'https://rest.messagebird.com'
 CLIENT_VERSION = '1.4.1'
@@ -29,8 +31,11 @@ CONVERSATION_MESSAGES_PATH = 'messages'
 CONVERSATION_WEB_HOOKS_PATH = 'webhooks'
 CONVERSATION_TYPE = 'conversation'
 
-VOICE_API_ROOT='https://voice.messagebird.com/'
+VOICE_API_ROOT = 'https://voice.messagebird.com'
 VOICE_TYPE = 'voice'
+VOICE_PATH = 'calls'
+VOICE_LEGS_PATH = 'legs'
+VOICE_RECORDINGS_PATH = 'recordings'
 
 
 class ErrorException(Exception):
@@ -60,7 +65,6 @@ class Client(object):
     def request(self, path, method='GET', params=None, type=REST_TYPE):
         """Builds a request, gets a response and decodes it."""
         response_text = self._get_http_client(type).request(path, method, params)
-
         if not response_text:
             return response_text
 
@@ -88,6 +92,18 @@ class Client(object):
             pass
 
         return response_text
+
+    def request_store_as_file(self, path, filepath, method='GET', params=None, type=REST_TYPE):
+        """Builds a request, gets a response and decodes it."""
+        response_binary = self._get_http_client(type).request(path, method, params, ResponseFormat.binary)
+
+        if not response_binary:
+            return response_binary
+
+        with io.open(filepath, 'wb') as f:
+            f.write(response_binary)
+
+        return filepath
 
     def balance(self):
         """Retrieve your balance."""
@@ -306,6 +322,28 @@ class Client(object):
     def conversation_read_webhook(self, id):
         uri = CONVERSATION_WEB_HOOKS_PATH + '/' + str(id)
         return ConversationWebhook().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
+
+    def voice_recording_list_recordings(self, call_id, leg_id):
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH
+        return VoiceRecordingsList().load(self.request(uri, 'GET'))
+
+    def voice_recording_view(self, call_id, leg_id, recording_id):
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id)
+        recording_response = self.request(uri, 'GET')
+        recording_links = recording_response.get('_links')
+        if recording_links is not None:
+            recording_response['data'][0]['_links'] = recording_links
+        return VoiceRecording().load(recording_response['data'][0])
+
+    def voice_recording_download(self, call_id, leg_id, recording_id):
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id)
+        recording_response = self.request(uri, 'GET')
+        recording_links = recording_response.get('_links')
+        if recording_links is None or recording_links.get('file') is None:
+            raise (ErrorException('There is no recording available'))
+        recording_file = recording_links.get('file')
+        recording_file = self.request_store_as_file(VOICE_API_ROOT + recording_file, recording_id + '.wav')
+        return VOICE_API_ROOT + recording_file
 
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)

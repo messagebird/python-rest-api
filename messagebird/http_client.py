@@ -1,10 +1,15 @@
 import json
 import requests
+from enum import Enum
 
 try:
     from urllib.parse import urljoin
 except ImportError:
     from urlparse import urljoin
+
+class ResponseFormat(Enum):
+    text = 1
+    binary = 2
 
 
 class HttpClient(object):
@@ -17,7 +22,7 @@ class HttpClient(object):
         self.access_key = access_key
         self.user_agent = user_agent
 
-    def request(self, path, method='GET', params=None):
+    def request(self, path, method='GET', params=None, format=ResponseFormat.text):
         """Builds a request and gets a response."""
         if params is None: params = {}
         url = urljoin(self.endpoint, path)
@@ -28,22 +33,22 @@ class HttpClient(object):
             'Content-Type': 'application/json'
         }
 
-        if method == 'DELETE':
-            response = requests.delete(url, verify=True, headers=headers, data=json.dumps(params))
-        elif method == 'GET':
-            response = requests.get(url, verify=True, headers=headers, params=params)
-        elif method == 'PATCH':
-            response = requests.patch(url, verify=True, headers=headers, data=json.dumps(params))
-        elif method == 'POST':
-            response = requests.post(url, verify=True, headers=headers, data=json.dumps(params))
-        elif method == 'PUT':
-            response = requests.put(url, verify=True, headers=headers, data=json.dumps(params))
-        else:
-            raise ValueError(str(method) + ' is not a supported HTTP method')
+        method_switcher = {
+            'DELETE': requests.delete(url, verify=True, headers=headers, data=json.dumps(params)),
+            'GET': requests.get(url, verify=True, headers=headers, params=params),
+            'PATCH': requests.patch(url, verify=True, headers=headers, data=json.dumps(params)),
+            'POST': requests.post(url, verify=True, headers=headers, data=json.dumps(params)),
+            'PUT': requests.put(url, verify=True, headers=headers, data=json.dumps(params))
+        }
+        response = method_switcher.get(method, str(method) + ' is not a supported HTTP method')
+        if isinstance(response, str):
+            raise ValueError(response)
 
-        if response.status_code in self.__supported_status_codes:
-            response_text = response.text
-        else:
+        if response.status_code not in self.__supported_status_codes:
             response.raise_for_status()
-        
-        return response_text
+
+        response_switcher = {
+            ResponseFormat.text: response.text,
+            ResponseFormat.binary: response.content
+        }
+        return response_switcher.get(format)
