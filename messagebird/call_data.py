@@ -1,4 +1,5 @@
 from messagebird.base import Base
+from messagebird.webhook import Webhook
 
 class CallData(Base):
     
@@ -10,6 +11,7 @@ class CallData(Base):
         self._createdAt = None
         self._updatedAt = None
         self._endedAt = None
+        self._webhook = None
 
 
     @property
@@ -35,3 +37,11 @@ class CallData(Base):
     @endedAt.setter
     def endedAt(self, value):
         self._endedAt = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
+
+    @property
+    def webhook(self):
+        return self._webhook
+
+    @webhook.setter
+    def webhook(self, value):
+        self._webhook = Webhook.load(value)

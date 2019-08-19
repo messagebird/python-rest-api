@@ -5,12 +5,12 @@ CALL_STATUS_STARTING = "starting"
 CALL_STATUS_ONGOING = "ongoing"
 CALL_STATUS_ENDED = "ended"
 
+
 class Call(Base):
-    
+
     def __init__(self):
         self.id = None
         self._data = None
-    
 
     @property
     def data(self):
