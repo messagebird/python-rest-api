@@ -9,10 +9,14 @@ python:
 install:
   - pip install mock==2.0
   - pip install requests
+  - pip install codecov
+  - pip install pytest pytest-cov
   - pip install .
 script:
-  - python -m unittest discover -s tests/ -p test_*.py -v
+  - coverage run --source=messagebird -m unittest discover -s tests/
+  - coverage report --fail-under=80
 matrix:
   allow_failures:
   - python: 'nightly'
   - python: 'pypy2.7'
+  - python: 'pypy3.5'
