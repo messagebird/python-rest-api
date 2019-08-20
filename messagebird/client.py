@@ -3,6 +3,7 @@ import json
 import io
 
 from messagebird.balance import Balance
+from messagebird.call import Call
 from messagebird.contact import Contact, ContactList
 from messagebird.error import Error
 from messagebird.group import Group, GroupList
@@ -31,6 +32,7 @@ CONVERSATION_WEB_HOOKS_PATH = 'webhooks'
 CONVERSATION_TYPE = 'conversation'
 
 VOICE_API_ROOT = 'https://voice.messagebird.com'
+VOICE_TYPE = 'voice'
 VOICE_PATH = 'calls'
 VOICE_LEGS_PATH = 'legs'
 VOICE_RECORDINGS_PATH = 'recordings'
@@ -54,6 +56,9 @@ class Client(object):
 
         if type == REST_TYPE:
             return HttpClient(ENDPOINT, self.access_key, USER_AGENT)
+
+        if type == VOICE_TYPE:
+            return HttpClient(VOICE_API_ROOT, self.access_key, USER_AGENT)
 
         return HttpClient(CONVERSATION_API_ROOT, self.access_key, USER_AGENT)
 
@@ -103,6 +108,10 @@ class Client(object):
     def balance(self):
         """Retrieve your balance."""
         return Balance().load(self.request('balance'))
+
+    def call(self,id):
+        """Retrieve the information of a specific call"""
+        return Call().load(self.request('calls/' + str(id), 'GET', None, VOICE_TYPE))
 
     def hlr(self, id):
         """Retrieve the information of a specific HLR lookup."""

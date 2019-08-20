@@ -26,7 +26,6 @@ class HttpClient(object):
         """Builds a request and gets a response."""
         if params is None: params = {}
         url = urljoin(self.endpoint, path)
-
         headers = {
             'Accept': 'application/json',
             'Authorization': 'AccessKey ' + self.access_key,
