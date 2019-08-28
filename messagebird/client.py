@@ -1,6 +1,7 @@
 import sys
 import json
 import io
+import enum
 
 from messagebird.balance import Balance
 from messagebird.call import Call
@@ -19,6 +20,7 @@ from messagebird.conversation import Conversation, ConversationList
 from messagebird.conversation_webhook import ConversationWebhook, ConversationWebhookList
 from messagebird.voice_recording import VoiceRecordingsList, VoiceRecording
 
+
 ENDPOINT = 'https://rest.messagebird.com'
 CLIENT_VERSION = '1.4.1'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
@@ -26,6 +28,10 @@ USER_AGENT = 'MessageBird/ApiClient/%s Python/%s' % (CLIENT_VERSION, PYTHON_VERS
 REST_TYPE = 'rest'
 
 CONVERSATION_API_ROOT = 'https://conversations.messagebird.com/v1/'
+CONVERSATION_API_WHATSAPP_SANDBOX_ROOT = 'https://whatsapp-sandbox.messagebird.com/v1/'
+
+
+
 CONVERSATION_PATH = 'conversations'
 CONVERSATION_MESSAGES_PATH = 'messages'
 CONVERSATION_WEB_HOOKS_PATH = 'webhooks'
@@ -44,23 +50,28 @@ class ErrorException(Exception):
         message = ' '.join([str(e) for e in self.errors])
         super(ErrorException, self).__init__(message)
 
+class Feature(enum.Enum):
+        ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX = 1
 
 class Client(object):
-    def __init__(self, access_key, http_client=None):
+
+    def __init__(self, access_key, http_client=None, features=[]):
         self.access_key = access_key
         self.http_client = http_client
+        
+        self.conversation_api_root = CONVERSATION_API_WHATSAPP_SANDBOX_ROOT if Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX in features else CONVERSATION_API_ROOT
 
     def _get_http_client(self, type=REST_TYPE):
         if self.http_client:
             return self.http_client
 
-        if type == REST_TYPE:
-            return HttpClient(ENDPOINT, self.access_key, USER_AGENT)
-
+        if type == CONVERSATION_TYPE:
+            return HttpClient(self.conversation_api_root, self.access_key, USER_AGENT)
+       
         if type == VOICE_TYPE:
             return HttpClient(VOICE_API_ROOT, self.access_key, USER_AGENT)
 
-        return HttpClient(CONVERSATION_API_ROOT, self.access_key, USER_AGENT)
+        return HttpClient(ENDPOINT, self.access_key, USER_AGENT)
 
     def request(self, path, method='GET', params=None, type=REST_TYPE):
         """Builds a request, gets a response and decodes it."""
