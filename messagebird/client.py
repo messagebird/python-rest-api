@@ -49,7 +49,7 @@ class ErrorException(Exception):
         super(ErrorException, self).__init__(message)
 
 class Feature(enum.Enum):
-        ENABLE_CONVERSATIONSAPI_WHATSAPP_SANDBOX = 1
+        ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX = 1
 
 class Client(object):
 
@@ -57,7 +57,7 @@ class Client(object):
         self.access_key = access_key
         self.http_client = http_client
         
-        self.conversation_api_root = CONVERSATION_API_WHATSAPP_SANDBOX_ROOT if Feature.ENABLE_CONVERSATIONSAPI_WHATSAPP_SANDBOX in features else CONVERSATION_API_ROOT
+        self.conversation_api_root = CONVERSATION_API_WHATSAPP_SANDBOX_ROOT if Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX in features else CONVERSATION_API_ROOT
 
     def _get_http_client(self, type=REST_TYPE):
         if self.http_client:
