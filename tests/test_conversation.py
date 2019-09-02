@@ -1,5 +1,8 @@
 import unittest
 from datetime import datetime
+
+from dateutil.tz import tzutc
+
 from messagebird import Client
 
 try:
@@ -31,8 +34,8 @@ class TestConversation(unittest.TestCase):
 
         self.assertEqual('1234', msg.id)
         self.assertEqual(99999999999, msg.contact.msisdn)
-        self.assertEqual(datetime(2019, 4, 2, 8, 19, 37), msg.contact.createdDatetime)
-        self.assertEqual(datetime(2019, 4, 2, 8, 19, 38), msg.contact.updatedDatetime)
+        self.assertEqual(datetime(2019, 4, 2, 8, 19, 37, tzinfo=tzutc()), msg.contact.createdDatetime)
+        self.assertEqual(datetime(2019, 4, 2, 8, 19, 38, tzinfo=tzutc()), msg.contact.updatedDatetime)
         self.assertEqual('channel-name', msg.channels[0].name)
 
     def test_conversation_list(self):
@@ -52,9 +55,9 @@ class TestConversation(unittest.TestCase):
         http_client.request.assert_called_once_with('conversations/conversation-id', 'GET', None)
 
         self.assertEqual('57b96dbe0fda40f0a814f5e3268c30a9', conversation.id)
-        self.assertEqual(datetime(2019, 4, 2, 8, 54, 38), conversation.createdDatetime)
-        self.assertEqual(datetime(2019, 4, 2, 14, 24, 9), conversation.updatedDatetime)
-        self.assertEqual(datetime(2019, 4, 2, 14, 24), conversation.lastReceivedDatetime)
+        self.assertEqual(datetime(2019, 4, 2, 8, 54, 38, tzinfo=tzutc()), conversation.createdDatetime)
+        self.assertEqual(datetime(2019, 4, 2, 14, 24, 9, tzinfo=tzutc()), conversation.updatedDatetime)
+        self.assertEqual(datetime(2019, 4, 2, 14, 24, 9, tzinfo=tzutc()), conversation.lastReceivedDatetime)
         self.assertEqual('8846d44229094c20813cf9eea596e680', conversation.contact.id)
         self.assertEqual('c0dae31e440145e094c4708b7d908842', conversation.channels[0].id)
         self.assertEqual(2, conversation.messages.totalCount)

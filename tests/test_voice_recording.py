@@ -1,4 +1,7 @@
 import unittest
+
+from dateutil.tz import tzutc
+
 from messagebird import Client, ErrorException
 from datetime import datetime
 
@@ -23,8 +26,8 @@ class TestVoiceRecording(unittest.TestCase):
         self.assertEqual('12345678-9012-3456-7890-123456789012', voice_recording.id)
         self.assertEqual('done', voice_recording.status)
         self.assertEqual('wav', voice_recording.format)
-        self.assertEqual(datetime(2018, 1, 1, 0, 0, 1), voice_recording.createdAt)
-        self.assertEqual(datetime(2018, 1, 1, 0, 0, 5), voice_recording.updatedAt)
+        self.assertEqual(datetime(2018, 1, 1, 0, 0, 1, tzinfo=tzutc()), voice_recording.createdAt)
+        self.assertEqual(datetime(2018, 1, 1, 0, 0, 5, tzinfo=tzutc()), voice_recording.updatedAt)
         self.assertEqual(2, len(voice_recording._links))
         self.assertIsInstance(str(voice_recording), str)
 
@@ -47,8 +50,8 @@ class TestVoiceRecording(unittest.TestCase):
             self.assertEqual(recording_specific['duration'], item.duration)
             self.assertEqual('done', item.status)
             self.assertEqual('wav', item.format)
-            self.assertEqual(datetime(recording_specific['year'], 1, 1, 0, 0, 1), item.createdAt)
-            self.assertEqual(datetime(recording_specific['year'], 1, 1, 0, 0, 5), item.updatedAt)
+            self.assertEqual(datetime(recording_specific['year'], 1, 1, 0, 0, 1, tzinfo=tzutc()), item.createdAt)
+            self.assertEqual(datetime(recording_specific['year'], 1, 1, 0, 0, 5, tzinfo=tzutc()), item.updatedAt)
             self.assertEqual(2, len(item._links))
         self.assertIsInstance(str(voice_recordings), str)
 

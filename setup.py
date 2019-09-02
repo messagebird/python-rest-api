@@ -22,7 +22,7 @@ setup(
     url                           = 'https://github.com/messagebird/python-rest-api',
     download_url                  = 'https://github.com/messagebird/python-rest-api/tarball/1.4.1',
     keywords                      = ['messagebird', 'sms'],
-    install_requires              = ['requests>=2.4.1'],
+    install_requires              = ['requests>=2.4.1', 'python-dateutil>=2.6.0'],
     license                       = 'BSD-2-Clause',
     classifiers                   = [
         'Programming Language :: Python',
