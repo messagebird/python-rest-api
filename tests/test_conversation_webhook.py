@@ -1,6 +1,9 @@
 import unittest
 import json
 from datetime import datetime
+
+from dateutil.tz import tzutc
+
 from messagebird import Client
 from messagebird.conversation_webhook import \
     CONVERSATION_WEBHOOK_EVENT_CONVERSATION_CREATED, \
@@ -60,7 +63,7 @@ class TestConversationWebhook(unittest.TestCase):
         web_hook = Client('', http_client).conversation_read_webhook('webhook-id')
 
         http_client.request.assert_called_once_with('webhooks/webhook-id', 'GET', None)
-        self.assertEqual(datetime(2019, 4, 3, 8, 41, 37), web_hook.createdDatetime)
+        self.assertEqual(datetime(2019, 4, 3, 8, 41, 37, tzinfo=tzutc()), web_hook.createdDatetime)
         self.assertEqual(None, web_hook.updatedDatetime)
         self.assertEqual(['conversation.created', 'conversation.updated'], web_hook.events)
 

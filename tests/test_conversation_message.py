@@ -1,5 +1,8 @@
 import unittest
 from datetime import datetime
+
+from dateutil.tz import tzutc
+
 from messagebird import Client
 
 try:
@@ -45,7 +48,7 @@ class TestConversationMessage(unittest.TestCase):
 
         msg = Client('', http_client).conversation_create_message('conversation-id', data)
 
-        self.assertEqual(datetime(2019, 4, 2, 11, 57, 53), msg.updatedDatetime)
-        self.assertEqual(datetime(2019, 4, 2, 11, 57, 52), msg.createdDatetime)
+        self.assertEqual(datetime(2019, 4, 2, 11, 57, 53, tzinfo=tzutc()), msg.updatedDatetime)
+        self.assertEqual(datetime(2019, 4, 2, 11, 57, 52, tzinfo=tzutc()), msg.createdDatetime)
 
         http_client.request.assert_called_once_with('conversations/conversation-id/messages', 'POST', data)
