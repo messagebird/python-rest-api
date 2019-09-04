@@ -45,3 +45,12 @@ class CallData(Base):
     @webhook.setter
     def webhook(self, value):
         self._webhook = Webhook.load(value)
+
+    def __str__(self):
+        return "\n".join([
+            'id                 : %s' % self.id,
+            'updatedAt          : %s' % self.updatedAt,
+            'createdAt          : %s' % self.createdAt,
+            'endedAt            : %s' % self.endedAt,
+            'webhook            : %s' % self.webhook,
+        ])

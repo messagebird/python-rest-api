@@ -19,3 +19,9 @@ class Call(Base):
     @data.setter
     def data(self, value):
         self._data = CallData().load(value[0])
+
+    def __str__(self):
+        return "\n".join([
+            'id                 : %s' % self.id,
+            'data.'+'data.'.join(str(self._data).splitlines(True)),
+        ])
