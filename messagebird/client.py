@@ -19,6 +19,7 @@ from messagebird.conversation_message import ConversationMessage, ConversationMe
 from messagebird.conversation import Conversation, ConversationList
 from messagebird.conversation_webhook import ConversationWebhook, ConversationWebhookList
 from messagebird.voice_recording import VoiceRecordingsList, VoiceRecording
+from messagebird.call_flow import CallFlow
 
 
 ENDPOINT = 'https://rest.messagebird.com'
@@ -355,6 +356,9 @@ class Client(object):
         recording_file = recording_links.get('file')
         recording_file = self.request_store_as_file(VOICE_API_ROOT + recording_file, recording_id + '.wav')
         return VOICE_API_ROOT + recording_file
+
+    def call_flow(self, id):
+        return CallFlow().load(self.request('call-flows/' + str(id), 'GET', None))
 
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)
