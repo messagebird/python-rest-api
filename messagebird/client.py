@@ -358,7 +358,7 @@ class Client(object):
         return VOICE_API_ROOT + recording_file
 
     def call_flow(self, id):
-        return CallFlow().load(self.request('call-flows/' + str(id), 'GET', None))
+        return CallFlow().load(self.request('call-flows/' + str(id), 'GET', None, VOICE_TYPE))
 
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)
