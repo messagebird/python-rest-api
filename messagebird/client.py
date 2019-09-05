@@ -19,7 +19,7 @@ from messagebird.conversation_message import ConversationMessage, ConversationMe
 from messagebird.conversation import Conversation, ConversationList
 from messagebird.conversation_webhook import ConversationWebhook, ConversationWebhookList
 from messagebird.voice_recording import VoiceRecordingsList, VoiceRecording
-from messagebird.call_flow import CallFlow
+from messagebird.call_flow import CallFlow, CallFlowList
 
 
 ENDPOINT = 'https://rest.messagebird.com'
@@ -59,7 +59,7 @@ class Client(object):
     def __init__(self, access_key, http_client=None, features=[]):
         self.access_key = access_key
         self.http_client = http_client
-        
+
         self.conversation_api_root = CONVERSATION_API_WHATSAPP_SANDBOX_ROOT if Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX in features else CONVERSATION_API_ROOT
 
     def _get_http_client(self, type=REST_TYPE):
@@ -68,7 +68,7 @@ class Client(object):
 
         if type == CONVERSATION_TYPE:
             return HttpClient(self.conversation_api_root, self.access_key, USER_AGENT)
-       
+
         if type == VOICE_TYPE:
             return HttpClient(VOICE_API_ROOT, self.access_key, USER_AGENT)
 
@@ -358,7 +358,11 @@ class Client(object):
         return VOICE_API_ROOT + recording_file
 
     def call_flow(self, id):
-        return CallFlow().load(self.request('call-flows/' + str(id), 'GET', None))
+        return CallFlow().load(self.request('call-flows/' + str(id), 'GET', None, VOICE_TYPE))
+
+    def call_flow_list(self, limit=10, offset=0):
+        query = self._format_query(limit, offset)
+        return CallFlowList().load(self.request('call-flows?' + query, 'GET', None, VOICE_TYPE))
 
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)

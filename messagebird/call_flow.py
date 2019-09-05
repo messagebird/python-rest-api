@@ -5,8 +5,33 @@ from messagebird.base_list import BaseList
 class CallFlowList(BaseList):
 
     def __init__(self):
-        # Signal the BaseList that we're expecting items of type Group...
+        self._data = None
+        self._pagination = None
+
         super(CallFlowList, self).__init__(CallFlow)
+
+    @property
+    def data(self):
+        return self._data
+
+    @property
+    def pagination(self):
+        return self._pagination
+
+    @pagination.setter
+    def pagination(self, value):
+        self._pagination = value
+
+    @data.setter
+    def data(self, value):
+        """Create typed objects from the dicts."""
+        items = []
+        for item in value:
+            items.append(self.itemType().load(item))
+
+        self._data = items
+
+
 
 
 class CallFlow(Base):
@@ -20,23 +45,28 @@ class CallFlow(Base):
         self._updatedAt = None
 
     @property
-    def created_at(self):
+    def createdAt(self):
         return self._createdAt
 
-    @created_at.setter
-    def created_at(self, value):
+    @createdAt.setter
+    def createdAt(self, value):
         self._createdAt = self.value_to_time(value)
 
     @property
-    def updated_at(self):
+    def updatedAt(self):
         return self._updatedAt
 
-    @updated_at.setter
-    def updated_at(self, value):
+    @updatedAt.setter
+    def updatedAt(self, value):
         self._updatedAt = self.value_to_time(value)
 
     def load(self, data):
-        for name, value in list(data.get('data')[0].items()):
+        if data.get('data') is not None:
+            items = data.get('data')[0].items()
+        else:
+            items = list(data.items())
+
+        for name, value in items:
             if hasattr(self, name) and not callable(getattr(self, name)):
                 setattr(self, name, value)
 
