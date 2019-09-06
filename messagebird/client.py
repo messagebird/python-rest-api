@@ -364,6 +364,14 @@ class Client(object):
         query = self._format_query(limit, offset)
         return CallFlowList().load(self.request('call-flows?' + query, 'GET', None, VOICE_TYPE))
 
+    def call_flow_create(self, title, steps, default=False, record=False):
+        params = {'title': title, 'steps': steps, 'default': default, 'record': record}
+        return CallFlow().load(self.request('call-flows', 'POST', params, VOICE_TYPE))
+
+    def call_flow_update(self, id, title, steps, default, record):
+        params = {'title': title, 'steps': steps, 'default': default, 'record': record}
+        return CallFlow().load(self.request('call-flows/' + str(id), 'PUT', params, VOICE_TYPE))
+
     def call_flow_delete(self, id):
         self.request_plain_text('call-flows/' + str(id), 'DELETE', None, VOICE_TYPE)
 
