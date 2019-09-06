@@ -67,6 +67,7 @@ class CallFlow(Base):
         self.title = None
         self.record = None
         self.steps = None
+        self.default = None
         self._createdAt = None
         self._updatedAt = None
 
