@@ -19,7 +19,7 @@ from messagebird.conversation_message import ConversationMessage, ConversationMe
 from messagebird.conversation import Conversation, ConversationList
 from messagebird.conversation_webhook import ConversationWebhook, ConversationWebhookList
 from messagebird.voice_recording import VoiceRecordingsList, VoiceRecording
-from messagebird.call_flow import CallFlow, CallFlowList
+from messagebird.call_flow import CallFlow, CallFlowList, CallFlowNumberList
 
 
 ENDPOINT = 'https://rest.messagebird.com'
@@ -363,6 +363,16 @@ class Client(object):
     def call_flow_list(self, limit=10, offset=0):
         query = self._format_query(limit, offset)
         return CallFlowList().load(self.request('call-flows?' + query, 'GET', None, VOICE_TYPE))
+
+    def call_flow_delete(self, id):
+        self.request_plain_text('call-flows/' + str(id), 'DELETE', None, VOICE_TYPE)
+
+    def call_flow_numbers_list(self, call_flow_id):
+        return CallFlowNumberList().load(self.request('call-flows/' + str(call_flow_id) + '/numbers', 'GET', None, VOICE_TYPE))
+
+    def call_flow_numbers_add(self, call_flow_id, numbers=()):
+        params = {'numbers': numbers}
+        return CallFlowNumberList().load(self.request('call-flows/' + str(call_flow_id) + '/numbers', 'POST', params, VOICE_TYPE))
 
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)

@@ -105,3 +105,48 @@ class TestCallFlow(unittest.TestCase):
 
         self.assertEqual('Forward call to 0600123123', call_flow_list.data[1].title)
         self.assertEqual(2, call_flow_list.pagination['totalCount'])
+
+    def test_numbers_list(self):
+        http_client = Mock()
+        http_client.request.return_value = '''{
+  "data": [
+    {
+      "id": "13f38f34-7ff4-45b3-8783-8d5b1143f22b",
+      "number": "31611111111",
+      "callFlowId": "de3ed163-d5fc-45f4-b8c4-7eea7458c635",
+      "createdAt": "2017-03-16T13:49:24Z",
+      "updatedAt": "2017-09-12T08:59:50Z",
+      "_links": {
+        "self": "/numbers/13f38f34-7ff4-45b3-8783-8d5b1143f22b"
+      }
+    }
+  ],
+  "_links": {
+    "self": "/call-flows/de3ed163-d5fc-45f4-b8c4-7eea7458c635/numbers?page=1"
+  },
+  "pagination": {
+    "totalCount": 1,
+    "pageCount": 1,
+    "currentPage": 1,
+    "perPage": 10
+  }
+}
+        '''
+
+        number_list = Client('', http_client).call_flow_numbers_list('de3ed163-d5fc-45f4-b8c4-7eea7458c635')
+
+        http_client.request.assert_called_once_with('call-flows/de3ed163-d5fc-45f4-b8c4-7eea7458c635/numbers', 'GET', None)
+
+        self.assertEqual('31611111111', number_list.data[0].number)
+        self.assertEqual(1, number_list.pagination['totalCount'])
+
+    def test_numbers_add(self):
+        http_client = Mock()
+        http_client.request.return_value = '{}'
+
+        Client('', http_client).call_flow_numbers_add('de3ed163-d5fc-45f4-b8c4-7eea7458c635',
+                                                      ['31611111111', '31611111112'])
+
+        params = {'numbers': ['31611111111', '31611111112']}
+
+        http_client.request.assert_called_once_with('call-flows/de3ed163-d5fc-45f4-b8c4-7eea7458c635/numbers', 'POST', params)
