@@ -2,7 +2,6 @@
 
 import sys
 import messagebird
-import pprint
 
 #ACCESS_KEY = ''
 #CALL_FLOW_ID = ''
@@ -23,13 +22,11 @@ try:
     # Create a MessageBird client with the specified ACCESS_KEY.
     client = messagebird.Client(ACCESS_KEY)
 
-    # Fetch the Message object for the specified MESSAGE_ID.
+    # Fetch the CallFlow object for the specified CALL_FLOW_ID.
     call = client.call_flow(CALL_FLOW_ID)
 
-    pp = pprint.PrettyPrinter(indent=4)
-
     # Print the object information.
-    print('\nThe following information was returned as a Message object:\n')
+    print('\nThe following information was returned as a CallFlow object:\n')
     print('  id           : %s' % call.id)
     print('  title        : %s' % call.title)
     print('  steps        : ')
@@ -42,7 +39,7 @@ try:
     print('  createdAt    : %s' % call.createdAt)
 
 except messagebird.client.ErrorException as e:
-    print('\nAn error occured while requesting a Message object:\n')
+    print('\nAn error occured while requesting a CallFlow object:\n')
 
     for error in e.errors:
         print('  code        : %d' % error.code)
