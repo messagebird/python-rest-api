@@ -27,21 +27,21 @@ try:
 
     # Print the object information.
     print('\nThe following information was returned as a CallFlow object:\n')
-    print('  id           : %s' % call.id)
-    print('  title        : %s' % call.title)
+    print('  id           : {}'.format(call.id))
+    print('  title        : {}'.format(call.title))
     print('  steps        : ')
     for step in call.steps:
         print(step)
 
-    print('  record       : %s' % call.record)
-    print('  default      : %s' % call.default)
-    print('  updatedAt    : %s' % call.updatedAt)
-    print('  createdAt    : %s' % call.createdAt)
+    print('  record       : {}'.format(call.record))
+    print('  default      : {}'.format(call.default))
+    print('  updatedAt    : {}'.format(call.updatedAt))
+    print('  createdAt    : {}'.format(call.createdAt))
 
 except messagebird.client.ErrorException as e:
     print('\nAn error occured while requesting a CallFlow object:\n')
 
     for error in e.errors:
-        print('  code        : %d' % error.code)
-        print('  description : %s' % error.description)
-        print('  parameter   : %s\n' % error.parameter)
+        print('  code        : {}'.format(error.code))
+        print('  description : {}'.format(error.description))
+        print('  parameter   : {}\n'.format(error.parameter))
