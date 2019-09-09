@@ -27,14 +27,13 @@ args = vars(parser.parse_args())
 # arguments to parse as json
 jsonArgs = ['callFlow', 'webhook']
 
-print()
 for jsonArg in jsonArgs:
     try:
         args[jsonArg] = json.loads(str(args[jsonArg]).strip('\''))
     except json.decoder.JSONDecodeError as e:
         parser.print_usage()
-        print('Invalid json provided for', jsonArg, ':', e)
-        print('Provided', jsonArg, 'json:', args[jsonArg])
+        print('Invalid json provided for %s: %s' % (jsonArg, e))
+        print('Provided %s json: %s' % (jsonArg, args[jsonArg]))
         exit(1)
 
 try:
@@ -47,6 +46,14 @@ try:
 
     # Print the object information.
     print('\nThe following information was returned as a', str(call.__class__), 'object:\n')
+    print('  id                : %s' % call.data.id)
+    print('  status            : %s' % call.data.status)
+    print('  source            : %s' % call.data.source)
+    print('  destination       : %s' % call.data.destination)
+    print('  webhook           : %s' % call.data.webhook)
+    print('  createdAt         : %s' % call.data.createdAt)
+    print('  updatedAt         : %s' % call.data.updatedAt)
+    print('  endedAt           : %s' % call.data.endedAt)
 
 except messagebird.client.ErrorException as e:
     print('\nAn error occurred while creating a call:\n')

@@ -97,17 +97,20 @@ class TestCall(unittest.TestCase):
         # check all api response data is outputted
         expected_data = self.create_expected_call_data_based_on_api_response(api_response)
         response_data = call_creation_response.data.__dict__
-        self.assertEqual(expected_data, response_data, 'Check client response contains the api response data.')
+        self.assertEqual(expected_data, response_data, 'Check client response contains the API response data.')
 
         # check it can be formatted as string
         expected_call_string = 'id                 : None\n' + \
             'data.id                 : 21025ed1-cc1d-4554-ac05-043fa6c84e00\n' + \
+            'data.status             : queued\n' + \
+            'data.source             : 31644556677\n' + \
+            'data.destination        : 31612345678\n' + \
+            'data.webhook            : None\n' + \
             'data.updatedAt          : 2017-08-30 07:35:37+00:00\n' + \
             'data.createdAt          : 2017-08-30 07:35:37+00:00\n' + \
-            'data.endedAt            : None\n' + \
-            'data.webhook            : None'
+            'data.endedAt            : None'
         self.assertEqual(expected_call_string, str(call_creation_response), 'Check returned call can be formatted as' +
-                         'string')
+                         ' string')
 
     @staticmethod
     def create_expected_call_data_based_on_api_response(api_response):

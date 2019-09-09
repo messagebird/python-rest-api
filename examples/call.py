@@ -31,7 +31,13 @@ try:
 
     # Print the object information.
     print('\nThe following information was returned as a', str(call.__class__), 'object:\n')
-    print('  '.join(str(call).splitlines(True)))
+    print('  id                : %s' % call.data.id)
+    print('  status            : %s' % call.data.status)
+    print('  source            : %s' % call.data.source)
+    print('  destination       : %s' % call.data.destination)
+    print('  createdAt         : %s' % call.data.createdAt)
+    print('  updatedAt         : %s' % call.data.updatedAt)
+    print('  endedAt           : %s' % call.data.endedAt)
 
 except messagebird.client.ErrorException as e:
     print('\nAn error occurred while requesting a Message object:\n')
