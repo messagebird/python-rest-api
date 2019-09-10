@@ -43,3 +43,7 @@ class BaseList(Base):
             items.append(self.itemType().load(item))
 
         self._items = items
+
+    def __str__(self):
+        items_count = 0 if self.items is None else len(self.items)
+        return str(self.__class__) + " with %d items.\n" % items_count
