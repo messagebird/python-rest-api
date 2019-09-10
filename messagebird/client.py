@@ -5,6 +5,7 @@ import enum
 
 from messagebird.balance import Balance
 from messagebird.call import Call
+from messagebird.call_list import CallList
 from messagebird.contact import Contact, ContactList
 from messagebird.error import Error
 from messagebird.group import Group, GroupList
@@ -50,6 +51,10 @@ class ErrorException(Exception):
         self.errors = errors
         message = ' '.join([str(e) for e in self.errors])
         super(ErrorException, self).__init__(message)
+
+class SignleErrorException(Exception):
+    def __init__(self, errorMessage):
+        super(SignleErrorException, self).__init__(errorMessage)
 
 class Feature(enum.Enum):
         ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX = 1
@@ -125,6 +130,44 @@ class Client(object):
         """Retrieve the information of a specific call"""
         return Call().load(self.request('calls/' + str(id), 'GET', None, VOICE_TYPE))
 
+    def call_list(self, page=1):
+        """Listing calls
+
+        Args:
+            page(int)               : The page to list.
+        Raises:
+            ErrorException          : On api returning errors
+
+        Returns:
+            CallList(object)        : The list of calls requested & their status."""
+        return CallList().load(self.request('calls/?page=' + str(page), 'GET', None, VOICE_TYPE))
+
+    def call_create(self, source, destination, callFlow, webhook):
+        """Creating a call
+
+        Args:
+            source(str)             : The caller ID of the call.
+            destination(string)     : The number/address to be called.
+            callFlow(object)        : The call flow object to be executed when the call is answered.
+            webhook(object)         : The webhook object containing the url & required token.
+        Raises:
+            ErrorException          : On api returning errors
+
+        Returns:
+            Call(object)            : The Call object just created."""
+
+        params = locals()
+        del(params['self'])
+        return Call().load(self.request('calls', 'POST', params, VOICE_TYPE))
+
+    def call_delete(self, id):
+        """Delete an existing call object."""
+        response = self.request_plain_text('calls/' + str(id), 'DELETE', None, VOICE_TYPE)
+
+        # successful delete should be empty
+        if len(response) > 0:
+            raise SignleErrorException(response)
+
     def hlr(self, id):
         """Retrieve the information of a specific HLR lookup."""
         return HLR().load(self.request('hlr/' + str(id)))
@@ -156,11 +199,11 @@ class Client(object):
         self.request_plain_text('messages/' + str(id), 'DELETE')
 
     def mms_create(self, originator, recipients, body, mediaUrls, subject = None, reference = None, scheduledDatetime = None):
-        ''' Send bulk mms.
+        """ Send bulk mms.
 
         Args:
             originator(str): name of the originator
-            recipients(str/list(str)): comma seperated numbers or list of numbers in E164 format
+            recipients(str/list(str)): comma separated numbers or list of numbers in E164 format
             body(str)       : text message body
             mediaUrl(str)   : list of URL's of attachments of the MMS message.
             subject(str)    : utf-encoded subject
@@ -170,8 +213,8 @@ class Client(object):
             ErrorException:  On api returning errors
 
         Returns:
-            MMS: On success an MMS instance instantiated with succcess response
-        '''
+            MMS: On success an MMS instance instantiated with success response
+        """
         if isinstance(recipients,list):
             recipients = ','.join(recipients)
         if isinstance(mediaUrls,str):
