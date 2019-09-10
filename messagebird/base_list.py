@@ -46,4 +46,4 @@ class BaseList(Base):
 
     def __str__(self):
         items_count = 0 if self.items is None else len(self.items)
-        return str(self.__class__) + " with %d items.\n" % items_count
+        return "%s with %d items.\n" % (str(self.__class__), items_count)
