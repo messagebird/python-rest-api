@@ -12,6 +12,7 @@ from messagebird.group import Group, GroupList
 from messagebird.hlr import HLR
 from messagebird.message import Message, MessageList
 from messagebird.mms import MMS
+from messagebird.voice_webhook import VoiceWebhook
 from messagebird.voicemessage import VoiceMessage
 from messagebird.lookup import Lookup
 from messagebird.verify import Verify
@@ -46,6 +47,7 @@ VOICE_PATH = 'calls'
 VOICE_LEGS_PATH = 'legs'
 VOICE_RECORDINGS_PATH = 'recordings'
 VOICE_TRANSCRIPTIONS_PATH = 'transcriptions'
+VOICE_WEB_HOOKS_PATH = 'webhooks'
 
 
 class ErrorException(Exception):
@@ -422,6 +424,10 @@ class Client(object):
         recording_file = recording_links.get('file')
         recording_file = self.request_store_as_file(VOICE_API_ROOT + recording_file, recording_id + '.wav')
         return VOICE_API_ROOT + recording_file
+
+    def voice_read_webhook(self, id):
+        uri = VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH + '/' + str(id)
+        return VoiceWebhook().load(self.request(uri, 'GET', None, VOICE_TYPE))
 
     def call_flow(self, id):
         return CallFlow().load(self.request('call-flows/' + str(id), 'GET', None, VOICE_TYPE))
