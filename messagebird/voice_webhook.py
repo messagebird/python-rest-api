@@ -3,7 +3,6 @@ from messagebird.validation import validate_is_not_blank
 
 
 class VoiceWebhook(Base):
-
     def __init__(self):
         self.id = None
         self.url = None
@@ -54,7 +53,6 @@ class VoiceWebhook(Base):
 
 
 class VoiceWebhookList(Base):
-
     def __init__(self):
         self._items = None
 
@@ -82,7 +80,6 @@ class VoiceWebhookList(Base):
 
 
 class VoiceCreateWebhookRequest(object):
-
     def __init__(self, title=None, url=None, token=None):
         validate_is_not_blank(title, "title cannot be empty")
         validate_is_not_blank(url, "url cannot be empty")
@@ -117,7 +114,6 @@ class VoiceCreateWebhookRequest(object):
 
 
 class VoiceUpdateWebhookRequest(object):
-
     def __init__(self, title=None, token=None):
         self.title = title
         self.token = token

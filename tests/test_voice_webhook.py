@@ -119,6 +119,7 @@ class TestVoiceWebhook(unittest.TestCase):
         url = "https://example.com/"
         title = "FooBar"
         token = "FooBarToken"
+        blank_string = '    '
 
         with self.assertRaises(ValidationError):
             VoiceCreateWebhookRequest(url=url)
@@ -132,8 +133,13 @@ class TestVoiceWebhook(unittest.TestCase):
         self.assertEqual(title, request.title)
         self.assertEqual(None, request.token)
 
+        request.url = url + url
         with self.assertRaises(ValidationError):
-            request.url = '   '
+            request.url = blank_string
+
+        request.title = title + title
+        with self.assertRaises(ValidationError):
+            request.title = blank_string
 
     def test_voice_update_webhook(self):
         http_client = Mock()
