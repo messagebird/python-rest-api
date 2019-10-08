@@ -2,6 +2,8 @@ import unittest
 
 from messagebird import Client
 from messagebird.client import VOICE_WEB_HOOKS_PATH, VOICE_API_ROOT
+from messagebird.error import ValidationError
+from messagebird.voice_webhook import VoiceCreateWebhookRequest
 
 try:
     from unittest.mock import Mock
@@ -13,7 +15,7 @@ except ImportError:
 
 class TestVoiceWebhook(unittest.TestCase):
 
-    def test_voice_webhook_read(self):
+    def test_voice_read_webhook(self):
         http_client = Mock()
         http_client.request.return_value = '''{
           "data": [
@@ -39,3 +41,94 @@ class TestVoiceWebhook(unittest.TestCase):
 
         self.assertEqual(webhook_id, voice_webhook.id)
         self.assertEqual(webhook_token, voice_webhook.token)
+
+    def test_voice_list_webhook(self):
+        http_client = Mock()
+        http_client.request.return_value = '''{
+          "data": [
+            {
+              "id": "534e1848-235f-482d-983d-e3e11a04f58a",
+              "url": "https://example.com/",
+              "token": "foobar",
+              "createdAt": "2017-03-15T13:28:32Z",
+              "updatedAt": "2017-03-15T13:28:32Z",
+              "_links": {
+                "self": "/webhooks/534e1848-235f-482d-983d-e3e11a04f58a"
+              }
+            },
+            {
+              "id": "123e345-235f-482d-983d-e3e11a04f58a",
+              "url": "https://gogol.com/",
+              "token": "barbar",
+              "createdAt": "2017-03-15T13:28:32Z",
+              "updatedAt": "2017-03-15T13:28:32Z",
+              "_links": {
+                "self": "/webhooks/534e1848-235f-482d-983d-e3e11a04f58a"
+              }
+            }
+          ],
+          "_links": {
+            "self": "/webhooks?page=1"
+          },
+          "pagination": {
+            "totalCount": 1,
+            "pageCount": 1,
+            "currentPage": 1,
+            "perPage": 10
+          }
+        }'''
+
+        webhook_id = '534e1848-235f-482d-983d-e3e11a04f58a'
+        webhook_token = 'foobar'
+
+        voice_webhook_list = Client('', http_client).voice_list_webhooks(limit=10, offset=0)
+
+        http_client.request.assert_called_once_with(
+            VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH + '?limit=10&offset=0', 'GET', None)
+
+        webhooks = voice_webhook_list.data
+        self.assertEqual(2, len(webhooks))
+        self.assertEqual(webhook_id, webhooks[0].id)
+        self.assertEqual(webhook_token, webhooks[0].token)
+
+    def test_voice_create_webhook(self):
+        http_client = Mock()
+        http_client.request.return_value = ''
+        url = "https://example.com/"
+        title = "FooBar"
+        token = "FooBarToken"
+        createWebhookRequest = VoiceCreateWebhookRequest(url=url, title=title, token=token)
+        Client('', http_client).voice_create_webhook(createWebhookRequest)
+
+        #http_client.request.assert_called_once_with('webhooks', 'POST', create_webhook_request)
+
+    def test_voice_create_webhook_request_validation(self):
+        url = "https://example.com/"
+        title = "FooBar"
+        token = "FooBarToken"
+
+        with self.assertRaises(ValidationError):
+            VoiceCreateWebhookRequest(url=url)
+
+        with self.assertRaises(ValidationError):
+            VoiceCreateWebhookRequest(title=title)
+
+        request = VoiceCreateWebhookRequest(url=url, title=title)
+
+        self.assertEqual(url, request.url)
+        self.assertEqual(title, request.title)
+        self.assertEqual(None, request.token)
+
+        with self.assertRaises(ValidationError):
+            request.url = '   '
+
+
+
+
+
+
+    def test_voice_update_webhook(self):
+        self.assertEqual(True, True)
+
+    def test_voice_delete_webhook(self):
+        self.assertEqual(True, True)

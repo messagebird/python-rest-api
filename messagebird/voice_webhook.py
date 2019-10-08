@@ -1,4 +1,6 @@
 from messagebird.base import Base
+from messagebird.error import ValidationError
+from messagebird.validation import validate_is_not_blank
 
 
 class VoiceWebhook(Base):
@@ -77,4 +79,39 @@ class VoiceWebhookList(Base):
         return "\n".join([
             'items IDs  : %s' % item_ids,
             'count      : %s' % len(item_ids)
+        ])
+
+
+class VoiceCreateWebhookRequest(object):
+
+    def __init__(self, title=None, url=None, token=None):
+        validate_is_not_blank(title, "title cannot be empty")
+        validate_is_not_blank(url, "url cannot be empty")
+        self._title = title
+        self._url = url
+        self.token = token
+
+    @property
+    def title(self):
+        return self._title
+
+    @title.setter
+    def title(self, value):
+        validate_is_not_blank(value, "title cannot be empty")
+        self._title = value
+
+    @property
+    def url(self):
+        return self._url
+
+    @url.setter
+    def url(self, value):
+        validate_is_not_blank(value, "url cannot be empty")
+        self._url = value
+
+    def __str__(self):
+        return "\n".join([
+            'title  : %s' % self.title,
+            'url  : %s' % self.url,
+            'token  : %s' % self.token,
         ])
