@@ -36,15 +36,16 @@ class HttpClient(object):
         }
 
         method_switcher = {
-            'DELETE': requests.delete(url, verify=True, headers=headers, data=json_serialize(params)),
-            'GET': requests.get(url, verify=True, headers=headers, params=params),
-            'PATCH': requests.patch(url, verify=True, headers=headers, data=json_serialize(params)),
-            'POST': requests.post(url, verify=True, headers=headers, data=json_serialize(params)),
-            'PUT': requests.put(url, verify=True, headers=headers, data=json_serialize(params))
+            'DELETE': lambda: requests.delete(url, verify=True, headers=headers, data=json_serialize(params)),
+            'GET': lambda: requests.get(url, verify=True, headers=headers, params=params),
+            'PATCH': lambda: requests.patch(url, verify=True, headers=headers, data=json_serialize(params)),
+            'POST': lambda: requests.post(url, verify=True, headers=headers, data=json_serialize(params)),
+            'PUT': lambda: requests.put(url, verify=True, headers=headers, data=json_serialize(params))
         }
         response = method_switcher.get(method, str(method) + ' is not a supported HTTP method')
         if isinstance(response, str):
             raise ValueError(response)
+        response = response()
 
         if response.status_code not in self.__supported_status_codes:
             response.raise_for_status()
