@@ -73,6 +73,11 @@ Your balance:
 
 Please see the other examples for a complete overview of all the available API calls.
 
+To run examples with arguments, try:
+```shell script
+$ python ./examples/voice_create_webhook.py --accessKey accessKeyWhichNotExist --url https://example.com --title HELLO_WEBHOOK --token HELLO_TOKEN
+```
+
 Conversations WhatsApp Sandbox
 -------------
 To use the whatsapp sandbox you need to add `messagebird.Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX` to the list of features you want enabled. Don't forget to replace `YOUR_ACCESS_KEY` with your actual access key.

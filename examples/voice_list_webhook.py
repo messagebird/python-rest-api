@@ -11,7 +11,7 @@ args = vars(parser.parse_args())
 try:
     client = messagebird.Client(args['accessKey'])
 
-    webhooks_list = client.voice_list_webhooks()
+    webhooks_list = client.voice_list_webhooks(limit=5, offset=0)
 
     # Print the object information.
     print('\nThe following information was returned as a Voice Webhook objects:\n')
