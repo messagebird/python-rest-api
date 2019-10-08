@@ -3,7 +3,7 @@ import unittest
 from messagebird import Client
 from messagebird.client import VOICE_WEB_HOOKS_PATH, VOICE_API_ROOT
 from messagebird.error import ValidationError
-from messagebird.voice_webhook import VoiceCreateWebhookRequest
+from messagebird.voice_webhook import VoiceCreateWebhookRequest, VoiceUpdateWebhookRequest
 
 try:
     from unittest.mock import Mock
@@ -93,14 +93,26 @@ class TestVoiceWebhook(unittest.TestCase):
 
     def test_voice_create_webhook(self):
         http_client = Mock()
-        http_client.request.return_value = ''
-        url = "https://example.com/"
-        title = "FooBar"
-        token = "FooBarToken"
-        createWebhookRequest = VoiceCreateWebhookRequest(url=url, title=title, token=token)
-        Client('', http_client).voice_create_webhook(createWebhookRequest)
+        http_client.request.return_value = '''{
+          "data": [
+            {
+              "id": "534e1848-235f-482d-983d-e3e11a04f58a",
+              "url": "https://example.com/",
+              "token": "foobar",
+              "createdAt": "2017-03-15T14:10:07Z",
+              "updatedAt": "2017-03-15T14:10:07Z"
+            }
+          ],
+          "_links": {
+            "self": "/webhooks/534e1848-235f-482d-983d-e3e11a04f58a"
+          }
+        }'''
+        create_webhook_request = VoiceCreateWebhookRequest(url="https://example.com/", title="FooBar", token="foobar")
+        created_webhook = Client('', http_client).voice_create_webhook(create_webhook_request)
 
-        #http_client.request.assert_called_once_with('webhooks', 'POST', create_webhook_request)
+        http_client.request.assert_called_once_with(VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH, 'POST', create_webhook_request)
+        self.assertEqual(create_webhook_request.url, created_webhook.url)
+        self.assertEqual(create_webhook_request.token, created_webhook.token)
 
     def test_voice_create_webhook_request_validation(self):
         url = "https://example.com/"
@@ -123,12 +135,36 @@ class TestVoiceWebhook(unittest.TestCase):
             request.url = '   '
 
 
-
-
-
-
     def test_voice_update_webhook(self):
-        self.assertEqual(True, True)
+        http_client = Mock()
+        http_client.request.return_value = '''{
+          "data": [
+            {
+              "id": "534e1848-235f-482d-983d-e3e11a04f58a",
+              "url": "https://example.com/baz",
+              "token": "foobar",
+              "createdAt": "2017-03-15T13:27:02Z",
+              "updatedAt": "2017-03-15T13:28:01Z"
+            }
+          ],
+          "_links": {
+            "self": "/webhooks/534e1848-235f-482d-983d-e3e11a04f58a"
+          }
+        }'''
+        webhook_id = 'webhook-id'
+        update_webhook_request = VoiceUpdateWebhookRequest(title="FooBar", token="foobar")
+        updated_webhook = Client('', http_client).voice_update_webhook(webhook_id, update_webhook_request)
+
+        http_client.request.assert_called_once_with(
+            VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH + '/' + webhook_id, 'PUT', update_webhook_request)
+
+        self.assertEqual(update_webhook_request.token, updated_webhook.token)
 
     def test_voice_delete_webhook(self):
-        self.assertEqual(True, True)
+        http_client = Mock()
+        http_client.request.return_value = ''
+        webhook_id = 'webhook-id'
+        Client('', http_client).voice_delete_webhook(webhook_id)
+
+        http_client.request.assert_called_once_with(
+            VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH + '/' + webhook_id, 'DELETE', None)

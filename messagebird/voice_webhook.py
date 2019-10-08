@@ -115,3 +115,16 @@ class VoiceCreateWebhookRequest(object):
             'url  : %s' % self.url,
             'token  : %s' % self.token,
         ])
+
+
+class VoiceUpdateWebhookRequest(object):
+
+    def __init__(self, title=None, token=None):
+        self.title = title
+        self.token = token
+
+    def __str__(self):
+        return "\n".join([
+            'title  : %s' % self.title,
+            'token  : %s' % self.token,
+        ])
