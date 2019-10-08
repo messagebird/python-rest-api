@@ -13,6 +13,9 @@ try:
 
     webhooks_list = client.voice_list_webhooks(limit=5, offset=0)
 
+    if webhooks_list is None or webhooks_list.data is None:
+        print("\nNo webhooks\n")
+        exit(0)
     # Print the object information.
     print('\nThe following information was returned as a Voice Webhook objects:\n')
     for webhook in webhooks_list.data:
