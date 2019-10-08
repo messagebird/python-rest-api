@@ -110,7 +110,8 @@ class TestVoiceWebhook(unittest.TestCase):
         create_webhook_request = VoiceCreateWebhookRequest(url="https://example.com/", title="FooBar", token="foobar")
         created_webhook = Client('', http_client).voice_create_webhook(create_webhook_request)
 
-        http_client.request.assert_called_once_with(VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH, 'POST', create_webhook_request)
+        http_client.request.assert_called_once_with(VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH, 'POST',
+                                                    create_webhook_request)
         self.assertEqual(create_webhook_request.url, created_webhook.url)
         self.assertEqual(create_webhook_request.token, created_webhook.token)
 
@@ -133,7 +134,6 @@ class TestVoiceWebhook(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             request.url = '   '
-
 
     def test_voice_update_webhook(self):
         http_client = Mock()

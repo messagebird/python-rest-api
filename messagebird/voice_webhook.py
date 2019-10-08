@@ -1,5 +1,4 @@
 from messagebird.base import Base
-from messagebird.error import ValidationError
 from messagebird.validation import validate_is_not_blank
 
 
