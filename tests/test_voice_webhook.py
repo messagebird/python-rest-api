@@ -1,8 +1,10 @@
+import json
 import unittest
 
 from messagebird import Client
 from messagebird.client import VOICE_WEB_HOOKS_PATH, VOICE_API_ROOT
 from messagebird.error import ValidationError
+from messagebird.serde import json_serialize
 from messagebird.voice_webhook import VoiceCreateWebhookRequest, VoiceUpdateWebhookRequest
 
 try:
@@ -111,7 +113,7 @@ class TestVoiceWebhook(unittest.TestCase):
         created_webhook = Client('', http_client).voice_create_webhook(create_webhook_request)
 
         http_client.request.assert_called_once_with(VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH, 'POST',
-                                                    create_webhook_request)
+                                                    create_webhook_request.__dict__())
         self.assertEqual(create_webhook_request.url, created_webhook.url)
         self.assertEqual(create_webhook_request.token, created_webhook.token)
 
@@ -162,7 +164,7 @@ class TestVoiceWebhook(unittest.TestCase):
         updated_webhook = Client('', http_client).voice_update_webhook(webhook_id, update_webhook_request)
 
         http_client.request.assert_called_once_with(
-            VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH + '/' + webhook_id, 'PUT', update_webhook_request)
+            VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH + '/' + webhook_id, 'PUT', update_webhook_request.__dict__())
 
         self.assertEqual(update_webhook_request.token, updated_webhook.token)
 
@@ -174,3 +176,7 @@ class TestVoiceWebhook(unittest.TestCase):
 
         http_client.request.assert_called_once_with(
             VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH + '/' + webhook_id, 'DELETE', None)
+
+    def test_check_serialization(self):
+        json_serialize(VoiceCreateWebhookRequest(url="https://someurl.com", title="foobar"))
+        json_serialize(VoiceUpdateWebhookRequest(title="foobar"))

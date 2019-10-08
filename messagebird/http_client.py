@@ -1,11 +1,13 @@
-import json
 import requests
 from enum import Enum
+
+from messagebird.serde import json_serialize
 
 try:
     from urllib.parse import urljoin
 except ImportError:
     from urlparse import urljoin
+
 
 class ResponseFormat(Enum):
     text = 1
@@ -34,11 +36,11 @@ class HttpClient(object):
         }
 
         method_switcher = {
-            'DELETE': requests.delete(url, verify=True, headers=headers, data=json.dumps(params)),
+            'DELETE': requests.delete(url, verify=True, headers=headers, data=json_serialize(params)),
             'GET': requests.get(url, verify=True, headers=headers, params=params),
-            'PATCH': requests.patch(url, verify=True, headers=headers, data=json.dumps(params)),
-            'POST': requests.post(url, verify=True, headers=headers, data=json.dumps(params)),
-            'PUT': requests.put(url, verify=True, headers=headers, data=json.dumps(params))
+            'PATCH': requests.patch(url, verify=True, headers=headers, data=json_serialize(params)),
+            'POST': requests.post(url, verify=True, headers=headers, data=json_serialize(params)),
+            'PUT': requests.put(url, verify=True, headers=headers, data=json_serialize(params))
         }
         response = method_switcher.get(method, str(method) + ' is not a supported HTTP method')
         if isinstance(response, str):

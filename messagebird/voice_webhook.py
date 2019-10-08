@@ -79,7 +79,7 @@ class VoiceWebhookList(Base):
         ])
 
 
-class VoiceCreateWebhookRequest(object):
+class VoiceCreateWebhookRequest(Base):
     def __init__(self, title=None, url=None, token=None):
         validate_is_not_blank(title, "title cannot be empty")
         validate_is_not_blank(url, "url cannot be empty")
@@ -105,6 +105,13 @@ class VoiceCreateWebhookRequest(object):
         validate_is_not_blank(value, "url cannot be empty")
         self._url = value
 
+    def __dict__(self):
+        return {
+            'title': self.title,
+            'url': self.url,
+            'token': self.token
+        }
+
     def __str__(self):
         return "\n".join([
             'title  : %s' % self.title,
@@ -113,10 +120,17 @@ class VoiceCreateWebhookRequest(object):
         ])
 
 
-class VoiceUpdateWebhookRequest(object):
+class VoiceUpdateWebhookRequest(Base):
+
     def __init__(self, title=None, token=None):
         self.title = title
         self.token = token
+
+    def __dict__(self):
+        return {
+            'title': self.title,
+            'token': self.token
+        }
 
     def __str__(self):
         return "\n".join([

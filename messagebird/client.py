@@ -453,7 +453,7 @@ class Client(object):
             raise ValidationError('Create request is empty')
 
         uri = VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH
-        return VoiceWebhook().load(self.request(uri, 'POST', create_webhook_request, VOICE_TYPE))
+        return VoiceWebhook().load(self.request(uri, 'POST', create_webhook_request.__dict__(), VOICE_TYPE))
 
     def voice_update_webhook(self, id, update_webhook_request):
         """ Update a voice webhook. """
@@ -461,7 +461,7 @@ class Client(object):
             raise ValidationError('Update request is empty')
 
         uri = VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH + '/' + str(id)
-        return VoiceWebhook().load(self.request(uri, 'PUT', update_webhook_request, VOICE_TYPE))
+        return VoiceWebhook().load(self.request(uri, 'PUT', update_webhook_request.__dict__(), VOICE_TYPE))
 
     def voice_delete_webhook(self, id):
         """ Delete a voice webhook. """
