@@ -454,5 +454,6 @@ class Client(object):
         params = {'numbers': numbers}
         return CallFlowNumberList().load(self.request('call-flows/' + str(call_flow_id) + '/numbers', 'POST', params, VOICE_TYPE))
 
+    @staticmethod
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)
