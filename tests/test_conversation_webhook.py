@@ -70,16 +70,16 @@ class TestConversationWebhook(unittest.TestCase):
     def test_conversation_webhook_update(self):
         http_client = Mock()
         http_client.request.return_value = json.dumps({"id": "985ae50937a94c64b392531ea87a0263",
-            "url": "https://example.com/webhook",
-            "channelId": "853eeb5348e541a595da93b48c61a1ae",
-            "events": [
-                "message.created",
-                "message.updated",
-            ],
-            "status": "enabled",
-            "createdDatetime": "2018-08-29T10:04:23Z",
-            "updatedDatetime": "2018-08-29T10:10:23Z"
-        })
+                                                       "url": "https://example.com/webhook",
+                                                       "channelId": "853eeb5348e541a595da93b48c61a1ae",
+                                                       "events": [
+                                                           "message.created",
+                                                           "message.updated",
+                                                       ],
+                                                       "status": "enabled",
+                                                       "createdDatetime": "2018-08-29T10:04:23Z",
+                                                       "updatedDatetime": "2018-08-29T10:10:23Z"
+                                                       })
 
         webhookRequestData = {
             'events': [CONVERSATION_WEBHOOK_EVENT_CONVERSATION_CREATED,

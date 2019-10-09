@@ -25,6 +25,14 @@ class TestVoicemessage(unittest.TestCase):
         http_client = Mock()
         http_client.request.return_value = '{}'
 
-        Client('', http_client).voice_message_create(['31612345678', '31687654321'], 'Hello World', { 'reference': 'MyReference' })
+        Client('', http_client).voice_message_create(
+            ['31612345678', '31687654321'],
+            'Hello World',
+            {'reference': 'MyReference'}
+        )
 
-        http_client.request.assert_called_once_with('voicemessages', 'POST', {'body': 'Hello World', 'recipients': '31612345678,31687654321', 'reference': 'MyReference'})
+        http_client.request.assert_called_once_with(
+            'voicemessages', 'POST',
+            {'body': 'Hello World', 'recipients': '31612345678,31687654321',
+             'reference': 'MyReference'}
+        )
