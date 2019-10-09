@@ -6,7 +6,7 @@ from messagebird.voice_webhook import VoiceCreateWebhookRequest
 parser = argparse.ArgumentParser()
 parser.add_argument('--accessKey', help='access key for MessageBird API', type=str, required=True)
 parser.add_argument('--url', help='url for the webhook', type=str, required=True)
-parser.add_argument('--title', help='title for the webhook', type=str, required=True)
+parser.add_argument('--title', help='title for the webhook', type=str)
 parser.add_argument('--token', help='token for the webhook', type=str)
 args = vars(parser.parse_args())
 

@@ -81,20 +81,10 @@ class VoiceWebhookList(Base):
 
 class VoiceCreateWebhookRequest(Base):
     def __init__(self, title=None, url=None, token=None):
-        validate_is_not_blank(title, "title cannot be empty")
         validate_is_not_blank(url, "url cannot be empty")
-        self._title = title
+        self.title = title
         self._url = url
         self.token = token
-
-    @property
-    def title(self):
-        return self._title
-
-    @title.setter
-    def title(self, value):
-        validate_is_not_blank(value, "title cannot be empty")
-        self._title = value
 
     @property
     def url(self):
