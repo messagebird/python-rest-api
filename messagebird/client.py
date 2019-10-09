@@ -383,34 +383,34 @@ class Client(object):
         return ConversationWebhook().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
 
     def voice_recording_list_recordings(self, call_id, leg_id):
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(
-            leg_id) + '/' + VOICE_RECORDINGS_PATH
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + \
+              str(leg_id) + '/' + VOICE_RECORDINGS_PATH
         return VoiceRecordingsList().load(self.request(uri, 'GET'))
 
     def voice_transcription_list(self, call_id, leg_id, recording_id):
         """List voice transcriptions."""
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(
-            leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + \
+              str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH
         return VoiceTranscriptionsList().load(self.request(uri, 'GET'))
 
     def voice_transcription_download(self, call_id, leg_id, recording_id, transcriptions_file):
         """Download voice transcription file."""
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(
-            leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(
-            recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH + '/' + str(transcriptions_file)
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + \
+              str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + \
+              str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH + '/' + str(transcriptions_file)
         return self.request(uri, 'GET')
 
     def voice_transcription_view(self, call_id, leg_id, recording_id, transcriptions_id):
         """Get voice transcription data."""
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(
-            leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(
-            recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH + '/' + str(transcriptions_id)
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + \
+              str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + \
+              str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH + '/' + str(transcriptions_id)
         return VoiceTranscriptionsView().load(self.request(uri, 'GET'))
 
     def voice_transcription_create(self, call_id, leg_id, recording_id, language):
         """Create a voice transcription."""
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(
-            leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + \
+              str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH
         params = {'language': str(language)}
         return VoiceTranscriptionsView().load(self.request(uri, 'POST', params, VOICE_TYPE))
 
