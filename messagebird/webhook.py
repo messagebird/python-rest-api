@@ -8,7 +8,7 @@ class Webhook(Base):
         self.token = None
 
     def __str__(self):
-        return  "\n".join([
+        return "\n".join([
             'url                : %s' % self.url,
             'token              : %s' % self.token,
         ])

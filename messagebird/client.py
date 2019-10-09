@@ -191,7 +191,8 @@ class Client(object):
 
     def message_create(self, originator, recipients, body, params=None):
         """Create a new message."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         if type(recipients) == list:
             recipients = ','.join(recipients)
 
@@ -233,7 +234,8 @@ class Client(object):
 
     def voice_message_create(self, recipients, body, params=None):
         """Create a new voice message."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         if type(recipients) == list:
             recipients = ','.join(recipients)
 
@@ -242,17 +244,20 @@ class Client(object):
 
     def lookup(self, phonenumber, params=None):
         """Do a new lookup."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         return Lookup().load(self.request('lookup/' + str(phonenumber), 'GET', params))
 
     def lookup_hlr(self, phonenumber, params=None):
         """Retrieve the information of a specific HLR lookup."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'GET', params))
 
     def lookup_hlr_create(self, phonenumber, params=None):
         """Perform a new HLR lookup."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'POST', params))
 
     def verify(self, id):
@@ -261,7 +266,8 @@ class Client(object):
 
     def verify_create(self, recipient, params=None):
         """Create a new verification."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         params.update({'recipient': recipient})
         return Verify().load(self.request('verify', 'POST', params))
 
@@ -278,7 +284,8 @@ class Client(object):
         return Contact().load(self.request('contacts/' + str(id)))
 
     def contact_create(self, phonenumber, params=None):
-        if params is None: params = {}
+        if params is None:
+            params = {}
         params.update({'msisdn': phonenumber})
         return Contact().load(self.request('contacts', 'POST', params))
 
@@ -296,7 +303,8 @@ class Client(object):
         return Group().load(self.request('groups/' + str(id), 'GET', None))
 
     def group_create(self, name, params=None):
-        if params is None: params = {}
+        if params is None:
+            params = {}
         params.update({'name': name})
         return Group().load(self.request('groups', 'POST', params))
 
@@ -308,7 +316,8 @@ class Client(object):
         return GroupList().load(self.request('groups?' + query, 'GET', None))
 
     def group_update(self, id, name, params=None):
-        if params is None: params = {}
+        if params is None:
+            params = {}
         params.update({'name': name})
         self.request_plain_text('groups/' + str(id), 'PATCH', params)
 
@@ -383,40 +392,32 @@ class Client(object):
         return ConversationWebhook().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
 
     def voice_recording_list_recordings(self, call_id, leg_id):
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + \
-              str(leg_id) + '/' + VOICE_RECORDINGS_PATH
+        uri = self.generate_voice_calls_url(call_id=call_id, leg_id=leg_id)
         return VoiceRecordingsList().load(self.request(uri, 'GET'))
 
     def voice_transcription_list(self, call_id, leg_id, recording_id):
         """List voice transcriptions."""
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + \
-              str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH
+        uri = self.generate_voice_calls_url(call_id, leg_id, recording_id)
         return VoiceTranscriptionsList().load(self.request(uri, 'GET'))
 
     def voice_transcription_download(self, call_id, leg_id, recording_id, transcriptions_file):
         """Download voice transcription file."""
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + \
-              str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + \
-              str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH + '/' + str(transcriptions_file)
+        uri = self.generate_voice_calls_url(call_id, leg_id, recording_id) + '/' + str(transcriptions_file)
         return self.request(uri, 'GET')
 
     def voice_transcription_view(self, call_id, leg_id, recording_id, transcriptions_id):
         """Get voice transcription data."""
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + \
-              str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + \
-              str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH + '/' + str(transcriptions_id)
+        uri = self.generate_voice_calls_url(call_id, leg_id, recording_id) + '/' + str(transcriptions_id)
         return VoiceTranscriptionsView().load(self.request(uri, 'GET'))
 
     def voice_transcription_create(self, call_id, leg_id, recording_id, language):
         """Create a voice transcription."""
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + \
-              str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH
+        uri = self.generate_voice_calls_url(call_id, leg_id, recording_id)
         params = {'language': str(language)}
         return VoiceTranscriptionsView().load(self.request(uri, 'POST', params, VOICE_TYPE))
 
     def voice_recording_view(self, call_id, leg_id, recording_id):
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(
-            leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id)
+        uri = self.generate_voice_calls_url(call_id=call_id, leg_id=leg_id) + '/' + str(recording_id)
         recording_response = self.request(uri, 'GET')
         recording_links = recording_response.get('_links')
         if recording_links is not None:
@@ -424,8 +425,7 @@ class Client(object):
         return VoiceRecording().load(recording_response['data'][0])
 
     def voice_recording_download(self, call_id, leg_id, recording_id):
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(
-            leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id)
+        uri = self.generate_voice_calls_url(call_id=call_id, leg_id=leg_id) + '/' + str(recording_id)
         recording_response = self.request(uri, 'GET')
         recording_links = recording_response.get('_links')
         if recording_links is None or recording_links.get('file') is None:
@@ -497,3 +497,11 @@ class Client(object):
 
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)
+
+    @staticmethod
+    def generate_voice_calls_url(call_id=None, leg_id=None, recording_id=None):
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/'
+        uri += str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH
+        if recording_id:
+            uri += '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH
+        return uri

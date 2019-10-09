@@ -26,7 +26,8 @@ class HttpClient(object):
 
     def request(self, path, method='GET', params=None, format=ResponseFormat.text):
         """Builds a request and gets a response."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         url = urljoin(self.endpoint, path)
         headers = {
             'Accept': 'application/json',

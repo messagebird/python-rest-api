@@ -15,7 +15,7 @@ class Call(Base):
     @property
     def data(self):
         return self._data
-     
+
     @data.setter
     def data(self, value):
         self._data = CallData().load(value[0])
@@ -23,5 +23,5 @@ class Call(Base):
     def __str__(self):
         return "\n".join([
             'id                 : %s' % self.id,
-            'data.'+'data.'.join(str(self._data).splitlines(True)),
+            'data.' + 'data.'.join(str(self._data).splitlines(True)),
         ])

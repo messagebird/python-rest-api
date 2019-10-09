@@ -1,5 +1,6 @@
 from messagebird.base import Base
 
+
 class VoiceRecording(Base):
 
     def __init__(self):
@@ -44,6 +45,7 @@ class VoiceRecording(Base):
             'links             : %s' % self._links
         ])
 
+
 class VoiceRecordingsList(Base):
     def __init__(self):
         self._items = None
@@ -55,7 +57,7 @@ class VoiceRecordingsList(Base):
     @data.setter
     def data(self, value):
         if isinstance(value, list):
-            self._items  = []
+            self._items = []
             for item in value:
                 self._items.append(VoiceRecording().load(item))
 
