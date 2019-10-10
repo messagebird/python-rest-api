@@ -109,6 +109,7 @@ class TestVoiceWebhook(unittest.TestCase):
             "self": "/webhooks/534e1848-235f-482d-983d-e3e11a04f58a"
           }
         }'''
+
         create_webhook_request = VoiceCreateWebhookRequest(url="https://example.com/", title="FooBar", token="foobar")
         created_webhook = Client('', http_client).voice_create_webhook(create_webhook_request)
 
@@ -152,7 +153,7 @@ class TestVoiceWebhook(unittest.TestCase):
             "self": "/webhooks/534e1848-235f-482d-983d-e3e11a04f58a"
           }
         }'''
-        webhook_id = 'webhook-id'
+        webhook_id = '534e1848-235f-482d-983d-e3e11a04f58a'
         update_webhook_request = VoiceUpdateWebhookRequest(title="FooBar", token="foobar")
         updated_webhook = Client('', http_client).voice_update_webhook(webhook_id, update_webhook_request)
 
@@ -164,7 +165,7 @@ class TestVoiceWebhook(unittest.TestCase):
     def test_voice_delete_webhook(self):
         http_client = Mock()
         http_client.request.return_value = ''
-        webhook_id = 'webhook-id'
+        webhook_id = '534e1848-235f-482d-983d-e3e11a04f58a'
         Client('', http_client).voice_delete_webhook(webhook_id)
 
         http_client.request.assert_called_once_with(
