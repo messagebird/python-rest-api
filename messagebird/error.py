@@ -11,12 +11,7 @@ class Error(Base):
         return str(dict(code=self.code, description=self.description, parameter=self.parameter))
 
 
-class BaseError(Exception):
-    """Base class for exceptions in this module."""
-    pass
-
-
-class ValidationError(BaseError):
+class ValidationError(ValueError):
     """Exception raised for errors in validation.
 
     Attributes:

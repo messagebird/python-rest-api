@@ -7,27 +7,27 @@ class VoiceWebhook(Base):
         self.id = None
         self.url = None
         self.token = None
-        self._createdDatetime = None
-        self._updatedDatetime = None
+        self._createdAtDatetime = None
+        self._updatedAtDatetime = None
         self._links = None
 
     @property
-    def createdDatetime(self):
-        return self._createdDatetime
+    def createdAtDatetime(self):
+        return self._createdAtDatetime
 
-    @createdDatetime.setter
+    @createdAtDatetime.setter
     def createdAt(self, value):
         if value is not None:
-            self._createdDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
+            self._createdAtDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
 
     @property
-    def updatedDatetime(self):
-        return self._updatedDatetime
+    def updatedAtDatetime(self):
+        return self._updatedAtDatetime
 
-    @updatedDatetime.setter
+    @updatedAtDatetime.setter
     def updatedAt(self, value):
         if value is not None:
-            self._updatedDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
+            self._updatedAtDatetime = self.value_to_time(value, '%Y-%m-%dT%H:%M:%SZ')
 
     def load(self, data):
         if data.get('data') is not None:
@@ -46,8 +46,8 @@ class VoiceWebhook(Base):
             'webhook id         : %s' % self.id,
             'url                : %s' % self.url,
             'token              : %s' % self.token,
-            'created date time  : %s' % self._createdDatetime,
-            'updated date time  : %s' % self._updatedDatetime,
+            'createdAtDatetime  : %s' % self._createdAtDatetime,
+            'updatedAtDatetime  : %s' % self._updatedAtDatetime,
             'links              : %s' % self._links
         ])
 

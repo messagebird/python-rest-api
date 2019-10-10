@@ -21,8 +21,8 @@ try:
     print('  id                 : {}'.format(webhook.id))
     print('  token              : {}'.format(webhook.token))
     print('  url                : {}'.format(webhook.url))
-    print('  createdAtDatetime  : {}'.format(webhook.createdDatetime))
-    print('  updatedAtDatetime  : {}'.format(webhook.updatedDatetime))
+    print('  createdAt          : {}'.format(webhook.createdAt))
+    print('  updatedAt          : {}'.format(webhook.updatedAt))
 
 except messagebird.client.ErrorException as e:
     print('An error occured while creating a Voice Webhook object:')
