@@ -19,6 +19,6 @@ except messagebird.client.ErrorException as e:
     print('An error occured while deleting a Voice Webhook object:')
 
     for error in e.errors:
-        print('  code        : %d' % error.code)
-        print('  description : %s' % error.description)
-        print('  parameter   : %s\n' % error.parameter)
+        print('  code        : {}'.format(error.code))
+        print('  description : {}'.format(error.description))
+        print('  parameter   : {}\n'.format(error.parameter))
