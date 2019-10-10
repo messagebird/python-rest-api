@@ -43,10 +43,10 @@ class HttpClient(object):
             'POST': lambda: requests.post(url, verify=True, headers=headers, data=json_serialize(params)),
             'PUT': lambda: requests.put(url, verify=True, headers=headers, data=json_serialize(params))
         }
-        response = method_switcher.get(method, str(method) + ' is not a supported HTTP method')
-        if isinstance(response, str):
-            raise ValueError(response)
-        response = response()
+        if method not in method_switcher:
+            raise ValueError(str(method) + ' is not a supported HTTP method')
+
+        response = method_switcher[method]()
 
         if response.status_code not in self.__supported_status_codes:
             response.raise_for_status()
