@@ -55,4 +55,3 @@ class TestVerify(unittest.TestCase):
             Client('', http_client).verify_delete('non-existent-verify-id')
 
         http_client.request.assert_called_once_with('verify/non-existent-verify-id', 'DELETE', None)
-

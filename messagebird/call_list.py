@@ -39,4 +39,3 @@ class CallList(BaseList):
         if isinstance(value, list):
             self.count = len(value)
             self.items = value
-

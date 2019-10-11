@@ -30,7 +30,8 @@ class TestContact(unittest.TestCase):
 
         Client('', http_client).contact_create(31612345678, {'firstName': 'Foo', 'custom3': 'Third'})
 
-        http_client.request.assert_called_once_with('contacts', 'POST', {'msisdn': 31612345678, 'firstName': 'Foo', 'custom3': 'Third'})
+        http_client.request.assert_called_once_with(
+            'contacts', 'POST', {'msisdn': 31612345678, 'firstName': 'Foo', 'custom3': 'Third'})
 
     def test_contact_delete(self):
         http_client = Mock()
@@ -55,7 +56,9 @@ class TestContact(unittest.TestCase):
 
         Client('', http_client).contact_update('contact-id', {'msisdn': 31687654321, 'custom4': 'fourth'})
 
-        http_client.request.assert_called_once_with('contacts/contact-id', 'PATCH', {'msisdn': 31687654321, 'custom4': 'fourth'})
+        http_client.request.assert_called_once_with(
+            'contacts/contact-id', 'PATCH', {'msisdn': 31687654321, 'custom4': 'fourth'}
+        )
 
     def test_contact_list(self):
         http_client = Mock()

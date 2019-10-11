@@ -60,6 +60,7 @@ class CallFlowNumberList(BaseList):
 
         self._data = items
 
+
 class CallFlow(Base):
 
     def __init__(self):

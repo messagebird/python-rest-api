@@ -44,6 +44,7 @@ class ConversationWebhook(Base):
             'updated date time : %s' % self.updatedDatetime
         ])
 
+
 class ConversationWebhookList(Base):
     def __init__(self):
         self.offset = None

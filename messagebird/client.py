@@ -7,11 +7,12 @@ from messagebird.balance import Balance
 from messagebird.call import Call
 from messagebird.call_list import CallList
 from messagebird.contact import Contact, ContactList
-from messagebird.error import Error
+from messagebird.error import Error, ValidationError
 from messagebird.group import Group, GroupList
 from messagebird.hlr import HLR
 from messagebird.message import Message, MessageList
 from messagebird.mms import MMS
+from messagebird.voice_webhook import VoiceWebhook, VoiceWebhookList
 from messagebird.voicemessage import VoiceMessage
 from messagebird.lookup import Lookup
 from messagebird.verify import Verify
@@ -23,7 +24,6 @@ from messagebird.voice_recording import VoiceRecordingsList, VoiceRecording
 from messagebird.voice_transcription import VoiceTranscriptionsList, VoiceTranscriptionsView
 from messagebird.call_flow import CallFlow, CallFlowList, CallFlowNumberList
 
-
 ENDPOINT = 'https://rest.messagebird.com'
 CLIENT_VERSION = '1.4.1'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
@@ -32,8 +32,6 @@ REST_TYPE = 'rest'
 
 CONVERSATION_API_ROOT = 'https://conversations.messagebird.com/v1/'
 CONVERSATION_API_WHATSAPP_SANDBOX_ROOT = 'https://whatsapp-sandbox.messagebird.com/v1/'
-
-
 
 CONVERSATION_PATH = 'conversations'
 CONVERSATION_MESSAGES_PATH = 'messages'
@@ -46,6 +44,7 @@ VOICE_PATH = 'calls'
 VOICE_LEGS_PATH = 'legs'
 VOICE_RECORDINGS_PATH = 'recordings'
 VOICE_TRANSCRIPTIONS_PATH = 'transcriptions'
+VOICE_WEB_HOOKS_PATH = 'webhooks'
 
 
 class ErrorException(Exception):
@@ -54,12 +53,15 @@ class ErrorException(Exception):
         message = ' '.join([str(e) for e in self.errors])
         super(ErrorException, self).__init__(message)
 
+
 class SignleErrorException(Exception):
     def __init__(self, errorMessage):
         super(SignleErrorException, self).__init__(errorMessage)
 
+
 class Feature(enum.Enum):
-        ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX = 1
+    ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX = 1
+
 
 class Client(object):
 
@@ -128,7 +130,7 @@ class Client(object):
         """Retrieve your balance."""
         return Balance().load(self.request('balance'))
 
-    def call(self,id):
+    def call(self, id):
         """Retrieve the information of a specific call"""
         return Call().load(self.request('calls/' + str(id), 'GET', None, VOICE_TYPE))
 
@@ -159,7 +161,7 @@ class Client(object):
             Call(object)            : The Call object just created."""
 
         params = locals()
-        del(params['self'])
+        del (params['self'])
         return Call().load(self.request('calls', 'POST', params, VOICE_TYPE))
 
     def call_delete(self, id):
@@ -184,12 +186,13 @@ class Client(object):
 
     def message_list(self, limit=20, offset=0):
         """Retrieve a list of the most recent messages."""
-        query = 'limit=' + str(limit) + '&offset=' + str(offset)
+        query = self._format_query(limit, offset)
         return MessageList().load(self.request('messages?' + query))
 
     def message_create(self, originator, recipients, body, params=None):
         """Create a new message."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         if type(recipients) == list:
             recipients = ','.join(recipients)
 
@@ -200,7 +203,7 @@ class Client(object):
         """Delete a message from the dashboard."""
         self.request_plain_text('messages/' + str(id), 'DELETE')
 
-    def mms_create(self, originator, recipients, body, mediaUrls, subject = None, reference = None, scheduledDatetime = None):
+    def mms_create(self, originator, recipients, body, mediaUrls, subject=None, reference=None, scheduledDatetime=None):
         """ Send bulk mms.
 
         Args:
@@ -217,13 +220,13 @@ class Client(object):
         Returns:
             MMS: On success an MMS instance instantiated with success response
         """
-        if isinstance(recipients,list):
+        if isinstance(recipients, list):
             recipients = ','.join(recipients)
-        if isinstance(mediaUrls,str):
+        if isinstance(mediaUrls, str):
             mediaUrls = [mediaUrls]
         params = locals()
-        del(params['self'])
-        return  MMS().load(self.request('mms', 'POST', params))
+        del (params['self'])
+        return MMS().load(self.request('mms', 'POST', params))
 
     def voice_message(self, id):
         "Retrieve the information of a specific voice message."
@@ -231,7 +234,8 @@ class Client(object):
 
     def voice_message_create(self, recipients, body, params=None):
         """Create a new voice message."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         if type(recipients) == list:
             recipients = ','.join(recipients)
 
@@ -240,17 +244,20 @@ class Client(object):
 
     def lookup(self, phonenumber, params=None):
         """Do a new lookup."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         return Lookup().load(self.request('lookup/' + str(phonenumber), 'GET', params))
 
     def lookup_hlr(self, phonenumber, params=None):
         """Retrieve the information of a specific HLR lookup."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'GET', params))
 
     def lookup_hlr_create(self, phonenumber, params=None):
         """Perform a new HLR lookup."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         return HLR().load(self.request('lookup/' + str(phonenumber) + '/hlr', 'POST', params))
 
     def verify(self, id):
@@ -259,7 +266,8 @@ class Client(object):
 
     def verify_create(self, recipient, params=None):
         """Create a new verification."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         params.update({'recipient': recipient})
         return Verify().load(self.request('verify', 'POST', params))
 
@@ -276,7 +284,8 @@ class Client(object):
         return Contact().load(self.request('contacts/' + str(id)))
 
     def contact_create(self, phonenumber, params=None):
-        if params is None: params = {}
+        if params is None:
+            params = {}
         params.update({'msisdn': phonenumber})
         return Contact().load(self.request('contacts', 'POST', params))
 
@@ -294,7 +303,8 @@ class Client(object):
         return Group().load(self.request('groups/' + str(id), 'GET', None))
 
     def group_create(self, name, params=None):
-        if params is None: params = {}
+        if params is None:
+            params = {}
         params.update({'name': name})
         return Group().load(self.request('groups', 'POST', params))
 
@@ -306,7 +316,8 @@ class Client(object):
         return GroupList().load(self.request('groups?' + query, 'GET', None))
 
     def group_update(self, id, name, params=None):
-        if params is None: params = {}
+        if params is None:
+            params = {}
         params.update({'name': name})
         self.request_plain_text('groups/' + str(id), 'PATCH', params)
 
@@ -381,32 +392,32 @@ class Client(object):
         return ConversationWebhook().load(self.request(uri, 'GET', None, CONVERSATION_TYPE))
 
     def voice_recording_list_recordings(self, call_id, leg_id):
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH
+        uri = self.generate_voice_calls_url(call_id=call_id, leg_id=leg_id)
         return VoiceRecordingsList().load(self.request(uri, 'GET'))
 
     def voice_transcription_list(self, call_id, leg_id, recording_id):
         """List voice transcriptions."""
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH
+        uri = self.generate_voice_calls_url(call_id, leg_id, recording_id)
         return VoiceTranscriptionsList().load(self.request(uri, 'GET'))
 
     def voice_transcription_download(self, call_id, leg_id, recording_id, transcriptions_file):
         """Download voice transcription file."""
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH + '/' + str(transcriptions_file)
+        uri = self.generate_voice_calls_url(call_id, leg_id, recording_id) + '/' + str(transcriptions_file)
         return self.request(uri, 'GET')
 
     def voice_transcription_view(self, call_id, leg_id, recording_id, transcriptions_id):
         """Get voice transcription data."""
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH + '/' + str(transcriptions_id)
+        uri = self.generate_voice_calls_url(call_id, leg_id, recording_id) + '/' + str(transcriptions_id)
         return VoiceTranscriptionsView().load(self.request(uri, 'GET'))
 
     def voice_transcription_create(self, call_id, leg_id, recording_id, language):
         """Create a voice transcription."""
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH
+        uri = self.generate_voice_calls_url(call_id, leg_id, recording_id)
         params = {'language': str(language)}
         return VoiceTranscriptionsView().load(self.request(uri, 'POST', params, VOICE_TYPE))
 
     def voice_recording_view(self, call_id, leg_id, recording_id):
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id)
+        uri = self.generate_voice_calls_url(call_id=call_id, leg_id=leg_id) + '/' + str(recording_id)
         recording_response = self.request(uri, 'GET')
         recording_links = recording_response.get('_links')
         if recording_links is not None:
@@ -414,7 +425,7 @@ class Client(object):
         return VoiceRecording().load(recording_response['data'][0])
 
     def voice_recording_download(self, call_id, leg_id, recording_id):
-        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/' + str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH + '/' + str(recording_id)
+        uri = self.generate_voice_calls_url(call_id=call_id, leg_id=leg_id) + '/' + str(recording_id)
         recording_response = self.request(uri, 'GET')
         recording_links = recording_response.get('_links')
         if recording_links is None or recording_links.get('file') is None:
@@ -422,6 +433,40 @@ class Client(object):
         recording_file = recording_links.get('file')
         recording_file = self.request_store_as_file(VOICE_API_ROOT + recording_file, recording_id + '.wav')
         return VOICE_API_ROOT + recording_file
+
+    def voice_read_webhook(self, id):
+        """
+        Retrieve a voice webhook
+        API Reference: https://developers.messagebird.com/api/voice-calling/#webhooks
+        """
+        uri = VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH + '/' + str(id)
+        return VoiceWebhook().load(self.request(uri, 'GET', None, VOICE_TYPE))
+
+    def voice_list_webhooks(self, limit=10, offset=0):
+        """ Retrieve a list of voice webhooks. """
+        uri = VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH + '?' + self._format_query(limit, offset)
+        return VoiceWebhookList().load(self.request(uri, 'GET', None, VOICE_TYPE))
+
+    def voice_create_webhook(self, create_webhook_request):
+        """ Create a voice webhook. """
+        if create_webhook_request is None:
+            raise ValidationError('Create request is empty')
+
+        uri = VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH
+        return VoiceWebhook().load(self.request(uri, 'POST', create_webhook_request.__dict__(), VOICE_TYPE))
+
+    def voice_update_webhook(self, id, update_webhook_request):
+        """ Update a voice webhook. """
+        if update_webhook_request is None:
+            raise ValidationError('Update request is empty')
+
+        uri = VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH + '/' + str(id)
+        return VoiceWebhook().load(self.request(uri, 'PUT', update_webhook_request.__dict__(), VOICE_TYPE))
+
+    def voice_delete_webhook(self, id):
+        """ Delete a voice webhook. """
+        uri = VOICE_API_ROOT + '/' + VOICE_WEB_HOOKS_PATH + '/' + str(id)
+        self.request(uri, 'DELETE', None, VOICE_TYPE)
 
     def call_flow(self, id):
         return CallFlow().load(self.request('call-flows/' + str(id), 'GET', None, VOICE_TYPE))
@@ -442,11 +487,21 @@ class Client(object):
         self.request_plain_text('call-flows/' + str(id), 'DELETE', None, VOICE_TYPE)
 
     def call_flow_numbers_list(self, call_flow_id):
-        return CallFlowNumberList().load(self.request('call-flows/' + str(call_flow_id) + '/numbers', 'GET', None, VOICE_TYPE))
+        return CallFlowNumberList().load(
+            self.request('call-flows/' + str(call_flow_id) + '/numbers', 'GET', None, VOICE_TYPE))
 
     def call_flow_numbers_add(self, call_flow_id, numbers=()):
         params = {'numbers': numbers}
-        return CallFlowNumberList().load(self.request('call-flows/' + str(call_flow_id) + '/numbers', 'POST', params, VOICE_TYPE))
+        return CallFlowNumberList().load(
+            self.request('call-flows/' + str(call_flow_id) + '/numbers', 'POST', params, VOICE_TYPE))
 
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)
+
+    @staticmethod
+    def generate_voice_calls_url(call_id=None, leg_id=None, recording_id=None):
+        uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/'
+        uri += str(call_id) + '/' + VOICE_LEGS_PATH + '/' + str(leg_id) + '/' + VOICE_RECORDINGS_PATH
+        if recording_id:
+            uri += '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH
+        return uri

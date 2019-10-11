@@ -1,11 +1,13 @@
-import json
 import requests
 from enum import Enum
+
+from messagebird.serde import json_serialize
 
 try:
     from urllib.parse import urljoin
 except ImportError:
     from urlparse import urljoin
+
 
 class ResponseFormat(Enum):
     text = 1
@@ -24,7 +26,8 @@ class HttpClient(object):
 
     def request(self, path, method='GET', params=None, format=ResponseFormat.text):
         """Builds a request and gets a response."""
-        if params is None: params = {}
+        if params is None:
+            params = {}
         url = urljoin(self.endpoint, path)
         headers = {
             'Accept': 'application/json',
@@ -34,15 +37,16 @@ class HttpClient(object):
         }
 
         method_switcher = {
-            'DELETE': requests.delete(url, verify=True, headers=headers, data=json.dumps(params)),
-            'GET': requests.get(url, verify=True, headers=headers, params=params),
-            'PATCH': requests.patch(url, verify=True, headers=headers, data=json.dumps(params)),
-            'POST': requests.post(url, verify=True, headers=headers, data=json.dumps(params)),
-            'PUT': requests.put(url, verify=True, headers=headers, data=json.dumps(params))
+            'DELETE': lambda: requests.delete(url, verify=True, headers=headers, data=json_serialize(params)),
+            'GET': lambda: requests.get(url, verify=True, headers=headers, params=params),
+            'PATCH': lambda: requests.patch(url, verify=True, headers=headers, data=json_serialize(params)),
+            'POST': lambda: requests.post(url, verify=True, headers=headers, data=json_serialize(params)),
+            'PUT': lambda: requests.put(url, verify=True, headers=headers, data=json_serialize(params))
         }
-        response = method_switcher.get(method, str(method) + ' is not a supported HTTP method')
-        if isinstance(response, str):
-            raise ValueError(response)
+        if method not in method_switcher:
+            raise ValueError(str(method) + ' is not a supported HTTP method')
+
+        response = method_switcher[method]()
 
         if response.status_code not in self.__supported_status_codes:
             response.raise_for_status()
