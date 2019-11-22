@@ -13,7 +13,7 @@ description, description_content_type = get_description()
 setup(
     name                          = 'messagebird',
     packages                      = ['messagebird'],
-    version                       = '1.4.1',
+    version                       = '1.5.0',
     description                   = "MessageBird's REST API",
     author                        = 'MessageBird',
     author_email                  = 'support@messagebird.com',
