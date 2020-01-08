@@ -507,14 +507,16 @@ class Client(object):
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)
 
-    def available_numbers_list(self, limit=20, offset=0):
+    def available_numbers_list(self, country, params=None, limit=20, offset=0):
         """Retrieve a list of phone numbers available for purchase."""
-        # todo: add params
-        # todo: make country ('NL') a param
-        # todo: add example
         # todo: add test
-        query = self._format_query(limit, offset)
-        return NumberList().load(self.request(NUMBER_AVAILABLE_PATH + '/NL?' + query, 'GET', None, NUMBER_TYPE))
+        if params is None:
+            params = {}
+
+        params['limit'] = limit
+        params['offset'] = offset
+
+        return NumberList().load(self.request(NUMBER_AVAILABLE_PATH + '/' + str(country), 'GET', params, NUMBER_TYPE))
 
     @staticmethod
     def generate_voice_calls_url(call_id=None, leg_id=None, recording_id=None):

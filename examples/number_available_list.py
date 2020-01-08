@@ -1,18 +1,21 @@
 #!/usr/bin/env python
 
-import sys, os 
+import sys, os, argparse
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import messagebird
 
-ACCESS_KEY = 'test_gshuPaZoeEG6ovbc8M79w0QyM'
+parser = argparse.ArgumentParser()
+parser.add_argument('--accessKey', help='access key for MessageBird API', type=str, required=True)
+args = vars(parser.parse_args())
 
 try:
-  # Create a MessageBird client with the specified ACCESS_KEY.
-  client = messagebird.Client(ACCESS_KEY)
+  # Create a MessageBird client with the specified accessKey.
+  client = messagebird.Client(args['accessKey'])
 
-  # Fetch the NumberList object.
-  numbers = client.available_numbers_list(20, 0)
+  # Fetch the NumberList object with specified params, limit, offset.
+  params = {'features': ['sms', 'voice'], 'number': '15'}
+  numbers = client.available_numbers_list('US', params, 2, 0)
 
   # Print the object information.
   print('\nThe following information was returned as a %s object:\n' % numbers.__class__)
