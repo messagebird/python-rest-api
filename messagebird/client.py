@@ -23,6 +23,7 @@ from messagebird.conversation_webhook import ConversationWebhook, ConversationWe
 from messagebird.voice_recording import VoiceRecordingsList, VoiceRecording
 from messagebird.voice_transcription import VoiceTranscriptionsList, VoiceTranscriptionsView
 from messagebird.call_flow import CallFlow, CallFlowList, CallFlowNumberList
+from messagebird.number import Number, NumberList
 
 ENDPOINT = 'https://rest.messagebird.com'
 CLIENT_VERSION = '1.4.1'
@@ -45,6 +46,11 @@ VOICE_LEGS_PATH = 'legs'
 VOICE_RECORDINGS_PATH = 'recordings'
 VOICE_TRANSCRIPTIONS_PATH = 'transcriptions'
 VOICE_WEB_HOOKS_PATH = 'webhooks'
+
+NUMBER_TYPE = 'number'
+NUMBER_API_ROOT = 'https://numbers.messagebird.com/v1/'
+NUMBER_PATH = 'phone-numbers'
+NUMBER_AVAILABLE_PATH = 'available-phone-numbers'
 
 
 class ErrorException(Exception):
@@ -80,6 +86,9 @@ class Client(object):
 
         if type == VOICE_TYPE:
             return HttpClient(VOICE_API_ROOT, self.access_key, USER_AGENT)
+
+        if type == NUMBER_TYPE:
+            return HttpClient(NUMBER_API_ROOT, self.access_key, USER_AGENT)
 
         return HttpClient(ENDPOINT, self.access_key, USER_AGENT)
 
@@ -498,6 +507,15 @@ class Client(object):
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)
 
+    def available_numbers_list(self, limit=20, offset=0):
+        """Retrieve a list of phone numbers available for purchase."""
+        # todo: add params
+        # todo: make country ('NL') a param
+        # todo: add example
+        # todo: add test
+        query = self._format_query(limit, offset)
+        return NumberList().load(self.request(NUMBER_AVAILABLE_PATH + '/NL?' + query, 'GET', None, NUMBER_TYPE))
+
     @staticmethod
     def generate_voice_calls_url(call_id=None, leg_id=None, recording_id=None):
         uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/'
@@ -505,3 +523,5 @@ class Client(object):
         if recording_id:
             uri += '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH
         return uri
+
+
