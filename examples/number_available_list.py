@@ -14,8 +14,8 @@ try:
   client = messagebird.Client(args['accessKey'])
 
   # Fetch the NumberList object with specified params, limit, offset.
-  params = {'features': ['sms', 'voice'], 'number': '15'}
-  numbers = client.available_numbers_list('US', params, 2, 0)
+  params = {'features': ['sms', 'voice'], 'number': 319}
+  numbers = client.available_numbers_list('NL', params, 2, 0)
 
   # Print the object information.
   print('\nThe following information was returned as a %s object:\n' % numbers.__class__)

@@ -518,6 +518,10 @@ class Client(object):
 
         return NumberList().load(self.request(NUMBER_AVAILABLE_PATH + '/' + str(country), 'GET', params, NUMBER_TYPE))
 
+    def purchase_number(self, number, country, billingIntervalMonths=1):
+        params = {'number': str(number), 'countryCode': str(country), 'billingIntervalMonths': int(billingIntervalMonths)}
+        return Number().load(self.request(NUMBER_PATH, 'POST', params, NUMBER_TYPE))
+
     @staticmethod
     def generate_voice_calls_url(call_id=None, leg_id=None, recording_id=None):
         uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/'
