@@ -522,6 +522,13 @@ class Client(object):
         params = {'number': str(number), 'countryCode': str(country), 'billingIntervalMonths': int(billingIntervalMonths)}
         return Number().load(self.request(NUMBER_PATH, 'POST', params, NUMBER_TYPE))
 
+    def update_number(self, number, tags):
+        params = {'tags': tags}
+        return Number().load(self.request(NUMBER_PATH + '/' + str(number), 'PATCH', params, VOICE_TYPE))
+
+    def delete_number(self, number):
+        self.request(NUMBER_PATH + '/' + str(number), 'DELETE', None, VOICE_TYPE)
+
     @staticmethod
     def generate_voice_calls_url(call_id=None, leg_id=None, recording_id=None):
         uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/'

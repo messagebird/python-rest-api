@@ -13,8 +13,10 @@ try:
   # Create a MessageBird client with the specified accessKey.
   client = messagebird.Client(args['accessKey'])
 
-  # Purchase number
-  number = client.purchase_number('3197010240126', 'NL', 3)
+  # Update number
+  # Note: at the moment, we only support updating tags that can be used to group or label numbers
+  tags = ['tag1']
+  number = client.update_number('3197010240126', tags)
 
   # Print the object information.
   print('\nThe following information was returned as a Number object:\n')
