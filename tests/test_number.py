@@ -22,3 +22,22 @@ class TestNumber(unittest.TestCase):
         self.assertEqual(1, numbers.count)
         self.assertEqual(1, len(numbers.items))
         self.assertEqual('3197010260188', numbers.items[0].number)
+
+    def test_purchase_number(self):
+        http_client = Mock()
+        http_client.request.return_value = '{"number":"31971234567","country":"NL","region":"Haarlem","locality":"Haarlem","features":["sms","voice"],"tags":[],"type":"landline_or_mobile","status":"active","createdAt":"2019-04-25T14:04:04Z","renewalAt":"2019-05-25T00:00:00Z"}'
+
+        number = Client('', http_client).purchase_number('31971234567', 'NL', 1)
+
+        http_client.request.assert_called_once_with(
+            'phone-numbers', 'POST',
+            {
+                "number": "31971234567",
+                "countryCode": "NL",
+                "billingIntervalMonths": 1
+            }
+        )
+
+        self.assertEqual('Haarlem', number.region)
+        self.assertEqual(["sms", "voice"], number.features)
+
