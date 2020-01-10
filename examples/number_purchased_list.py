@@ -30,7 +30,7 @@ try:
         limit = args['limit']
         del(args['limit'])
     if args['offset'] is not None:
-        limit = args['offset']
+        offset = args['offset']
         del(args['offset'])
 
     # Fetching all purchased phone numbers.

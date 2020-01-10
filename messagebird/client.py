@@ -539,5 +539,3 @@ class Client(object):
         if recording_id:
             uri += '/' + str(recording_id) + '/' + VOICE_TRANSCRIPTIONS_PATH
         return uri
-
-
