@@ -58,3 +58,23 @@ class TestNumber(unittest.TestCase):
 
         http_client.request.assert_called_once_with('phone-numbers/non-existent-number', 'DELETE', None)
 
+    def test_purchased_number(self):
+        http_client = Mock()
+        http_client.request.return_value = '{"number":"31612345670","country":"NL","region":"Texel","locality":"Texel","features":["sms","voice"],"tags":[],"type":"mobile","status":"active"}'
+        number = Client('', http_client).purchased_number('31612345670')
+
+        http_client.request.assert_called_once_with('phone-numbers/31612345670', 'GET', None)
+
+        self.assertEqual('Texel', number.locality)
+
+    def test_purchased_numbers_list(self):
+        http_client = Mock()
+        http_client.request.return_value = '{"items":[{"number":"3197010260188","country":"NL","region":"","locality":"","features":["sms","voice"],"type":"mobile"}],"limit":20,"count":1}'
+
+        numbers = Client('', http_client).purchased_numbers_list({'number': 319}, 40, 2)
+
+        http_client.request.assert_called_once_with('phone-numbers', 'GET', {'number': 319, 'limit': 40, 'offset': 2})
+
+        self.assertEqual(1, numbers.count)
+        self.assertEqual(1, len(numbers.items))
+        self.assertEqual('3197010260188', numbers.items[0].number)
