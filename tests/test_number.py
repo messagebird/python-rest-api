@@ -41,3 +41,20 @@ class TestNumber(unittest.TestCase):
         self.assertEqual('Haarlem', number.region)
         self.assertEqual(["sms", "voice"], number.features)
 
+    def test_delete_number(self):
+        http_client = Mock()
+        http_client.request.return_value = '{}'
+
+        Client('', http_client).delete_number('31971234567')
+
+        http_client.request.assert_called_once_with('phone-numbers/31971234567', 'DELETE', None)
+
+    def test_delete_number_invalid(self):
+        http_client = Mock()
+        http_client.request.return_value = '{"errors": [{"code": 20, "description": "number not found", "parameter": null}]}'
+
+        with self.assertRaises(ErrorException):
+            Client('', http_client).delete_number('non-existent-number')
+
+        http_client.request.assert_called_once_with('phone-numbers/non-existent-number', 'DELETE', None)
+
