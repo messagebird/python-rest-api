@@ -529,6 +529,16 @@ class Client(object):
     def delete_number(self, number):
         self.request(NUMBER_PATH + '/' + str(number), 'DELETE', None, VOICE_TYPE)
 
+    def fetching_all_purchased_phone_numbers(self, params={}):
+        if params['limit'] is None:
+            params['limit'] = 20
+        if params['offset'] is None:
+            params['offset'] = 0
+        return NumberList().load(self.request(NUMBER_PATH, 'GET', params, NUMBER_TYPE))
+
+    def fetching_a_purchased_phone_number(self, phoneNumber):
+        return Number().load(self.request(NUMBER_PATH + '/' + phoneNumber, 'GET', None, NUMBER_TYPE))
+
     @staticmethod
     def generate_voice_calls_url(call_id=None, leg_id=None, recording_id=None):
         uri = VOICE_API_ROOT + '/' + VOICE_PATH + '/'
