@@ -24,8 +24,17 @@ try:
     client = messagebird.Client(args['accessKey'])
     del(args['accessKey'])
 
+    limit = 20
+    offset = 0
+    if args['limit'] is not None:
+        limit = args['limit']
+        del(args['limit'])
+    if args['offset'] is not None:
+        limit = args['offset']
+        del(args['offset'])
+
     # Fetching all purchased phone numbers.
-    numbers = client.fetching_all_purchased_phone_numbers(args)
+    numbers = client.purchased_numbers_list(args, limit, offset)
 
     # Print the object information.
     print('\nThe following information was returned as a %s object:\n' % numbers.__class__)

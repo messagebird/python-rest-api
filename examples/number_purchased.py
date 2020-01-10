@@ -15,10 +15,9 @@ args = vars(parser.parse_args())
 try:
     # Create a MessageBird client with the specified accessKey.
     client = messagebird.Client(args['accessKey'])
-    del(args['accessKey'])
 
     # Fetching all purchased phone numbers.
-    item = client.fetching_a_purchased_phone_number(**args)
+    item = client.purchased_number(args['phoneNumber'])
 
     # Print the object information.
     print('\nThe following information was returned as a %s object:\n' % item.__class__)
