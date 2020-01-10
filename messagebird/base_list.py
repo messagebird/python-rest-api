@@ -38,7 +38,7 @@ class BaseList(Base):
     @items.setter
     def items(self, value):
         """Create typed objects from the dicts."""
-
+        items = []
         if value is not None:
             for item in value:
                 items.append(self.itemType().load(item))
