@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
-import sys, os, argparse, requests
+import sys
+import os
+import argparse
+import requests
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import messagebird
