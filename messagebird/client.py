@@ -519,7 +519,7 @@ class Client(object):
 
     def update_number(self, number, tags):
         params = {'tags': tags}
-        return Number().load(self.request(NUMBER_PATH + '/' + str(number), 'PATCH', params, VOICE_TYPE))
+        return Number().load(self.request(NUMBER_PATH + '/' + str(number), 'PATCH', params, NUMBER_TYPE))
 
     def delete_number(self, number):
         self.request(NUMBER_PATH + '/' + str(number), 'DELETE', None, NUMBER_TYPE)
