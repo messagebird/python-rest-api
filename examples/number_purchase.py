@@ -14,30 +14,30 @@ parser.add_argument('--accessKey', help='access key for MessageBird API', type=s
 args = vars(parser.parse_args())
 
 try:
-  # Create a MessageBird client with the specified accessKey.
-  client = messagebird.Client(args['accessKey'])
+    # Create a MessageBird client with the specified accessKey.
+    client = messagebird.Client(args['accessKey'])
 
-  # Purchase number
-  number = client.purchase_number('3197010240126', 'NL', 3)
+    # Purchase number
+    number = client.purchase_number('3197010240126', 'NL', 3)
 
-  # Print the object information.
-  print('\nThe following information was returned as a Number object:\n')
-  print('    number                : %s' % number.number)
-  print('    country               : %s' % number.country)
-  print('    region                : %s' % number.region)
-  print('    locality              : %s' % number.locality)
-  print('    features              : %s' % number.features)
-  print('    tags                  : %s' % number.tags)
-  print('    type                  : %s' % number.type)
-  print('    status                : %s' % number.status)
+    # Print the object information.
+    print('\nThe following information was returned as a Number object:\n')
+    print('    number                : %s' % number.number)
+    print('    country               : %s' % number.country)
+    print('    region                : %s' % number.region)
+    print('    locality              : %s' % number.locality)
+    print('    features              : %s' % number.features)
+    print('    tags                  : %s' % number.tags)
+    print('    type                  : %s' % number.type)
+    print('    status                : %s' % number.status)
 
 except messagebird.client.ErrorException as e:
-  print('\nAn error occured while requesting a NumberList object:\n')
+    print('\nAn error occured while requesting a NumberList object:\n')
 
-  for error in e.errors:
-    print('  code        : %d' % error.code)
-    print('  description : %s' % error.description)
-    print('  parameter   : %s\n' % error.parameter)
+    for error in e.errors:
+        print('  code        : %d' % error.code)
+        print('  description : %s' % error.description)
+        print('  parameter   : %s\n' % error.parameter)
 
 except requests.exceptions.HTTPError as e:
     print('\nAn HTTP exception occurred while fetching all purchased phone numbers:')
