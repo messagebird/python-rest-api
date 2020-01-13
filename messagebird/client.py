@@ -23,6 +23,7 @@ from messagebird.conversation_webhook import ConversationWebhook, ConversationWe
 from messagebird.voice_recording import VoiceRecordingsList, VoiceRecording
 from messagebird.voice_transcription import VoiceTranscriptionsList, VoiceTranscriptionsView
 from messagebird.call_flow import CallFlow, CallFlowList, CallFlowNumberList
+from messagebird.number import Number, NumberList
 
 ENDPOINT = 'https://rest.messagebird.com'
 CLIENT_VERSION = '1.4.1'
@@ -45,6 +46,11 @@ VOICE_LEGS_PATH = 'legs'
 VOICE_RECORDINGS_PATH = 'recordings'
 VOICE_TRANSCRIPTIONS_PATH = 'transcriptions'
 VOICE_WEB_HOOKS_PATH = 'webhooks'
+
+NUMBER_TYPE = 'number'
+NUMBER_API_ROOT = 'https://numbers.messagebird.com/v1/'
+NUMBER_PATH = 'phone-numbers'
+NUMBER_AVAILABLE_PATH = 'available-phone-numbers'
 
 
 class ErrorException(Exception):
@@ -80,6 +86,9 @@ class Client(object):
 
         if type == VOICE_TYPE:
             return HttpClient(VOICE_API_ROOT, self.access_key, USER_AGENT)
+
+        if type == NUMBER_TYPE:
+            return HttpClient(NUMBER_API_ROOT, self.access_key, USER_AGENT)
 
         return HttpClient(ENDPOINT, self.access_key, USER_AGENT)
 
@@ -497,6 +506,31 @@ class Client(object):
 
     def _format_query(self, limit, offset):
         return 'limit=' + str(limit) + '&offset=' + str(offset)
+
+    def available_numbers_list(self, country, params={}, limit=20, offset=0):
+        """Retrieve a list of phone numbers available for purchase."""
+        params['limit'] = limit
+        params['offset'] = offset
+        return NumberList().load(self.request(NUMBER_AVAILABLE_PATH + '/' + str(country), 'GET', params, NUMBER_TYPE))
+
+    def purchase_number(self, number, country, billingIntervalMonths=1):
+        params = {'number': str(number), 'countryCode': str(country), 'billingIntervalMonths': int(billingIntervalMonths)}
+        return Number().load(self.request(NUMBER_PATH, 'POST', params, NUMBER_TYPE))
+
+    def update_number(self, number, tags):
+        params = {'tags': tags}
+        return Number().load(self.request(NUMBER_PATH + '/' + str(number), 'PATCH', params, NUMBER_TYPE))
+
+    def delete_number(self, number):
+        self.request(NUMBER_PATH + '/' + str(number), 'DELETE', None, NUMBER_TYPE)
+
+    def purchased_numbers_list(self, params={}, limit=20, offset=0):
+        params['limit'] = limit
+        params['offset'] = offset
+        return NumberList().load(self.request(NUMBER_PATH, 'GET', params, NUMBER_TYPE))
+
+    def purchased_number(self, number):
+        return Number().load(self.request(NUMBER_PATH + '/' + number, 'GET', None, NUMBER_TYPE))
 
     @staticmethod
     def generate_voice_calls_url(call_id=None, leg_id=None, recording_id=None):
