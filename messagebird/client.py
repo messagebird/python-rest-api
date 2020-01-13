@@ -522,7 +522,7 @@ class Client(object):
         return Number().load(self.request(NUMBER_PATH + '/' + str(number), 'PATCH', params, VOICE_TYPE))
 
     def delete_number(self, number):
-        self.request(NUMBER_PATH + '/' + str(number), 'DELETE', None, VOICE_TYPE)
+        self.request(NUMBER_PATH + '/' + str(number), 'DELETE', None, NUMBER_TYPE)
 
     def purchased_numbers_list(self, params={}, limit=20, offset=0):
         params['limit'] = limit
