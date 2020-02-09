@@ -66,3 +66,11 @@ class TestMessage(unittest.TestCase):
         self.assertEqual(2, message_list.totalCount)
         self.assertEqual('https://rest.messagebird.com/messages/?offset=0', message_list.links.first)
         self.assertEqual('https://rest.messagebird.com/messages/first-message-id', message_list.items[0].href)
+
+    def test_scheduled_message_list(self):
+        http_client = Mock()
+        http_client.request.return_value = '{"offset": 0,"limit": 20,"count": 2,"totalCount": 2,"links": {"first": "https://rest.messagebird.com/messages/?offset=0","previous": null,"next": null,"last": "https://rest.messagebird.com/messages/?offset=0"},"items": []}'
+
+        message_list = Client('', http_client).message_list(20, 0, "scheduled")
+
+        http_client.request.assert_called_once_with('messages?limit=20&offset=0&status=scheduled', 'GET', None)

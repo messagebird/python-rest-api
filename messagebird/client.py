@@ -193,9 +193,18 @@ class Client(object):
         """Retrieve the information of a specific message."""
         return Message().load(self.request('messages/' + str(id)))
 
-    def message_list(self, limit=20, offset=0):
-        """Retrieve a list of the most recent messages."""
+    def message_list(self, limit=20, offset=0, status=None):
+        """Retrieve a list of the most recent messages.
+
+        Args:
+            limit(int)                     : The page limit.
+            offset(int)                    : The page to list.
+            status(str)                    : Message status filter(scheduled, sent, buffered, delivered, expired or delivery_failed)
+        Returns:
+            MessageList(object)            : The List of the message requested."""
         query = self._format_query(limit, offset)
+        if status:
+            query = query + "&status=" + status
         return MessageList().load(self.request('messages?' + query))
 
     def message_create(self, originator, recipients, body, params=None):
