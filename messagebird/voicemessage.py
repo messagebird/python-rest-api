@@ -2,6 +2,7 @@ from messagebird.base import Base
 from messagebird.base_list import BaseList
 from messagebird.recipient import Recipient
 
+
 class VoiceMessagesList(BaseList):
     def __init__(self):
         super(VoiceMessagesList, self).__init__(VoiceMessage)
