@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 
+import argparse
 import messagebird
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
-# ACCESS_KEY = ''
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--accessKey', help='access key for MessageBird API', type=str, required=True)
+
+args = vars(parser.parse_args())
 
 try:
-    # Create a MessageBird client with the specified ACCESS_KEY.
-    client = messagebird.Client(ACCESS_KEY)
+    client = messagebird.Client(args['accessKey'])
 
     # Fetch Voice Messages List from a specific offset, and within a defined limit.
     voiceMessageList = client.voice_message_list(limit=10, offset=0)
