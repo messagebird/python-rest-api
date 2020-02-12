@@ -13,7 +13,7 @@ from messagebird.hlr import HLR
 from messagebird.message import Message, MessageList
 from messagebird.mms import MMS
 from messagebird.voice_webhook import VoiceWebhook, VoiceWebhookList
-from messagebird.voicemessage import VoiceMessage
+from messagebird.voicemessage import VoiceMessagesList, VoiceMessage
 from messagebird.lookup import Lookup
 from messagebird.verify import Verify
 from messagebird.http_client import HttpClient, ResponseFormat
@@ -249,6 +249,11 @@ class Client(object):
     def voice_message(self, id):
         "Retrieve the information of a specific voice message."
         return VoiceMessage().load(self.request('voicemessages/' + str(id)))
+
+    def voice_message_list(self, limit=10, offset=0):
+        "Retrieve the information of a list of voice messages."
+        query = self._format_query(limit, offset)
+        return VoiceMessagesList().load(self.request('voicemessages?' + query, 'GET', None))
 
     def voice_message_create(self, recipients, body, params=None):
         """Create a new voice message."""
