@@ -75,18 +75,13 @@ class TestVoiceRecording(unittest.TestCase):
     def test_voice_recording_delete(self):
         http_client = Mock()
         http_client.request.return_value = ''
-        call_id  = '12348765-4321-0987-6543-210987654321',
-        leg_id =  '87654321-0987-6543-2109-876543210987'
+        call_id = '12348765-4321-0987-6543-210987654321'
+        leg_id = '87654321-0987-6543-2109-876543210987'
         recording_id = '12345678-9012-3456-7890-123456789012'
         Client('', http_client).voice_recording_delete(call_id,
                                                        leg_id,
                                                        recording_id)
-        http_client.request.assert_called_once_with(
-            'https://voice.messagebird.com/calls/%s/legs/%s/recordings/%s' % (
-                 call_id, 
-                 leg_id, 
-                 recording_id
-             ) , 'DELETE', None)
+        http_client.request.assert_called_once_with('https://voice.messagebird.com/calls/%s/legs/%s/recordings/%s' % (call_id, leg_id, recording_id) , 'DELETE', None)
 
 
     def test_voice_recording_download(self):

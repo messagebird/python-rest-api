@@ -449,7 +449,7 @@ class Client(object):
 
     def voice_recording_delete(self, call_id, leg_id, recording_id):
         uri = self.generate_voice_calls_url(call_id=call_id, leg_id=leg_id) + '/' + str(recording_id)
-        recording_response = self.request(uri, 'DELETE', None , VOICE_TYPE)
+        recording_response = self.request(uri, 'DELETE', None, VOICE_TYPE)
 
     def voice_recording_download(self, call_id, leg_id, recording_id):
         uri = self.generate_voice_calls_url(call_id=call_id, leg_id=leg_id) + '/' + str(recording_id)
