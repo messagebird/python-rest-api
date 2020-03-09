@@ -171,7 +171,7 @@ class Client(object):
 
         params = locals()
         del (params['self'])
-        return Call().load(self.request('calls', 'POST', params, VOICE_TYPE))
+        return Call().load(self.request('calls/', 'POST', params, VOICE_TYPE))
 
     def call_delete(self, id):
         """Delete an existing call object."""
@@ -446,6 +446,10 @@ class Client(object):
         if recording_links is not None:
             recording_response['data'][0]['_links'] = recording_links
         return VoiceRecording().load(recording_response['data'][0])
+
+    def voice_recording_delete(self, call_id, leg_id, recording_id):
+        uri = self.generate_voice_calls_url(call_id=call_id, leg_id=leg_id) + '/' + str(recording_id)
+        recording_response = self.request(uri, 'DELETE', None , VOICE_TYPE)
 
     def voice_recording_download(self, call_id, leg_id, recording_id):
         uri = self.generate_voice_calls_url(call_id=call_id, leg_id=leg_id) + '/' + str(recording_id)
