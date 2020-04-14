@@ -57,6 +57,7 @@ class ConversationMessageReference(Base):
     def __init__(self):
         self.totalCount = None
         self.href = None
+        self.lastMessageId = None
 
 
 class ConversationMessageList(Base):

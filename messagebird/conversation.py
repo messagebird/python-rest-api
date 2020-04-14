@@ -79,6 +79,7 @@ class Conversation(Base):
             'id                   : %s' % self.id,
             'contact id           : %s' % self.contactId,
             'last used channel id : %s' % self.lastUsedChannelId,
+            'message id           : %s' % self.messages.lastMessageId,
             'message total count  : %s' % self.messages.totalCount,
             'status               : %s' % self.status,
             'created date time    : %s' % self.createdDatetime,
