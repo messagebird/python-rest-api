@@ -61,4 +61,4 @@ target/
 .idea/
 
 # pyvenv
-venv/
+venv*/

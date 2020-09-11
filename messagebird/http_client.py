@@ -33,7 +33,7 @@ class HttpClient(object):
             'Accept': 'application/json',
             'Authorization': 'AccessKey ' + self.access_key,
             'User-Agent': self.user_agent,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json; charset=UTF-8'
         }
 
         method_switcher = {

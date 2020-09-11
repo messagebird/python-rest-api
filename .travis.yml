@@ -7,11 +7,7 @@ python:
   - '3.6'
   - 'nightly'
 install:
-  - pip install mock==2.0
-  - pip install requests
-  - pip install codecov
-  - pip install pytest pytest-cov
-  - pip install pycodestyle
+  - pip install -r requirements.txt
   - pip install .
 script:
   - coverage run --source=messagebird -m unittest discover -s tests/
