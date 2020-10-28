@@ -11,7 +11,7 @@ class ResponseFormat(Enum):
     binary = 2
 
 
-class HttpClient(object):
+class HttpClient:
     """Used for sending simple HTTP requests."""
 
     def __init__(self, endpoint, access_key, user_agent):

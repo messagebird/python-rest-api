@@ -69,7 +69,7 @@ class Feature(enum.Enum):
     ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX = 1
 
 
-class Client(object):
+class Client:
 
     def __init__(self, access_key, http_client=None, features=[]):
         self.access_key = access_key
