@@ -1,18 +1,14 @@
 language: python
 python:
-  - 'pypy2.7'
-  - 'pypy3.5'
-  - '2.7'
-  - '3.4'
+  - 'pypy3.6'
+  - 'pypy3.7'
   - '3.6'
+  - '3.7'
+  - '3.8'
+  - '3.9'
   - 'nightly'
 install:
-  - pip install mock==2.0
-  - pip install requests
-  - pip install codecov
-  - pip install pytest pytest-cov
-  - pip install pycodestyle
-  - pip install .
+  - pip install -e .[dev]
 script:
   - coverage run --source=messagebird -m unittest discover -s tests/
   - coverage report --fail-under=80
@@ -21,5 +17,3 @@ script:
 matrix:
   allow_failures:
   - python: 'nightly'
-  - python: 'pypy2.7'
-  - python: 'pypy3.5'
