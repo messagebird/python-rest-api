@@ -3,10 +3,7 @@ from enum import Enum
 
 from messagebird.serde import json_serialize
 
-try:
-    from urllib.parse import urljoin
-except ImportError:
-    from urlparse import urljoin
+from urllib.parse import urljoin
 
 
 class ResponseFormat(Enum):
