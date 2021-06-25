@@ -284,6 +284,17 @@ class Client(object):
         params.update({'recipient': recipient})
         return Verify().load(self.request('verify', 'POST', params))
 
+    def verify_create_email(self, recipient, originator, params=None):
+        """Create a new email verification."""
+        if params is None:
+            params = {}
+        params.update({
+            'type' : 'email',
+            'recipient': recipient,
+            'originator': originator
+        })
+        return Verify().load(self.request('verify', 'POST', params))
+
     def verify_verify(self, id, token):
         """Verify the token of a specific verification."""
         return Verify().load(self.request('verify/' + str(id), params={'token': token}))

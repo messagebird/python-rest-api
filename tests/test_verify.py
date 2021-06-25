@@ -29,6 +29,14 @@ class TestVerify(unittest.TestCase):
 
         http_client.request.assert_called_once_with('verify', 'POST', {'recipient': '31612345678'})
 
+    def test_verify_create_email(self):
+        http_client = Mock()
+        http_client.request.return_value = '{}'
+
+        Client('', http_client).verify_create_email('recipient@example.com', 'originator@example.com')
+
+        http_client.request.assert_called_once_with('verify', 'POST', {'recipient': 'recipient@example.com', 'originator': 'originator@example.com', 'type': 'email'})
+
     def test_verify_verify(self):
         http_client = Mock()
         http_client.request.return_value = '{"id": "verify-id","href": "https://rest.messagebird.com/verify/verify-id","recipient": 31612345678,"reference": "MyReference","messages": {"href": "https://rest.messagebird.com/messages/63b168423592d681641eb07b76226648"},"status": "verified","createdDatetime": "2017-05-30T12:39:50+00:00","validUntilDatetime": "2017-05-30T12:40:20+00:00"}'
