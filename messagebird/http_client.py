@@ -3,10 +3,7 @@ from enum import Enum
 
 from messagebird.serde import json_serialize
 
-try:
-    from urllib.parse import urljoin
-except ImportError:
-    from urlparse import urljoin
+from urllib.parse import urljoin
 
 
 class ResponseFormat(Enum):
@@ -14,7 +11,7 @@ class ResponseFormat(Enum):
     binary = 2
 
 
-class HttpClient(object):
+class HttpClient:
     """Used for sending simple HTTP requests."""
 
     def __init__(self, endpoint, access_key, user_agent):

@@ -1,13 +1,7 @@
-import unittest
 import time
-from messagebird.signed_request import SignedRequest
+import unittest
 
-try:
-    from unittest.mock import Mock
-except ImportError:
-    # mock was added to unittest in Python 3.3, but was an external library
-    # before.
-    from mock import Mock
+from messagebird.signed_request import SignedRequest
 
 SIGNING_KEY = 'PlLrKaqvZNRR5zAjm42ZT6q1SQxgbbGd'
 

@@ -1,16 +1,10 @@
 import unittest
+from datetime import datetime
+from unittest.mock import Mock
 
 from dateutil.tz import tzutc
 
 from messagebird import Client, ErrorException
-from datetime import datetime
-
-try:
-    from unittest.mock import Mock
-except ImportError:
-    # mock was added to unittest in Python 3.3, but was an external library
-    # before.
-    from mock import Mock
 
 
 class TestVoiceRecording(unittest.TestCase):

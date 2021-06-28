@@ -1,12 +1,7 @@
 import unittest
-from messagebird import Client, ErrorException
+from unittest.mock import Mock
 
-try:
-    from unittest.mock import Mock
-except ImportError:
-    # mock was added to unittest in Python 3.3, but was an external library
-    # before.
-    from mock import Mock
+from messagebird import Client, ErrorException
 
 
 class TestVerify(unittest.TestCase):
@@ -28,6 +23,14 @@ class TestVerify(unittest.TestCase):
         Client('', http_client).verify_create('31612345678', {})
 
         http_client.request.assert_called_once_with('verify', 'POST', {'recipient': '31612345678'})
+
+    def test_verify_create_email(self):
+        http_client = Mock()
+        http_client.request.return_value = '{}'
+
+        Client('', http_client).verify_create_email('recipient@example.com', 'originator@example.com')
+
+        http_client.request.assert_called_once_with('verify', 'POST', {'recipient': 'recipient@example.com', 'originator': 'originator@example.com', 'type': 'email'})
 
     def test_verify_verify(self):
         http_client = Mock()

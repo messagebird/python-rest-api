@@ -4,11 +4,12 @@ import dateutil.parser
 import json
 
 
-class Base(object):
+class Base:
     def load(self, data):
-        for name, value in list(data.items()):
-            if hasattr(self, name) and not callable(getattr(self, name)):
-                setattr(self, name, value)
+        if data is not None:
+            for name, value in list(data.items()):
+                if hasattr(self, name) and not callable(getattr(self, name)):
+                    setattr(self, name, value)
 
         return self
 

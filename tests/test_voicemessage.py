@@ -1,12 +1,7 @@
 import unittest
-from messagebird import Client
+from unittest.mock import Mock
 
-try:
-    from unittest.mock import Mock
-except ImportError:
-    # mock was added to unittest in Python 3.3, but was an external library
-    # before.
-    from mock import Mock
+from messagebird import Client
 
 
 class TestVoicemessage(unittest.TestCase):

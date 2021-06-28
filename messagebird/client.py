@@ -1,7 +1,6 @@
 import sys
 import json
 import io
-import enum
 
 from messagebird.balance import Balance
 from messagebird.call import Call
@@ -26,14 +25,12 @@ from messagebird.call_flow import CallFlow, CallFlowList, CallFlowNumberList
 from messagebird.number import Number, NumberList
 
 ENDPOINT = 'https://rest.messagebird.com'
-CLIENT_VERSION = '1.4.1'
+CLIENT_VERSION = '2.0.0'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 USER_AGENT = 'MessageBird/ApiClient/%s Python/%s' % (CLIENT_VERSION, PYTHON_VERSION)
 REST_TYPE = 'rest'
 
 CONVERSATION_API_ROOT = 'https://conversations.messagebird.com/v1/'
-CONVERSATION_API_WHATSAPP_SANDBOX_ROOT = 'https://whatsapp-sandbox.messagebird.com/v1/'
-
 CONVERSATION_PATH = 'conversations'
 CONVERSATION_MESSAGES_PATH = 'messages'
 CONVERSATION_WEB_HOOKS_PATH = 'webhooks'
@@ -65,24 +62,18 @@ class SignleErrorException(Exception):
         super(SignleErrorException, self).__init__(errorMessage)
 
 
-class Feature(enum.Enum):
-    ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX = 1
-
 
 class Client(object):
-
-    def __init__(self, access_key, http_client=None, features=[]):
+    def __init__(self, access_key, http_client=None):
         self.access_key = access_key
         self.http_client = http_client
-
-        self.conversation_api_root = CONVERSATION_API_WHATSAPP_SANDBOX_ROOT if Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX in features else CONVERSATION_API_ROOT
 
     def _get_http_client(self, type=REST_TYPE):
         if self.http_client:
             return self.http_client
 
         if type == CONVERSATION_TYPE:
-            return HttpClient(self.conversation_api_root, self.access_key, USER_AGENT)
+            return HttpClient(CONVERSATION_API_ROOT, self.access_key, USER_AGENT)
 
         if type == VOICE_TYPE:
             return HttpClient(VOICE_API_ROOT, self.access_key, USER_AGENT)
@@ -292,6 +283,17 @@ class Client(object):
         if params is None:
             params = {}
         params.update({'recipient': recipient})
+        return Verify().load(self.request('verify', 'POST', params))
+
+    def verify_create_email(self, recipient, originator, params=None):
+        """Create a new email verification."""
+        if params is None:
+            params = {}
+        params.update({
+            'type' : 'email',
+            'recipient': recipient,
+            'originator': originator
+        })
         return Verify().load(self.request('verify', 'POST', params))
 
     def verify_verify(self, id, token):
