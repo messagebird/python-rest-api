@@ -149,7 +149,7 @@ class TestCall(unittest.TestCase):
 
         call_creation_response = Client('', http_client).call_create(**params)
 
-        http_client.request.assert_called_once_with('calls', 'POST', params)
+        http_client.request.assert_called_once_with('calls/', 'POST', params)
 
         # check all api response data is outputted
         expected_data = self.create_expected_call_data_based_on_api_response(api_response)
