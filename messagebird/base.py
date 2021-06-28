@@ -4,7 +4,7 @@ import dateutil.parser
 import json
 
 
-class Base(object):
+class Base:
     def load(self, data):
         if data is not None:
             for name, value in list(data.items()):

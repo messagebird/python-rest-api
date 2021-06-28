@@ -59,6 +59,7 @@ target/
 
 # PyCharm
 .idea/
+*.iml
 
 # pyvenv
-venv/
+venv*/

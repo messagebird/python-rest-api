@@ -25,7 +25,7 @@ from messagebird.call_flow import CallFlow, CallFlowList, CallFlowNumberList
 from messagebird.number import Number, NumberList
 
 ENDPOINT = 'https://rest.messagebird.com'
-CLIENT_VERSION = '1.6.0'
+CLIENT_VERSION = '2.0.0'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 USER_AGENT = 'MessageBird/ApiClient/%s Python/%s' % (CLIENT_VERSION, PYTHON_VERSION)
 REST_TYPE = 'rest'
@@ -60,6 +60,7 @@ class ErrorException(Exception):
 class SignleErrorException(Exception):
     def __init__(self, errorMessage):
         super(SignleErrorException, self).__init__(errorMessage)
+
 
 
 class Client(object):

@@ -4,10 +4,7 @@ import base64
 import time
 from collections import OrderedDict
 
-try:
-    from urllib.parse import urlencode
-except ImportError:
-    from urllib import urlencode
+from urllib.parse import urlencode
 
 
 class SignedRequest:

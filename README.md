@@ -35,7 +35,7 @@ import messagebird
 Then, create an instance of **messagebird.Client**:
 
 ```python
-client = messagebird.Client('test_gshuPaZoeEG6ovbc8M79w0QyM')
+client = messagebird.Client('YOUR_ACCESS_KEY')
 ```
 
 Now you can query the API for information or send a request. For example, if we want to request our balance information you'd do something like this:

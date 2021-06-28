@@ -1,6 +1,7 @@
-import unittest
 import json
+import unittest
 from datetime import datetime
+from unittest.mock import Mock
 
 from dateutil.tz import tzutc
 
@@ -8,13 +9,6 @@ from messagebird import Client
 from messagebird.conversation_webhook import \
     CONVERSATION_WEBHOOK_EVENT_CONVERSATION_CREATED, \
     CONVERSATION_WEBHOOK_EVENT_CONVERSATION_UPDATED
-
-try:
-    from unittest.mock import Mock
-except ImportError:
-    # mock was added to unittest in Python 3.3, but was an external library
-    # before.
-    from mock import Mock
 
 
 class TestConversationWebhook(unittest.TestCase):

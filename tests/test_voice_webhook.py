@@ -1,18 +1,11 @@
-import json
 import unittest
+from unittest.mock import Mock
 
 from messagebird import Client
 from messagebird.client import VOICE_WEB_HOOKS_PATH, VOICE_API_ROOT
 from messagebird.error import ValidationError
 from messagebird.serde import json_serialize
 from messagebird.voice_webhook import VoiceCreateWebhookRequest, VoiceUpdateWebhookRequest
-
-try:
-    from unittest.mock import Mock
-except ImportError:
-    # mock was added to unittest in Python 3.3, but was an external library
-    # before.
-    from mock import Mock
 
 
 class TestVoiceWebhook(unittest.TestCase):
