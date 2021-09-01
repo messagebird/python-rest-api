@@ -32,8 +32,12 @@ def test_validate_signature(mock_dt, test_case):
 
     validator = RequestValidator(test_case.get('secret'))
 
-    def run_decode(): return validator.validate_signature(test_case['token'], test_case['url'],
-                                                          test_case.get('payload'))
+    payload = test_case.get('payload')
+    if payload:
+        payload = bytes(payload.encode())
+
+    def run_decode():
+        return validator.validate_signature(test_case['token'], test_case['url'], payload)
 
     if not test_case['valid']:
         err = ERROR_MAP.get(test_case["reason"]) or test_case["reason"]

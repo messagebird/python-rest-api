@@ -13,6 +13,6 @@ args = vars(parser.parse_args())
 request_validator = messagebird.RequestValidator(args['signingKey'])
 
 try:
-    request_validator.validate_signature(args['signature'], args['requestURL'], args['requestBody'])
+    request_validator.validate_signature(args['signature'], args['requestURL'], bytearray(args['requestBody'].encode()))
 except ValidationError as err:
     print("The signed request cannot be verified: ", str(err))
