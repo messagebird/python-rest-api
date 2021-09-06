@@ -23,8 +23,8 @@ class RequestValidator:
         Note that when true, no query parameters should be trusted.
         """
         super().__init__()
-        self.__signature_key = signature_key
-        self.__skip_url_validation = skip_url_validation
+        self._signature_key = signature_key
+        self._skip_url_validation = skip_url_validation
 
     def __str__(self) -> str:
         return super().__str__()
@@ -52,13 +52,13 @@ class RequestValidator:
         """
         if not signature:
             raise ValidationError("Signature is empty")
-        if not self.__skip_url_validation and not url:
+        if not self._skip_url_validation and not url:
             raise ValidationError("URL is empty")
 
         try:
             claims = jwt.decode(
                 jwt=signature,
-                key=self.__signature_key,
+                key=self._signature_key,
                 algorithms=RequestValidator.ALLOWED_ALGOS,
                 options={
                     "require": ["iss", "nbf", "exp"],
@@ -70,7 +70,7 @@ class RequestValidator:
         except jwt.InvalidTokenError as err:
             raise ValidationError(str(err)) from err
 
-        if not self.__skip_url_validation:
+        if not self._skip_url_validation:
             expected_url_hash = hashlib.sha256(url.encode("utf-8")).hexdigest()
             if not hmac.compare_digest(expected_url_hash, claims["url_hash"]):
                 raise ValidationError("invalid jwt: claim url_hash is invalid")
@@ -78,10 +78,9 @@ class RequestValidator:
         payload_hash = claims.get("payload_hash")
         if not request_body and payload_hash:
             raise ValidationError("invalid jwt: claim payload_hash is set but actual payload is missing")
-        elif request_body and not payload_hash:
+        if request_body and not payload_hash:
             raise ValidationError("invalid jwt: claim payload_hash is not set but payload is present")
-        elif request_body and not hmac.compare_digest(hashlib.sha256(request_body).hexdigest(),
-                                                      payload_hash):
+        if request_body and not hmac.compare_digest(hashlib.sha256(request_body).hexdigest(), payload_hash):
             raise ValidationError("invalid jwt: claim payload_hash is invalid")
 
         return claims
