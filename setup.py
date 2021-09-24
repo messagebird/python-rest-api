@@ -17,7 +17,7 @@ setup(
     url                           = 'https://github.com/messagebird/python-rest-api',
     download_url                  = 'https://github.com/messagebird/python-rest-api/tarball/2.0.0',
     keywords                      = ['messagebird', 'sms'],
-    install_requires              = ['requests>=2.4.1', 'python-dateutil>=2.6.0'],
+    install_requires              = ['requests>=2.4.1', 'python-dateutil>=2.6.0', 'pyjwt>=2.1.0'],
     extras_require               = {
         'dev': [
             'pytest',
