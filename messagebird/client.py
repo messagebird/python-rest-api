@@ -347,14 +347,7 @@ class Client(object):
         self.request_plain_text('groups/' + str(id), 'PATCH', params)
 
     def group_add_contacts(self, groupId, contactIds):
-        query = self.__group_add_contacts_query(contactIds)
-        self.request_plain_text('groups/' + str(groupId) + '?' + query, 'PUT', None)
-
-    def __group_add_contacts_query(self, contactIds):
-        # __group_add_contacts_query gets a query string to add contacts to a
-        # group. The expected format is ids[]=first-contact&ids[]=second-contact.
-        # See: https://developers.messagebird.com/docs/groups#add-contact-to-group.
-        return '&'.join('ids[]=' + str(id) for id in contactIds)
+        self.request_plain_text(f'groups/{groupId}/contacts/', 'PUT', {'ids': contactIds})
 
     def group_remove_contact(self, groupId, contactId):
         self.request_plain_text('groups/' + str(groupId) + '/contacts/' + str(contactId), 'DELETE', None)

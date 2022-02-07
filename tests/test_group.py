@@ -59,8 +59,8 @@ class TestGroup(unittest.TestCase):
 
         Client('', http_client).group_add_contacts('group-id', ['contact-id', 'other-contact-id'])
 
-        http_client.request.assert_called_once_with('groups/group-id?ids[]=contact-id&ids[]=other-contact-id', 'PUT',
-                                                    None)
+        http_client.request.assert_called_once_with('groups/group-id/contacts/', 'PUT',
+                                                    {'ids': ['contact-id', 'other-contact-id']})
 
     def test_group_remove_contact(self):
         http_client = Mock()
