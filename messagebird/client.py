@@ -23,7 +23,7 @@ from messagebird.voice_recording import VoiceRecordingsList, VoiceRecording
 from messagebird.voice_transcription import VoiceTranscriptionsList, VoiceTranscriptionsView
 from messagebird.call_flow import CallFlow, CallFlowList, CallFlowNumberList
 from messagebird.number import Number, NumberList
-from messagebird.whatsapp_template import WhatsAppTemplateList
+from messagebird.whatsapp_template import WhatsAppTemplate, WhatsAppTemplateList
 
 ENDPOINT = "https://rest.messagebird.com"
 CLIENT_VERSION = "2.0.0"
@@ -51,8 +51,11 @@ NUMBER_API_ROOT = "https://numbers.messagebird.com/v1/"
 NUMBER_PATH = "phone-numbers"
 NUMBER_AVAILABLE_PATH = "available-phone-numbers"
 
-INTEGRATION_TYPE = "integration"
-INTEGRATION_API_ROOT = "https://integrations.messagebird.com/v3/"
+INTEGRATION_TYPE_V2 = "integration_v2"
+INTEGRATION_TYPE_V3 = "integration_v3"
+INTEGRATION_API_ROOT = "https://integrations.messagebird.com"
+INTEGRATION_API_ROOT_V2 = f"{INTEGRATION_API_ROOT}/v2/"
+INTEGRATION_API_ROOT_V3 = f"{INTEGRATION_API_ROOT}/v3/"
 WHATSAPP_TEMPLATE_PATH = "platforms/whatsapp/templates"
 
 
@@ -86,8 +89,11 @@ class Client(object):
         if type == NUMBER_TYPE:
             return HttpClient(NUMBER_API_ROOT, self.access_key, USER_AGENT)
 
-        if type == INTEGRATION_TYPE:
-            return HttpClient(INTEGRATION_API_ROOT, self.access_key, USER_AGENT)
+        if type == INTEGRATION_TYPE_V2:
+            return HttpClient(INTEGRATION_API_ROOT_V2, self.access_key, USER_AGENT)
+
+        if type == INTEGRATION_TYPE_V3:
+            return HttpClient(INTEGRATION_API_ROOT_V3, self.access_key, USER_AGENT)
 
         return HttpClient(ENDPOINT, self.access_key, USER_AGENT)
 
@@ -98,6 +104,9 @@ class Client(object):
             return response_text
 
         response_json = json.loads(response_text)
+
+        if isinstance(response_json, list):
+            response_json = dict(items=response_json)
 
         if "errors" in response_json:
             raise (ErrorException([Error().load(e) for e in response_json["errors"]]))
@@ -578,7 +587,15 @@ class Client(object):
         return Number().load(self.request(NUMBER_PATH + "/" + number, "GET", None, NUMBER_TYPE))
 
     def whatsapp_template_list(self):
-        return WhatsAppTemplateList().load(self.request(WHATSAPP_TEMPLATE_PATH, "GET", None, INTEGRATION_TYPE))
+        return WhatsAppTemplateList().load(self.request(WHATSAPP_TEMPLATE_PATH, "GET", None, INTEGRATION_TYPE_V3))
+
+    def whatsapp_template_list_by_name(self, name):
+        endpoint = WHATSAPP_TEMPLATE_PATH + "/" + name
+        return WhatsAppTemplateList().load(self.request(endpoint, "GET", None, INTEGRATION_TYPE_V2))
+
+    def whatsapp_template(self, name, language):
+        endpoint = WHATSAPP_TEMPLATE_PATH + "/" + name + "/" + language
+        return WhatsAppTemplate().load(self.request(endpoint, "GET", None, INTEGRATION_TYPE_V2))
 
     @staticmethod
     def generate_voice_calls_url(call_id=None, leg_id=None, recording_id=None):
