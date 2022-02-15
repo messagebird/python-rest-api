@@ -23,6 +23,7 @@ from messagebird.voice_recording import VoiceRecordingsList, VoiceRecording
 from messagebird.voice_transcription import VoiceTranscriptionsList, VoiceTranscriptionsView
 from messagebird.call_flow import CallFlow, CallFlowList, CallFlowNumberList
 from messagebird.number import Number, NumberList
+from messagebird.whatsapp_template import WhatsAppTemplateList
 
 ENDPOINT = "https://rest.messagebird.com"
 CLIENT_VERSION = "2.0.0"
@@ -34,6 +35,7 @@ CONVERSATION_API_ROOT = "https://conversations.messagebird.com/v1/"
 CONVERSATION_PATH = "conversations"
 CONVERSATION_MESSAGES_PATH = "messages"
 CONVERSATION_WEB_HOOKS_PATH = "webhooks"
+CONVERSATION_SEND_PATH = "send"
 CONVERSATION_TYPE = "conversation"
 
 VOICE_API_ROOT = "https://voice.messagebird.com"
@@ -48,6 +50,10 @@ NUMBER_TYPE = "number"
 NUMBER_API_ROOT = "https://numbers.messagebird.com/v1/"
 NUMBER_PATH = "phone-numbers"
 NUMBER_AVAILABLE_PATH = "available-phone-numbers"
+
+INTEGRATION_TYPE = "integration"
+INTEGRATION_API_ROOT = "https://integrations.messagebird.com/v3/"
+WHATSAPP_TEMPLATE_PATH = "platforms/whatsapp/templates"
 
 
 class ErrorException(Exception):
@@ -79,6 +85,9 @@ class Client(object):
 
         if type == NUMBER_TYPE:
             return HttpClient(NUMBER_API_ROOT, self.access_key, USER_AGENT)
+
+        if type == INTEGRATION_TYPE:
+            return HttpClient(INTEGRATION_API_ROOT, self.access_key, USER_AGENT)
 
         return HttpClient(ENDPOINT, self.access_key, USER_AGENT)
 
@@ -386,6 +395,18 @@ class Client(object):
         uri = CONVERSATION_MESSAGES_PATH + "/" + str(message_id)
         return ConversationMessage().load(self.request(uri, "GET", None, CONVERSATION_TYPE))
 
+    def conversation_send(self, params={}):
+        """
+        This method sends a message via /conversations/send endpoint.
+
+        Reference: https://developers.messagebird.com/api/conversations/#send-message
+        """
+        assert "to" in params, "to is required"
+        assert "from" in params, "from is required"
+        assert "type" in params, "type is required"
+        assert "content" in params, "content is required"
+        return self.request(CONVERSATION_SEND_PATH, "POST", params, CONVERSATION_TYPE)
+
     def conversation_create_webhook(self, webhook_create_request):
         return ConversationWebhook().load(
             self.request(CONVERSATION_WEB_HOOKS_PATH, "POST", webhook_create_request, CONVERSATION_TYPE)
@@ -555,6 +576,9 @@ class Client(object):
 
     def purchased_number(self, number):
         return Number().load(self.request(NUMBER_PATH + "/" + number, "GET", None, NUMBER_TYPE))
+
+    def whatsapp_template_list(self):
+        return WhatsAppTemplateList().load(self.request(WHATSAPP_TEMPLATE_PATH, "GET", None, INTEGRATION_TYPE))
 
     @staticmethod
     def generate_voice_calls_url(call_id=None, leg_id=None, recording_id=None):
