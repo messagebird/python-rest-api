@@ -28,7 +28,6 @@ try:
     # Print the object information.
     print('\nThe following information was returned as a CallFlow object:\n')
     print('  id           : {}'.format(call.id))
-    print('  title        : {}'.format(call.title))
     print('  steps        : ')
     for step in call.steps:
         print(step)
