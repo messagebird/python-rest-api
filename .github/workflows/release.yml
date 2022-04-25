@@ -57,7 +57,7 @@ jobs:
           ## ${{ env.VERSION }}
           " >> CHANGELOG.tmp
           grep "^*" xx01 >> CHANGELOG.tmp
-          grep -v "^# " CHANGELOG.md >> CHANGELOG.tmp
+          test -f CHANGELOG.md && grep -v "^# " CHANGELOG.md >> CHANGELOG.tmp
           cp CHANGELOG.tmp CHANGELOG.md
       - name: Prepare version.py
         run: |
