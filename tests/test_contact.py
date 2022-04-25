@@ -66,3 +66,6 @@ class TestContact(unittest.TestCase):
         self.assertEqual(2, contact_list.totalCount)
         self.assertEqual('https://rest.messagebird.com/contacts?offset=0', contact_list.links.first)
         self.assertEqual('https://rest.messagebird.com/contacts/first-id/groups', contact_list.items[0].groups.href)
+
+    def test_fail(self):
+        self.assertEqual(2, 3)
