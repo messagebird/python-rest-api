@@ -24,4 +24,5 @@ jobs:
       - name: install deps
         run: python setup.py install
       - name: test
+        run: pip install pytest
         run: python -m unittest 
