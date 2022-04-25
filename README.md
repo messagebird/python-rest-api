@@ -2,8 +2,6 @@ MessageBird's REST API for Python
 =================================
 This repository contains the open source Python client for MessageBird's REST API. Documentation can be found at: https://developers.messagebird.com/.
 
-[![Build Status](https://travis-ci.org/messagebird/python-rest-api.svg?branch=master)](https://travis-ci.org/messagebird/python-rest-api)
-
 Requirements
 ------------
 - [Sign up](https://www.messagebird.com/en/signup) for a free MessageBird account
@@ -85,4 +83,4 @@ Complete documentation, instructions, and examples are available at:
 
 License
 -------
-The MessageBird REST Client for Python is licensed under [The BSD 2-Clause License](http://opensource.org/licenses/BSD-2-Clause). Copyright (c) 2014, MessageBird
+The MessageBird REST Client for Python is licensed under [The BSD 2-Clause License](http://opensource.org/licenses/BSD-2-Clause). Copyright (c) 2022, MessageBird
