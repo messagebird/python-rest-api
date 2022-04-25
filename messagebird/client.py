@@ -504,12 +504,16 @@ class Client(object):
         query = self._format_query(limit, offset)
         return CallFlowList().load(self.request('call-flows?' + query, 'GET', None, VOICE_TYPE))
 
-    def call_flow_create(self, title, steps, default=False, record=False):
-        params = {'title': title, 'steps': steps, 'default': default, 'record': record}
+    def call_flow_create(self, steps, default=False, record=False, title=None):
+        params = {'steps': steps, 'default': default, 'record': record}
+        if title is not None:
+            params['title'] = title
         return CallFlow().load(self.request('call-flows', 'POST', params, VOICE_TYPE))
 
-    def call_flow_update(self, id, title, steps, default, record):
-        params = {'title': title, 'steps': steps, 'default': default, 'record': record}
+    def call_flow_update(self, id, steps, default, record, title=None):
+        params = {'steps': steps, 'default': default, 'record': record}
+        if title is not None:
+            params['title'] = title
         return CallFlow().load(self.request('call-flows/' + str(id), 'PUT', params, VOICE_TYPE))
 
     def call_flow_delete(self, id):

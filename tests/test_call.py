@@ -126,7 +126,6 @@ class TestCall(unittest.TestCase):
             "source": "31644556677",
             "destination": "31612345678",
             "callFlow": {
-                "title": "Say message",
                 "steps": [
                     {
                         "action": "say",

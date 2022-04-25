@@ -45,7 +45,6 @@ class TestCallFlow(unittest.TestCase):
           "data": [
             {
               "id": "de3ed163-d5fc-45f4-b8c4-7eea7458c635",
-              "title": "Forward call to 31612345678",
               "record": false,
               "steps": [
                 {
@@ -64,7 +63,6 @@ class TestCallFlow(unittest.TestCase):
             },
             {
               "id": "de3ed163-d5fc-45f4-b8c4-7eea7458c634",
-              "title": "Forward call to 0600123123",
               "record": true,
               "steps": [
                 {
@@ -97,8 +95,9 @@ class TestCallFlow(unittest.TestCase):
         call_flow_list = Client('', http_client).call_flow_list(20, 0)
 
         http_client.request.assert_called_once_with('call-flows?limit=20&offset=0', 'GET', None)
+        self.assertEqual(call_flow_list.data[0].title, None)
+        self.assertEqual(call_flow_list.data[1].title, None)
 
-        self.assertEqual('Forward call to 0600123123', call_flow_list.data[1].title)
         self.assertEqual(2, call_flow_list.pagination['totalCount'])
 
     def test_numbers_list(self):

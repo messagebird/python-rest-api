@@ -8,7 +8,7 @@ import requests
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import messagebird
 
-exampleCallFlow = '{"title":"Test Flow","steps":[{"action":"say","options":{"payload":"Hey, this is your first voice \
+exampleCallFlow = '{"steps":[{"action":"say","options":{"payload":"Hey, this is your first voice \
 call","language":"en-GB","voice":"female"}}]}'
 
 parser = argparse.ArgumentParser(usage='call_create.py\
