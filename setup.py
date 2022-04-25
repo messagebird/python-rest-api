@@ -1,6 +1,14 @@
-from os import path
+import os
+import re
 from setuptools import setup
 from io import open
+
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'messagebird/version.py'), 'r') as fd:
+    VERSION = re.search(r'^VERSION = [\']([^\']*)[\']',
+                        fd.read(), re.MULTILINE).group(1)
+
+if not VERSION:
+    raise RuntimeError('Ensure `VERSION` is correctly set in ./messagebird/version.py')
 
 with open('README.md', encoding='utf-8') as f:
     description = f.read()
@@ -8,7 +16,7 @@ with open('README.md', encoding='utf-8') as f:
 setup(
     name                          = 'messagebird',
     packages                      = ['messagebird'],
-    version                       = '2.0.0',
+    version                       = VERSION,
     description                   = "MessageBird's REST API",
     author                        = 'MessageBird',
     author_email                  = 'support@messagebird.com',

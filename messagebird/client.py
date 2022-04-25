@@ -23,11 +23,11 @@ from messagebird.voice_recording import VoiceRecordingsList, VoiceRecording
 from messagebird.voice_transcription import VoiceTranscriptionsList, VoiceTranscriptionsView
 from messagebird.call_flow import CallFlow, CallFlowList, CallFlowNumberList
 from messagebird.number import Number, NumberList
+from messagebird.version import VERSION
 
 ENDPOINT = 'https://rest.messagebird.com'
-CLIENT_VERSION = '2.0.0'
 PYTHON_VERSION = '%d.%d.%d' % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
-USER_AGENT = 'MessageBird/ApiClient/%s Python/%s' % (CLIENT_VERSION, PYTHON_VERSION)
+USER_AGENT = 'MessageBird/ApiClient/%s Python/%s' % (VERSION, PYTHON_VERSION)
 REST_TYPE = 'rest'
 
 CONVERSATION_API_ROOT = 'https://conversations.messagebird.com/v1/'
@@ -60,7 +60,6 @@ class ErrorException(Exception):
 class SignleErrorException(Exception):
     def __init__(self, errorMessage):
         super(SignleErrorException, self).__init__(errorMessage)
-
 
 
 class Client(object):
@@ -290,7 +289,7 @@ class Client(object):
         if params is None:
             params = {}
         params.update({
-            'type' : 'email',
+            'type': 'email',
             'recipient': recipient,
             'originator': originator
         })
