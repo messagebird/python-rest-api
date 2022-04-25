@@ -6,7 +6,7 @@ Requirements
 ------------
 - [Sign up](https://www.messagebird.com/en/signup) for a free MessageBird account
 - Create a new access key in the developers sections
-- An application written in Python (tested with Python 2.7 and Python 3.4)
+- An application written in Python >3.8
 
 Installation
 ------------
