@@ -17,11 +17,10 @@ jobs:
           git config user.name "MessageBird CI"
       - name: Prepare description
         run: |
-          csplit -s CHANGELOG.md "/##/" {1}
-          cat xx01 > CHANGELOG.tmp
+          awk '/^## / { if (p) { exit }; { p=1; next } } p && NF' CHANGELOG.md > CHANGELOG.tmp
       - name: Prepare tag
         run: |
-          export TAG=$(head -1 CHANGELOG.tmp | cut -d' ' -f2)
+          export TAG=$(awk '/^## / {print $2}' CHANGELOG.md)
           echo "TAG=$TAG" >> $GITHUB_ENV
       - name: Create Release
         uses: actions/create-release@v1
@@ -29,7 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.TAG }}
-          release_name: ${{ env.TAG }}
+          release_name: Version ${{ env.TAG }}
           body_path: CHANGELOG.tmp
           draft: false
           prerelease: false

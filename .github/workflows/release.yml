@@ -1,7 +1,9 @@
 name: Release
 
 on:
-  pull_request:
+  pull_request_target:
+    # Do not remove types labels to avoid security issue, see link for more info:
+    # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/#:~:text=Add%20a%20condition%20to%20the,to%20the%20target%20repository:
     types: [ labeled ]
     branches:
       - master
@@ -44,13 +46,9 @@ jobs:
           echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Checkout PR
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr checkout ${{ github.event.pull_request.number }}
-          git config user.email "developers@messagebird.com"
-          git config user.name "MessageBird CI"
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
       - name: Prepare CHANGELOG
         run: |
           echo "${{ github.event.pull_request.body }}" | csplit -s - "/##/"
@@ -62,9 +60,11 @@ jobs:
           cp CHANGELOG.tmp CHANGELOG.md
       - name: Prepare version.py
         run: |
-          sed -i "s|STRING = '[^']*'|STRING = '${{ env.VERSION }}'|" messagebird/version.py
+          sed -i "s|VERSION = '[^']*'|VERSION = '${{ env.VERSION }}'|" messagebird/version.py
       - name: Commit changes
         run: |
+          git config --global user.email "developers@messagebird.com"
+          git config --global user.name "MessageBird CI"
           git add CHANGELOG.md messagebird/version.py
           git commit -m "Bump to version ${{ env.VERSION }}"
       - name: Push
