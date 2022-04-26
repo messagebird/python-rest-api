@@ -44,12 +44,13 @@ jobs:
           echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Setup git
+      - name: Checkout PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          gh pr checkout ${{ github.event.pull_request.number }}
           git config user.email "developers@messagebird.com"
           git config user.name "MessageBird CI"
-          git fetch
-          git checkout ${{ github.event.pull_request.head.ref }}
       - name: Prepare CHANGELOG
         run: |
           echo "${{ github.event.pull_request.body }}" | csplit -s - "/##/"
@@ -57,7 +58,7 @@ jobs:
           ## ${{ env.VERSION }}
           " >> CHANGELOG.tmp
           grep "^*" xx01 >> CHANGELOG.tmp
-          test -f CHANGELOG.md && grep -v "^# " CHANGELOG.md >> CHANGELOG.tmp
+          grep -v "^# " CHANGELOG.md >> CHANGELOG.tmp
           cp CHANGELOG.tmp CHANGELOG.md
       - name: Prepare version.py
         run: |
