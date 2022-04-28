@@ -1,4 +1,7 @@
 # Changelog
+## 2.1.0
+
+* [ADDED] Support for JWT webhook signature.
 
 ## 2.0.0
 
