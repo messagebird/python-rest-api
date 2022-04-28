@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  pull_request_target:
+    # Do not remove types labels to avoid security issue, see link for more info:
+    # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/#:~:text=Add%20a%20condition%20to%20the,to%20the%20target%20repository:
+    types: [ labeled ]
+    branches:
+      - master
+
+jobs:
+  prepare-release:
+    name: Prepare release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set major release
+        if: ${{ github.event.label.name == 'release-major' }}
+        run: echo "RELEASE=major" >> $GITHUB_ENV
+      - name: Set minor release
+        if: ${{ github.event.label.name == 'release-minor' }}
+        run: echo "RELEASE=minor" >> $GITHUB_ENV
+      - name: Set patch release
+        if: ${{ github.event.label.name == 'release-patch' }}
+        run: echo "RELEASE=patch" >> $GITHUB_ENV
+      - name: Check release env
+        run: |
+          if [[ -z "${{ env.RELEASE }}" ]];
+          then
+            echo "You need to set a release label on PRs to the main branch"
+            exit 1
+          else
+            exit 0
+          fi
+      - name: Install semver-tool
+        run: |
+          export DIR=$(mktemp -d)
+          cd $DIR
+          curl https://github.com/fsaintjacques/semver-tool/archive/3.2.0.tar.gz -L -o semver.tar.gz
+          tar -xvf semver.tar.gz
+          sudo cp semver-tool-3.2.0/src/semver /usr/local/bin
+      - name: Bump version
+        run: |
+          export CURRENT=$(curl -s https://pypi.org/simple/messagebird/ | grep -o "messagebird-[0-9]*\.[0-9]*\.[0-9]*\.tar\.gz" | tail -1 | grep -o "[0-9]*\.[0-9]*\.[0-9]*")
+          export NEW_VERSION=$(semver bump ${{ env.RELEASE }} $CURRENT)
+          echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+      - name: Prepare CHANGELOG
+        run: |
+          echo "${{ github.event.pull_request.body }}" | csplit -s - "/##/"
+          echo "# Changelog
+          ## ${{ env.VERSION }}
+          " >> CHANGELOG.tmp
+          grep "^*" xx01 >> CHANGELOG.tmp
+          grep -v "^# " CHANGELOG.md >> CHANGELOG.tmp
+          cp CHANGELOG.tmp CHANGELOG.md
+      - name: Prepare version.py
+        run: |
+          sed -i "s|VERSION = '[^']*'|VERSION = '${{ env.VERSION }}'|" messagebird/version.py
+      - name: Commit changes
+        run: |
+          git config --global user.email "developers@messagebird.com"
+          git config --global user.name "MessageBird CI"
+          git add CHANGELOG.md messagebird/version.py
+          git commit -m "Bump to version ${{ env.VERSION }}"
+      - name: Push
+        run: git push
