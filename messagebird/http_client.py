@@ -14,18 +14,27 @@ class ResponseFormat(Enum):
 class HttpClient:
     """Used for sending simple HTTP requests."""
 
-    def __init__(self, endpoint, access_key, user_agent):
+    def __init__(self, endpoint, access_key, user_agent, **kwargs):
         self.__supported_status_codes = [200, 201, 204, 401, 404, 405, 422]
 
         self.endpoint = endpoint
         self.access_key = access_key
         self.user_agent = user_agent
 
+        if 'proxies' in kwargs:
+            self.proxies = kwargs['proxies']
+        else:
+            self.proxies = {}
+
     def request(self, path, method='GET', params=None, format=ResponseFormat.text):
         """Builds a request and gets a response."""
         if params is None:
             params = {}
         url = urljoin(self.endpoint, path)
+        
+        if self.proxies is not dict:
+            self.proxies = {}
+
         headers = {
             'Accept': 'application/json',
             'Authorization': 'AccessKey ' + self.access_key,
@@ -34,11 +43,11 @@ class HttpClient:
         }
 
         method_switcher = {
-            'DELETE': lambda: requests.delete(url, verify=True, headers=headers, data=json_serialize(params)),
-            'GET': lambda: requests.get(url, verify=True, headers=headers, params=params),
-            'PATCH': lambda: requests.patch(url, verify=True, headers=headers, data=json_serialize(params)),
-            'POST': lambda: requests.post(url, verify=True, headers=headers, data=json_serialize(params)),
-            'PUT': lambda: requests.put(url, verify=True, headers=headers, data=json_serialize(params))
+            'DELETE': lambda: requests.delete(url, verify=True, proxies=self.proxies, headers=headers, data=json_serialize(params)),
+            'GET': lambda: requests.get(url, verify=True, proxies=self.proxies, headers=headers, params=params),
+            'PATCH': lambda: requests.patch(url, verify=True, proxies=self.proxies, headers=headers, data=json_serialize(params)),
+            'POST': lambda: requests.post(url, verify=True, proxies=self.proxies, headers=headers, data=json_serialize(params)),
+            'PUT': lambda: requests.put(url, verify=True, proxies=self.proxies, headers=headers, data=json_serialize(params))
         }
         if method not in method_switcher:
             raise ValueError(str(method) + ' is not a supported HTTP method')

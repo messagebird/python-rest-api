@@ -63,24 +63,33 @@ class SignleErrorException(Exception):
 
 
 class Client(object):
-    def __init__(self, access_key, http_client=None):
+    def __init__(self, access_key, http_client=None, **kwargs):
         self.access_key = access_key
-        self.http_client = http_client
+
+        if 'http_client' in kwargs:
+            self.http_client = kwargs['http_client']
+        else:
+            self.http_client = http_client
+
+        if 'proxies' in kwargs:
+            self.proxies = kwargs['proxies']
+        else:
+            self.proxies = {}
 
     def _get_http_client(self, type=REST_TYPE):
         if self.http_client:
             return self.http_client
 
         if type == CONVERSATION_TYPE:
-            return HttpClient(CONVERSATION_API_ROOT, self.access_key, USER_AGENT)
+            return HttpClient(CONVERSATION_API_ROOT, self.access_key, USER_AGENT, proxies=self.proxies)
 
         if type == VOICE_TYPE:
-            return HttpClient(VOICE_API_ROOT, self.access_key, USER_AGENT)
+            return HttpClient(VOICE_API_ROOT, self.access_key, USER_AGENT, proxies=self.proxies)
 
         if type == NUMBER_TYPE:
-            return HttpClient(NUMBER_API_ROOT, self.access_key, USER_AGENT)
+            return HttpClient(NUMBER_API_ROOT, self.access_key, USER_AGENT, proxies=self.proxies)
 
-        return HttpClient(ENDPOINT, self.access_key, USER_AGENT)
+        return HttpClient(ENDPOINT, self.access_key, USER_AGENT, proxies=self.proxies)
 
     def request(self, path, method='GET', params=None, type=REST_TYPE):
         """Builds a request, gets a response and decodes it."""
